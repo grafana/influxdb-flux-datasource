@@ -2,8 +2,6 @@ import Papa from 'papaparse';
 import flatten from 'lodash/flatten';
 import groupBy from 'lodash/groupBy';
 
-import TableModel from 'app/core/table_model';
-
 const filterColumnKeys = key => key && key[0] !== '_' && key !== 'result' && key !== 'table';
 
 const IGNORE_FIELDS_FOR_NAME = ['result', '', 'table'];
@@ -75,7 +73,7 @@ export function getAnnotationsFromResult(result: string, options: any) {
 export function getTableModelFromResult(result: string) {
   const data = parseCSV(result);
 
-  const table = new TableModel();
+  const table = { type: 'table', columns: [], rows: [] };
   if (data.length > 0) {
     // First columns are fixed
     const firstColumns = [
@@ -92,12 +90,12 @@ export function getTableModelFromResult(result: string) {
 
     const valueColumn = { id: '_value', text: 'Value' };
     const columns = [...firstColumns, ...tags, valueColumn];
-    columns.forEach(c => table.addColumn(c));
+    columns.forEach(c => table.columns.push(c));
 
     // Add rows
     data.forEach(record => {
       const row = columns.map(c => record[c.id]);
-      table.addRow(row);
+      table.rows.push(row);
     });
   }
 
