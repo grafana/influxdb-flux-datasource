@@ -1,7 +1,6 @@
-import { Block, Document, Text } from 'slate';
 import Plain from 'slate-plain-serializer';
 
-import QueryField, { getInitialValue } from './QueryField';
+import QueryField, { getInitialValue, makeFragment } from './QueryField';
 import debounce from './utils/debounce';
 import { getNextCharacter, getPreviousCousin } from './utils/dom';
 
@@ -171,20 +170,11 @@ export default class FluxQueryField extends QueryField {
 
   applyTypeahead(change, suggestion) {
     const { typeaheadPrefix, typeaheadContext, typeaheadText } = this.state;
-    let suggestionText = suggestion.text;
+    let suggestionText = suggestion.display || suggestion.text;
     let move = 0;
 
     // Modify suggestion based on context
     switch (typeaheadContext) {
-      case 'context-builtin': {
-        const nextChar = getNextCharacter();
-        if (!nextChar && nextChar !== '(') {
-          suggestionText += '()';
-          move = -1;
-        }
-        break;
-      }
-
       case 'context-operator': {
         const nextChar = getNextCharacter();
         if (!nextChar && nextChar !== ' ') {
@@ -216,21 +206,11 @@ export default class FluxQueryField extends QueryField {
 
     // If new-lines, apply suggestion as block
     if (suggestionText.match(/\n/)) {
-      const lines = suggestionText.split('\n').map(line =>
-        Block.create({
-          type: 'paragraph',
-          nodes: [Text.create(line)],
-        })
-      );
-
-      const block = Document.create({
-        nodes: lines,
-      });
-
+      const fragment = makeFragment(suggestionText);
       return change
         .deleteBackward(backward)
         .deleteForward(forward)
-        .insertFragment(block)
+        .insertFragment(fragment)
         .focus();
     }
 
