@@ -11,9 +11,13 @@
   "author": "Grafana Labs",
   "license": "Apache",
   "dependencies": {
+    "immutable": "^3.8.2",
     "lodash": "^4.17.4",
     "moment": "^2.22.1",
-    "papaparse": "^4.5.0"
+    "papaparse": "^4.5.0",
+    "prismjs": "^1.6.0",
+    "slate": "^0.33.7",
+    "slate-plain-serializer": "^0.5.13"
   },
   "devDependencies": {
     "@types/grafana": "https://git@github.com/CorpGlory/types-grafana.git",

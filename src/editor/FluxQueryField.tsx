@@ -1,9 +1,9 @@
 import { Block, Document, Text } from 'slate';
 import Plain from 'slate-plain-serializer';
 
-import QueryField, { getInitialValue } from 'app/containers/Explore/QueryField';
-import debounce from 'app/containers/Explore/utils/debounce';
-import { getNextCharacter, getPreviousCousin } from 'app/containers/Explore/utils/dom';
+import QueryField, { getInitialValue } from './QueryField';
+import debounce from './utils/debounce';
+import { getNextCharacter, getPreviousCousin } from './utils/dom';
 
 import { FUNCTIONS } from './flux';
 

@@ -18,7 +18,7 @@ function serializeParams(params) {
 
   return _.reduce(
     params,
-    (memo, value, key) => {
+    (memo: any[], value: string, key) => {
       if (value === null || value === undefined) {
         return memo;
       }
@@ -53,10 +53,10 @@ export default class InfluxDatasource {
     this.password = instanceSettings.password;
     this.name = instanceSettings.name;
     this.orgName = instanceSettings.orgName || 'defaultorgname';
-    this.database = instanceSettings.database;
     this.basicAuth = instanceSettings.basicAuth;
     this.withCredentials = instanceSettings.withCredentials;
     this.interval = (instanceSettings.jsonData || {}).timeInterval;
+    this.database = (instanceSettings.jsonData || {}).database;
     this.supportAnnotations = true;
     this.supportMetrics = true;
   }
