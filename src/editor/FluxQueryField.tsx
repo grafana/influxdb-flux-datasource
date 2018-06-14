@@ -5,6 +5,7 @@ import debounce from './utils/debounce';
 import { getNextCharacter, getPreviousCousin } from './utils/dom';
 
 import { FUNCTIONS } from './flux';
+import '../styles.css';
 
 const cleanText = s => s.replace(/[{}[\]="(),!~+\-*/^%]/g, '').trim();
 const wrapText = text => ({ text });
