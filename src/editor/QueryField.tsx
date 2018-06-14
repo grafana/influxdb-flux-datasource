@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Value } from 'slate';
+import { Block, Document, Text, Value } from 'slate';
 import { Editor } from 'slate-react';
 import Plain from 'slate-plain-serializer';
 
@@ -18,27 +18,21 @@ function flattenSuggestions(s) {
   return s ? s.reduce((acc, g) => acc.concat(g.items), []) : [];
 }
 
-export const getInitialValue = query =>
-  Value.fromJSON({
-    document: {
-      nodes: [
-        {
-          object: 'block',
-          type: 'paragraph',
-          nodes: [
-            {
-              object: 'text',
-              leaves: [
-                {
-                  text: query,
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
+export const makeFragment = text => {
+  const lines = text.split('\n').map(line =>
+    Block.create({
+      type: 'paragraph',
+      nodes: [Text.create(line)],
+    })
+  );
+
+  const fragment = Document.create({
+    nodes: lines,
   });
+  return fragment;
+};
+
+export const getInitialValue = query => Value.create({ document: makeFragment(query) });
 
 class Portal extends React.Component<any, any> {
   node: any;

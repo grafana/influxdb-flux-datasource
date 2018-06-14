@@ -18,7 +18,7 @@ export const FUNCTIONS = [
   { text: 'distinct', display: 'distinct(column: "host")', hint: 'Produce unique values for a given column' },
   {
     text: 'filter',
-    display: 'filter(fn: (r) => r)',
+    display: 'filter(fn: (r) => r["_value"] > 0)',
     hint:
       'Applies a predicate function to each input record, output tables contain only records that matched the predicate.',
   },
@@ -53,7 +53,7 @@ export const FUNCTIONS = [
   },
   {
     text: 'range',
-    display: 'range(start: -1h, stop: -30m) or range($range)',
+    display: 'range($range)',
     hint: 'Filters the results by time boundaries "start" and "stop". Use "$range" to apply the dashboard range.',
   },
   { text: 'sample', display: 'sample(n: 10)', hint: 'Selects a every "n"-th record from the input table.' },

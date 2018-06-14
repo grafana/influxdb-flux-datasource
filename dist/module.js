@@ -31948,8 +31948,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _slate = __webpack_require__(/*! slate */ "slate");
-
 var _slatePlainSerializer = __webpack_require__(/*! slate-plain-serializer */ "slate-plain-serializer");
 
 var _slatePlainSerializer2 = _interopRequireDefault(_slatePlainSerializer);
@@ -32224,19 +32222,10 @@ var FluxQueryField = /** @class */function (_super) {
             typeaheadPrefix = _a.typeaheadPrefix,
             typeaheadContext = _a.typeaheadContext,
             typeaheadText = _a.typeaheadText;
-        var suggestionText = suggestion.text;
+        var suggestionText = suggestion.display || suggestion.text;
         var move = 0;
         // Modify suggestion based on context
         switch (typeaheadContext) {
-            case 'context-builtin':
-                {
-                    var nextChar = (0, _dom.getNextCharacter)();
-                    if (!nextChar && nextChar !== '(') {
-                        suggestionText += '()';
-                        move = -1;
-                    }
-                    break;
-                }
             case 'context-operator':
                 {
                     var nextChar = (0, _dom.getNextCharacter)();
@@ -32265,16 +32254,8 @@ var FluxQueryField = /** @class */function (_super) {
         var forward = midWord ? suffixLength + offset : 0;
         // If new-lines, apply suggestion as block
         if (suggestionText.match(/\n/)) {
-            var lines = suggestionText.split('\n').map(function (line) {
-                return _slate.Block.create({
-                    type: 'paragraph',
-                    nodes: [_slate.Text.create(line)]
-                });
-            });
-            var block = _slate.Document.create({
-                nodes: lines
-            });
-            return change.deleteBackward(backward).deleteForward(forward).insertFragment(block).focus();
+            var fragment = (0, _QueryField.makeFragment)(suggestionText);
+            return change.deleteBackward(backward).deleteForward(forward).insertFragment(fragment).focus();
         }
         return change.deleteBackward(backward).deleteForward(forward).insertText(suggestionText).move(move).focus();
     };
@@ -32340,7 +32321,7 @@ exports.default = FluxQueryField;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.getInitialValue = exports.TYPEAHEAD_DEBOUNCE = undefined;
+exports.getInitialValue = exports.makeFragment = exports.TYPEAHEAD_DEBOUNCE = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -32408,21 +32389,20 @@ function flattenSuggestions(s) {
         return acc.concat(g.items);
     }, []) : [];
 }
-var getInitialValue = exports.getInitialValue = function getInitialValue(query) {
-    return _slate.Value.fromJSON({
-        document: {
-            nodes: [{
-                object: 'block',
-                type: 'paragraph',
-                nodes: [{
-                    object: 'text',
-                    leaves: [{
-                        text: query
-                    }]
-                }]
-            }]
-        }
+var makeFragment = exports.makeFragment = function makeFragment(text) {
+    var lines = text.split('\n').map(function (line) {
+        return _slate.Block.create({
+            type: 'paragraph',
+            nodes: [_slate.Text.create(line)]
+        });
     });
+    var fragment = _slate.Document.create({
+        nodes: lines
+    });
+    return fragment;
+};
+var getInitialValue = exports.getInitialValue = function getInitialValue(query) {
+    return _slate.Value.create({ document: makeFragment(query) });
 };
 var Portal = /** @class */function (_super) {
     __extends(Portal, _super);
@@ -32920,7 +32900,7 @@ var FUNCTIONS = exports.FUNCTIONS = [{
     hint: 'Computes the time based difference between subsequent records'
 }, { text: 'difference', display: 'difference()', hint: 'Computes the difference between subsequent records.' }, { text: 'distinct', display: 'distinct(column: "host")', hint: 'Produce unique values for a given column' }, {
     text: 'filter',
-    display: 'filter(fn: (r) => r)',
+    display: 'filter(fn: (r) => r["_value"] > 0)',
     hint: 'Applies a predicate function to each input record, output tables contain only records that matched the predicate.'
 }, { text: 'first', display: 'first()', hint: 'Selects the first non-null record from the input table.' }, {
     text: 'from',
@@ -32940,7 +32920,7 @@ var FUNCTIONS = exports.FUNCTIONS = [{
     hint: ' For each aggregated column, it outputs the value that represents the specified percentile of the non-null record as a float.'
 }, {
     text: 'range',
-    display: 'range(start: -1h, stop: -30m) or range($range)',
+    display: 'range($range)',
     hint: 'Filters the results by time boundaries "start" and "stop". Use "$range" to apply the dashboard range.'
 }, { text: 'sample', display: 'sample(n: 10)', hint: 'Selects a every "n"-th record from the input table.' }, { text: 'set', display: 'set(key: "myKey", value: "42")', hint: 'Assigns a static value to each record' }, { text: 'shift', display: 'shift(shift: +12h)', hint: 'Add a fixed duration to time columns.' }, { text: 'skew', display: 'skew()', hint: 'For each aggregated column, it outputs the skew as a float.' }, {
     text: 'sort',
