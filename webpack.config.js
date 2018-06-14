@@ -24,7 +24,7 @@ module.exports = {
   //   }
   // },
   externals: [
-    'lodash', 'moment',
+    'lodash', 'moment', 'slate', 'prismjs', 'slate-plain-serializer', 'slate-react',
     function (context, request, callback) {
       var prefix = 'app/';
       if (request.indexOf(prefix) === 0) {
@@ -45,7 +45,7 @@ module.exports = {
     ]),
   ],
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.tsx', '.js']
   },
   module: {
     rules: [

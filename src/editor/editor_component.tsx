@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { react2AngularDirective } from 'app/core/utils/react2angular';
+import coreModule from 'app/core/core_module';
 
 import FluxQueryField from './FluxQueryField';
 import flux from './flux';
@@ -55,4 +55,9 @@ class Editor extends Component<any, any> {
   }
 }
 
-react2AngularDirective('fluxEditor', Editor, ['change', 'database', 'execute', 'query', 'request']);
+coreModule.directive('fluxEditor', [
+  'reactDirective',
+  reactDirective => {
+    return reactDirective(Editor, ['change', 'database', 'execute', 'query', 'request']);
+  },
+]);

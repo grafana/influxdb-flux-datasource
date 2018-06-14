@@ -1,7 +1,7 @@
 {
   "type": "datasource",
-  "name": "InfluxDB (Flux) [BETA]",
-  "id": "influxdb-flux",
+  "name": "Flux (InfluxDB) [BETA]",
+  "id": "flux-influx",
   "defaultMatchFormat": "regex values",
   "metrics": true,
   "annotations": true,
