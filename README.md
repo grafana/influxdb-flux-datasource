@@ -23,7 +23,5 @@ Read more about InfluxDB here:
 
 ## Roadmap
 
-- Syntax highlighting
-- Tab completion (functions, values)
 - Alerting integration
 - Explore UI integration
