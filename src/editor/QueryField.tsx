@@ -114,7 +114,7 @@ class QueryField extends React.Component<any, any> {
     });
 
     window.requestAnimationFrame(this.handleTypeahead);
-  };
+  }
 
   onMetricsReceived = () => {
     if (!this.state.metrics) {
@@ -131,14 +131,14 @@ class QueryField extends React.Component<any, any> {
         .deleteBackward(1);
       this.onChange(change);
     });
-  };
+  }
 
   request = url => {
     if (this.props.request) {
       return this.props.request(url);
     }
     return fetch(url);
-  };
+  }
 
   handleChangeQuery = () => {
     // Send text change to parent
@@ -146,7 +146,7 @@ class QueryField extends React.Component<any, any> {
     if (onQueryChange) {
       onQueryChange(Plain.serialize(this.state.value));
     }
-  };
+  }
 
   onKeyDown = (event, change) => {
     const { typeaheadIndex, suggestions } = this.state;
@@ -215,13 +215,13 @@ class QueryField extends React.Component<any, any> {
       }
     }
     return undefined;
-  };
+  }
 
-  handleTypeahead(change?, item?) {
+  handleTypeahead = (change?, item?) => {
     return change || this.state.value.change();
   }
 
-  applyTypeahead(change?, suggestion?) { }
+  applyTypeahead(change?, suggestion?): { value: object } { return { value: {} }; }
 
   resetTypeahead = () => {
     this.setState({
@@ -230,7 +230,7 @@ class QueryField extends React.Component<any, any> {
       typeaheadPrefix: '',
       typeaheadContext: null,
     });
-  };
+  }
 
   handleBlur = () => {
     const { onBlur } = this.props;
@@ -240,20 +240,20 @@ class QueryField extends React.Component<any, any> {
     if (onBlur) {
       onBlur();
     }
-  };
+  }
 
   handleFocus = () => {
     const { onFocus } = this.props;
     if (onFocus) {
       onFocus();
     }
-  };
+  }
 
   handleClickMenu = item => {
     // Manually triggering change
     const change = this.applyTypeahead(this.state.value.change(), item);
     this.onChange(change);
-  };
+  }
 
   updateMenu = () => {
     const { suggestions } = this.state;
@@ -287,11 +287,11 @@ class QueryField extends React.Component<any, any> {
         menu.style.left = `${rect.left + scrollX - 2}px`;
       });
     }
-  };
+  }
 
   menuRef = el => {
     this.menuEl = el;
-  };
+  }
 
   renderMenu = () => {
     const { portalPrefix } = this.props;
@@ -320,7 +320,7 @@ class QueryField extends React.Component<any, any> {
         />
       </Portal>
     );
-  };
+  }
 
   render() {
     return (
