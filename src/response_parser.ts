@@ -2,6 +2,19 @@ import Papa from 'papaparse';
 import flatten from 'lodash/flatten';
 import groupBy from 'lodash/groupBy';
 
+interface Annotation {
+  time: number;
+  tags: any[];
+  text: string;
+  annotation: any;
+}
+
+interface Table {
+  type: string;
+  columns: any[];
+  rows: any[];
+}
+
 const filterColumnKeys = key => key && key[0] !== '_' && key !== 'result' && key !== 'table';
 
 const IGNORE_FIELDS_FOR_NAME = ['result', '', 'table'];
@@ -49,7 +62,7 @@ export function getAnnotationsFromResult(result: string, options: any) {
     return [];
   }
 
-  const annotations = [];
+  const annotations: Annotation[] = [];
   const textSelector = options.textCol || '_value';
   const tagsSelector = options.tagsCol || '';
   const tagSelection = tagsSelector.split(',').map(t => t.trim());
@@ -73,7 +86,7 @@ export function getAnnotationsFromResult(result: string, options: any) {
 export function getTableModelFromResult(result: string) {
   const data = parseCSV(result);
 
-  const table = { type: 'table', columns: [], rows: [] };
+  const table: Table = { type: 'table', columns: [], rows: [] };
   if (data.length > 0) {
     // First columns are fixed
     const firstColumns = [
@@ -113,7 +126,7 @@ export function getTimeSeriesFromResult(result: string) {
   const seriesList = Object.keys(tables)
     .map(id => tables[id])
     .map(series => {
-      const datapoints = series.map(record => [parseValue(record._value), parseTime(record._time)]);
+      const datapoints = series.map(record => [parseValue(record['_value']), parseTime(record['_time'])]);
       const alias = getNameFromRecord(series[0]);
       return { datapoints, target: alias };
     });

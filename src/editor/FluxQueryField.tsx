@@ -7,6 +7,19 @@ import { getNextCharacter, getPreviousCousin } from './utils/dom';
 import { FUNCTIONS } from './flux';
 import '../styles.css';
 
+
+interface Suggestion {
+  text: string;
+  deleteBackwards?: number;
+}
+
+interface SuggestionGroup {
+  label: string;
+  items: Suggestion[];
+  prefixMatch?: boolean;
+  skipFilter?: boolean;
+}
+
 const cleanText = s => s.replace(/[{}[\]="(),!~+\-*/^%]/g, '').trim();
 const wrapText = text => ({ text });
 
@@ -42,6 +55,9 @@ export default class FluxQueryField extends QueryField {
     const selection = window.getSelection();
     if (selection.anchorNode) {
       const wrapperNode = selection.anchorNode.parentElement;
+      if (wrapperNode === null) {
+        return;
+      }
       const editorNode = wrapperNode.closest('.slate-query-field');
       if (!editorNode || this.state.value.isBlurred) {
         // Not inside this editor
@@ -51,6 +67,9 @@ export default class FluxQueryField extends QueryField {
       // DOM ranges
       const range = selection.getRangeAt(0);
       const text = selection.anchorNode.textContent;
+      if (text === null) {
+        return;
+      }
       const offset = range.startOffset;
       let prefix = cleanText(text.substr(0, offset));
 
@@ -59,9 +78,9 @@ export default class FluxQueryField extends QueryField {
       const modelPrefix = this.state.value.anchorText.text.slice(0, modelOffset);
 
       // Determine candidates by context
-      const suggestionGroups = [];
+      const suggestionGroups: SuggestionGroup[] = [];
       const wrapperClasses = wrapperNode.classList;
-      let typeaheadContext = null;
+      let typeaheadContext: string | null = null;
 
       const database = this.props.defaultDatabase || DEFAULT_DATABASE;
 

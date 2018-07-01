@@ -1,5 +1,5 @@
-import appEvents from 'app/core/app_events';
-import { QueryCtrl } from 'app/plugins/sdk';
+import appEvents from 'grafana/app/core/app_events';
+import { QueryCtrl } from 'grafana/app/plugins/sdk';
 
 import './editor/editor_component';
 
