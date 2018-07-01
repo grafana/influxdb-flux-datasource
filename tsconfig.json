@@ -3,6 +3,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "es6",
+    "moduleResolution": "node",
     "rootDir": "./src",
     "jsx": "react",
     "lib": [
@@ -22,13 +23,13 @@
     "noImplicitUseStrict": false,
     "noImplicitAny": false,
     "noUnusedLocals": true,
-    "strictNullChecks": true,
+    "strictNullChecks": true
   },
   "include": [
     "./src/**/*.ts",
-    "./src/**/*.tsx",
+    "./src/**/*.tsx"
   ],
   "exclude": [
-    "node_modules",
+    "node_modules"
   ]
 }

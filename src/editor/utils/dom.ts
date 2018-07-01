@@ -1,6 +1,6 @@
 // Node.closest() polyfill
 if ('Element' in window && !Element.prototype.closest) {
-  Element.prototype.closest = function(s) {
+  Element.prototype.closest = function (s) {
     const matches = (this.document || this.ownerDocument).querySelectorAll(s);
     let el = this;
     let i;
@@ -8,7 +8,7 @@ if ('Element' in window && !Element.prototype.closest) {
     do {
       i = matches.length;
       // eslint-disable-next-line
-      while (--i >= 0 && matches.item(i) !== el) {}
+      while (--i >= 0 && matches.item(i) !== el) { }
     } while (i < 0 && (el = el.parentElement));
     return el;
   };
@@ -27,7 +27,7 @@ export function getPreviousCousin(node, selector) {
   return undefined;
 }
 
-export function getNextCharacter(global = window) {
+export function getNextCharacter(global = window): string | null {
   const selection = global.getSelection();
   if (!selection.anchorNode) {
     return null;
@@ -35,6 +35,9 @@ export function getNextCharacter(global = window) {
 
   const range = selection.getRangeAt(0);
   const text = selection.anchorNode.textContent;
+  if (text === null) {
+    return null;
+  }
   const offset = range.startOffset;
   return text.substr(offset, 1);
 }
