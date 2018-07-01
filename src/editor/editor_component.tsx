@@ -1,6 +1,8 @@
+
 import React, { Component } from 'react';
 
-import coreModule from 'app/core/core_module';
+import coreModule from 'grafana/app/core/core_module';
+
 
 import FluxQueryField from './FluxQueryField';
 import flux from './flux';

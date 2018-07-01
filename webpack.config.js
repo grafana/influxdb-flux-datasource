@@ -17,17 +17,12 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     libraryTarget: 'amd'
   },
-  // optimization: {
-  //   splitChunks: {
-  //     chunks: 'all'
-  //   }
-  // },
   externals: [
-    'lodash', 'moment', 'slate', 'prismjs', 'slate-plain-serializer', 'slate-react',
+    'lodash', 'moment', 'slate', 'prismjs', 'slate-plain-serializer', 'slate-react', 'react', 'react-dom',
     function (context, request, callback) {
-      var prefix = 'app/';
+      var prefix = 'grafana/';
       if (request.indexOf(prefix) === 0) {
-        return callback(null, request);
+        return callback(null, request.substr(prefix.length));
       }
       callback();
     }
