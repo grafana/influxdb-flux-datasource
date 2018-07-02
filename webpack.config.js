@@ -42,6 +42,7 @@ module.exports = {
       { from: 'img/*', to: '.' },
     ]),
     new ReplaceInFileWebpackPlugin([{
+      dir: 'dist',
       files: ['plugin.json'],
       rules: [{
         search: '%VERSION%',
