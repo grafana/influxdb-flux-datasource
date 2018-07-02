@@ -5,8 +5,6 @@
 [![devDependencies Status](https://david-dm.org/grafana/influxdb-flux-datasource/dev-status.svg)](https://david-dm.org/grafana/influxdb-flux-datasource?type=dev)
 
 
-[![CircleCI](https://circleci.com/gh/grafana/influxdb-flux-datasource/tree/master.svg?style=svg)](https://circleci.com/gh/grafana/influxdb-flux-datasource/tree/master)
-
 Grafana ships with **built in** support for InfluxDB (>= 1.4.1).
 
 Use this datasource if you want to use Flux to query your InfluxDB.
