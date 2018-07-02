@@ -6,10 +6,20 @@
     "build": "webpack --config webpack.config.prod.js",
     "dev": "webpack --mode development",
     "watch": "webpack --mode development --watch",
-    "test": "jest --config jest.config.js"
+    "test": "jest --config jest.config.js",
+    "precommit": "pretty-quick --staged",
+    "pretty": "prettier --write src/**/*.ts"
   },
   "author": "Grafana Labs",
   "license": "Apache",
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "useTabs": false,
+    "printWidth": 90,
+    "bracketSpacing": false,
+    "semi": true
+  },
   "dependencies": {
     "immutable": "^3.8.2",
     "lodash": "^4.17.4",
@@ -23,7 +33,7 @@
     "slate-react": "^0.12.4"
   },
   "devDependencies": {
-    "@types/grafana": "https://git@github.com/CorpGlory/types-grafana.git",
+    "@types/grafana": "github:CorpGlory/types-grafana.git",
     "@types/jest": "^22.2.3",
     "@types/lodash": "^4.14.74",
     "@types/react": "^16.2.0",
@@ -36,6 +46,8 @@
     "css-loader": "^0.28.11",
     "grafana-sdk-mocks": "github:grafana/grafana-sdk-mocks",
     "jest": "^23.0.1",
+    "prettier": "1.10.2",
+    "pretty-quick": "^1.4.1",
     "ng-annotate-webpack-plugin": "^0.3.0",
     "style-loader": "^0.21.0",
     "ts-jest": "^22.4.6",
