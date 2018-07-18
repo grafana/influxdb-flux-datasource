@@ -7,11 +7,21 @@
     "dev": "webpack --mode development",
     "watch": "webpack --mode development --watch",
     "test": "jest --config jest.config.js",
-    "precommit": "pretty-quick --staged",
+    "precommit": "lint-staged yarn",
     "pretty": "prettier --write src/**/*.ts"
   },
   "author": "Grafana Labs",
   "license": "Apache",
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.scss": [
+      "prettier --write",
+      "git add"
+    ]
+  },
   "prettier": {
     "singleQuote": true,
     "trailingComma": "es5",
@@ -47,7 +57,7 @@
     "grafana-sdk-mocks": "github:grafana/grafana-sdk-mocks",
     "jest": "^23.0.1",
     "prettier": "1.10.2",
-    "pretty-quick": "^1.4.1",
+    "lint-staged": "^6.0.0",
     "ng-annotate-webpack-plugin": "^0.3.0",
     "style-loader": "^0.21.0",
     "ts-jest": "^22.4.6",
