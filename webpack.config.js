@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const moment = require('moment');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ReplaceInFileWebpackPlugin = require('replace-in-file-webpack-plugin');
@@ -49,7 +48,7 @@ module.exports = {
         replace: packageJson.version
       },{
         search: '%TODAY%',
-        replace: moment().format('YYYY.MM.DD')
+        replace: (new Date()).toISOString().substring(0, 10)
       }]
     }]),
   ],
