@@ -149,13 +149,13 @@ export default class InfluxDatasource {
     if (!query) {
       return Promise.resolve({ data: '' });
     }
-    return this._influxRequest('POST', '/v1/query', { q: query }, options);
+    return this._influxRequest('POST', '/query', { query: query }, options);
   }
 
   testDatasource() {
-    const query = `from(db:"${this.database}") |> last()`;
+    const query = `from(bucket:"${this.database}") |> last()`;
 
-    return this._influxRequest('POST', '/v1/query', { q: query })
+    return this._influxRequest('POST', '/query', { query: query })
       .then(res => {
         if (res && res.data && res.data.trim()) {
           return { status: 'success', message: 'Data source connected and database found.' };
@@ -173,7 +173,8 @@ export default class InfluxDatasource {
 
   _influxRequest(method: string, url: string, data: any, options?: any) {
     let params: any = {
-      orgName: this.orgName,
+      organization : `my-org`
+      // orgName: this.orgName
     };
 
     if (this.username) {
