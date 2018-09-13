@@ -19,7 +19,6 @@
       "small": "img/influxdb_logo.svg",
       "large": "img/influxdb_logo.svg"
     },
-    "version": "5.1.0-dev",
-    "updated": "2018-09-13"
+    "version": "5.1.0"
   }
 }
