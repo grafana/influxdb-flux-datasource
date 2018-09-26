@@ -4,7 +4,6 @@
 [![dependencies Status](https://david-dm.org/grafana/influxdb-flux-datasource/status.svg)](https://david-dm.org/grafana/influxdb-flux-datasource)
 [![devDependencies Status](https://david-dm.org/grafana/influxdb-flux-datasource/dev-status.svg)](https://david-dm.org/grafana/influxdb-flux-datasource?type=dev)
 
-
 Grafana ships with **built in** support for InfluxDB (>= 1.4.1).
 
 Use this datasource if you want to use Flux to query your InfluxDB.
@@ -30,16 +29,13 @@ Read more about InfluxDB here:
 
 Getting started:
 
-1. [Build influxdb from source](https://github.com/influxdata/influxdb/blob/master/CONTRIBUTING.md#build-and-test), then run `influxd -config` and catch that config as config.toml. Then run `influxd -config config.toml` 
+1. Install a recent [InfluxDB nightly](https://portal.influxdata.com/downloads), then run `influxd -config` and catch that config as config.toml. Then run `influxd -config config.toml`. The recent nighlies contain the Flux engine.
 
-2. Grab latest nightly of flux from wget https://dl.influxdata.com/flux/nightlies/fluxd_nightly_darwin_amd64.tar.gz, unpack it and run it.
+2. Install telegraph to get some data: brew install telegraf. Then run telegraf.
 
-3. Install telegraph to get some data: brew install telegraf. Then run telegraf.
-
-4. Clone this plugin into Grafana's `data/plugins` directory. Install the deps: `yarn install`, build the JS bundle `yarn dev`. Then load Grafana in your browser and add Flux as a new datasource.
-
+3. Clone this plugin into Grafana's `data/plugins` directory. Install the deps: `yarn install`, build the JS bundle `yarn dev`. Then load Grafana in your browser and add Flux as a new datasource with the URL `http://localhost:8086`.
 
 ## Roadmap
 
-- Alerting integration
-- Explore UI integration
+* Alerting integration
+* Explore UI integration

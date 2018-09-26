@@ -11,24 +11,6 @@ import {
 } from './response_parser';
 import expandMacros from './metric_find_query';
 
-function serializeParams(params) {
-  if (!params) {
-    return '';
-  }
-
-  return _.reduce(
-    params,
-    (memo: any[], value: string, key) => {
-      if (value === null || value === undefined) {
-        return memo;
-      }
-      memo.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
-      return memo;
-    },
-    []
-  ).join('&');
-}
-
 const MAX_SERIES = 20;
 export default class InfluxDatasource {
   type: string;
@@ -64,7 +46,7 @@ export default class InfluxDatasource {
   prepareQueryTarget(target, options) {
     // Replace grafana variables
     const timeFilter = this.getTimeFilter(options);
-    options.scopedVars.range = { value: timeFilter };
+    options.scopedVars.range = {value: timeFilter};
     const interpolated = this.templateSrv.replace(target.query, options.scopedVars);
     return {
       ...target,
@@ -77,11 +59,11 @@ export default class InfluxDatasource {
       .filter(target => target.query)
       .map(target => this.prepareQueryTarget(target, options));
     if (queryTargets.length === 0) {
-      return Promise.resolve({ data: [] });
+      return Promise.resolve({data: []});
     }
 
     const queries = queryTargets.map(target => {
-      const { query, resultFormat } = target;
+      const {query, resultFormat} = target;
 
       if (resultFormat === 'table') {
         return this._seriesQuery(query, options)
@@ -96,7 +78,7 @@ export default class InfluxDatasource {
 
     return Promise.all(queries).then((series: any) => {
       let seriesList = _.flattenDeep(series).slice(0, MAX_SERIES);
-      return { data: seriesList };
+      return {data: seriesList};
     });
   }
 
@@ -107,20 +89,22 @@ export default class InfluxDatasource {
       });
     }
 
-    const { query } = options.annotation;
+    const {query} = options.annotation;
     const queryOptions = {
       scopedVars: {},
       ...options,
       silent: true,
     };
-    const target = this.prepareQueryTarget({ query }, queryOptions);
+    const target = this.prepareQueryTarget({query}, queryOptions);
 
     return this._seriesQuery(target.query, queryOptions).then(response => {
       const results = parseResults(response.data);
       if (results.length === 0) {
-        throw { message: 'No results in response from InfluxDB' };
+        throw {message: 'No results in response from InfluxDB'};
       }
-      const annotations = _.flatten(results.map(result => getAnnotationsFromResult(result, options.annotation)));
+      const annotations = _.flatten(
+        results.map(result => getAnnotationsFromResult(result, options.annotation))
+      );
       return annotations;
     });
   }
@@ -130,35 +114,38 @@ export default class InfluxDatasource {
 
     // Use normal querier in silent mode
     const queryOptions = {
-      rangeRaw: { to: 'now', from: 'now - 1h' },
+      rangeRaw: {to: 'now', from: 'now - 1h'},
       scopedVars: {},
       ...options,
       silent: true,
     };
-    const target = this.prepareQueryTarget({ query: interpreted }, queryOptions);
+    const target = this.prepareQueryTarget({query: interpreted}, queryOptions);
     return this._seriesQuery(target.query, queryOptions).then(response => {
       const results = parseResults(response.data);
       const values = _.uniq(_.flatten(results.map(getValuesFromResult)));
       return values
         .filter(value => value && value[0] !== '_') // Ignore internal fields
-        .map(value => ({ text: value }));
+        .map(value => ({text: value}));
     });
   }
 
   _seriesQuery(query: string, options?: any) {
     if (!query) {
-      return Promise.resolve({ data: '' });
+      return Promise.resolve({data: ''});
     }
-    return this._influxRequest('POST', '/query', { query: query }, options);
+    return this._influxRequest('POST', '/v2/query', {query: query}, options);
   }
 
   testDatasource() {
     const query = `from(bucket:"${this.database}") |> last()`;
 
-    return this._influxRequest('POST', '/query', { query: query })
+    return this._influxRequest('POST', '/v2/query', {query: query})
       .then(res => {
         if (res && res.data && res.data.trim()) {
-          return { status: 'success', message: 'Data source connected and database found.' };
+          return {
+            status: 'success',
+            message: 'Data source connected and database found.',
+          };
         }
         return {
           status: 'error',
@@ -167,14 +154,13 @@ export default class InfluxDatasource {
         };
       })
       .catch(err => {
-        return { status: 'error', message: err.message };
+        return {status: 'error', message: err.message};
       });
   }
 
   _influxRequest(method: string, url: string, data: any, options?: any) {
     let params: any = {
-      organization : `my-org`
-      // orgName: this.orgName
+      organization: `my-org`,
     };
 
     if (this.username) {
@@ -182,21 +168,17 @@ export default class InfluxDatasource {
       params.p = this.password;
     }
 
-    // data sent as GET param
-    _.extend(params, data);
-    data = null;
-
     let req: any = {
       method: method,
       url: this.url + url,
       params: params,
       data: data,
       precision: 'ms',
-      inspect: { type: this.type },
-      paramSerializer: serializeParams,
+      inspect: {type: this.type},
     };
 
-    req.headers = req.headers || {};
+    req.headers = {};
+
     if (this.basicAuth || this.withCredentials) {
       req.withCredentials = true;
     }
@@ -208,7 +190,7 @@ export default class InfluxDatasource {
       result => {
         return result;
       },
-      function (err) {
+      function(err) {
         if (err.status !== 0 || err.status >= 300) {
           if (err.data && err.data.error) {
             throw {
