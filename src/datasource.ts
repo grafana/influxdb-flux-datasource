@@ -133,7 +133,7 @@ export default class InfluxDatasource {
     if (!query) {
       return Promise.resolve({data: ''});
     }
-    return this._influxRequest('POST', '/query', {query: query}, options);
+    return this._influxRequest('POST', '/v2/query', {query: query}, options);
   }
 
   testDatasource() {
@@ -177,9 +177,7 @@ export default class InfluxDatasource {
       inspect: {type: this.type},
     };
 
-    req.headers = {
-      'Content-Type': 'application/vnd.flux',
-    };
+    req.headers = {};
 
     if (this.basicAuth || this.withCredentials) {
       req.withCredentials = true;
