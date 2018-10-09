@@ -3651,7 +3651,7 @@ define(
               }),
               (e.prototype._seriesQuery = function(e, t) {
                 return e
-                  ? this._influxRequest('POST', '/v2/query', {query: e}, t)
+                  ? this._influxRequest('POST', '/v2/query', {query: e, options: t})
                   : Promise.resolve({data: ''});
               }),
               (e.prototype.testDatasource = function() {
