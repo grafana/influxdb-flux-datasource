@@ -651,13 +651,13 @@ define(
                 })(t, e);
               });
           }
-          e.exports = v;
+          e.exports = m;
           var s,
             u =
               !t.browser && ['v0.10', 'v0.9.'].indexOf(t.version.slice(0, 5)) > -1
                 ? r
                 : o;
-          v.WritableState = m;
+          m.WritableState = v;
           var l = n(6);
           l.inherits = n(5);
           var f,
@@ -667,7 +667,7 @@ define(
             p = i.Uint8Array || function() {},
             y = n(34);
           function g() {}
-          function m(e, t) {
+          function v(e, t) {
             (s = s || n(3)),
               (e = e || {}),
               (this.objectMode = !!e.objectMode),
@@ -734,10 +734,10 @@ define(
               (this.bufferedRequestCount = 0),
               (this.corkedRequestsFree = new a(this));
           }
-          function v(e) {
-            if (((s = s || n(3)), !(f.call(v, this) || this instanceof s)))
-              return new v(e);
-            (this._writableState = new m(e, this)),
+          function m(e) {
+            if (((s = s || n(3)), !(f.call(m, this) || this instanceof s)))
+              return new m(e);
+            (this._writableState = new v(e, this)),
               (this.writable = !0),
               e &&
                 ('function' == typeof e.write && (this._write = e.write),
@@ -831,14 +831,14 @@ define(
               n
             );
           }
-          l.inherits(v, h),
-            (m.prototype.getBuffer = function() {
+          l.inherits(m, h),
+            (v.prototype.getBuffer = function() {
               for (var e = this.bufferedRequest, t = []; e; ) t.push(e), (e = e.next);
               return t;
             }),
             (function() {
               try {
-                Object.defineProperty(m.prototype, 'buffer', {
+                Object.defineProperty(v.prototype, 'buffer', {
                   get: c.deprecate(
                     function() {
                       return this.getBuffer();
@@ -853,18 +853,18 @@ define(
             Symbol.hasInstance &&
             'function' == typeof Function.prototype[Symbol.hasInstance]
               ? ((f = Function.prototype[Symbol.hasInstance]),
-                Object.defineProperty(v, Symbol.hasInstance, {
+                Object.defineProperty(m, Symbol.hasInstance, {
                   value: function(e) {
-                    return !!f.call(this, e) || (e && e._writableState instanceof m);
+                    return !!f.call(this, e) || (e && e._writableState instanceof v);
                   },
                 }))
               : (f = function(e) {
                   return e instanceof this;
                 }),
-            (v.prototype.pipe = function() {
+            (m.prototype.pipe = function() {
               this.emit('error', new Error('Cannot pipe, not readable'));
             }),
-            (v.prototype.write = function(e, t, n) {
+            (m.prototype.write = function(e, t, n) {
               var r,
                 i = this._writableState,
                 a = !1,
@@ -934,10 +934,10 @@ define(
                 a
               );
             }),
-            (v.prototype.cork = function() {
+            (m.prototype.cork = function() {
               this._writableState.corked++;
             }),
-            (v.prototype.uncork = function() {
+            (m.prototype.uncork = function() {
               var e = this._writableState;
               e.corked &&
                 (e.corked--,
@@ -948,7 +948,7 @@ define(
                   !e.bufferedRequest ||
                   w(this, e));
             }),
-            (v.prototype.setDefaultEncoding = function(e) {
+            (m.prototype.setDefaultEncoding = function(e) {
               if (
                 ('string' == typeof e && (e = e.toLowerCase()),
                 !(
@@ -970,11 +970,11 @@ define(
                 throw new TypeError('Unknown encoding: ' + e);
               return (this._writableState.defaultEncoding = e), this;
             }),
-            (v.prototype._write = function(e, t, n) {
+            (m.prototype._write = function(e, t, n) {
               n(new Error('_write() is not implemented'));
             }),
-            (v.prototype._writev = null),
-            (v.prototype.end = function(e, t, n) {
+            (m.prototype._writev = null),
+            (m.prototype.end = function(e, t, n) {
               var r = this._writableState;
               'function' == typeof e
                 ? ((n = e), (e = null), (t = null))
@@ -991,7 +991,7 @@ define(
                       (e.writable = !1);
                   })(this, r, n);
             }),
-            Object.defineProperty(v.prototype, 'destroyed', {
+            Object.defineProperty(m.prototype, 'destroyed', {
               get: function() {
                 return void 0 !== this._writableState && this._writableState.destroyed;
               },
@@ -999,9 +999,9 @@ define(
                 this._writableState && (this._writableState.destroyed = e);
               },
             }),
-            (v.prototype.destroy = y.destroy),
-            (v.prototype._undestroy = y.undestroy),
-            (v.prototype._destroy = function(e, t) {
+            (m.prototype.destroy = y.destroy),
+            (m.prototype._undestroy = y.undestroy),
+            (m.prototype._destroy = function(e, t) {
               this.end(), t(e);
             });
         }.call(this, n(10), n(67).setImmediate, n(2)));
@@ -1097,7 +1097,7 @@ define(
           e.exports = b;
           var o,
             a = n(31);
-          (b.ReadableState = v), n(19).EventEmitter;
+          (b.ReadableState = m), n(19).EventEmitter;
           var s = function(e, t) {
               return e.listeners(t).length;
             },
@@ -1113,8 +1113,8 @@ define(
             y = n(66),
             g = n(34);
           c.inherits(b, u);
-          var m = ['error', 'close', 'destroy', 'pause', 'resume'];
-          function v(e, t) {
+          var v = ['error', 'close', 'destroy', 'pause', 'resume'];
+          function m(e, t) {
             (o = o || n(3)),
               (e = e || {}),
               (this.objectMode = !!e.objectMode),
@@ -1150,7 +1150,7 @@ define(
           }
           function b(e) {
             if (((o = o || n(3)), !(this instanceof b))) return new b(e);
-            (this._readableState = new v(e, this)),
+            (this._readableState = new m(e, this)),
               (this.readable = !0),
               e &&
                 ('function' == typeof e.read && (this._read = e.read),
@@ -1487,7 +1487,7 @@ define(
                   o.pipes.push(e);
               }
               (o.pipesCount += 1), d('pipe count=%d opts=%j', o.pipesCount, t);
-              var u = (t && !1 === t.end) || e === r.stdout || e === r.stderr ? v : l;
+              var u = (t && !1 === t.end) || e === r.stdout || e === r.stderr ? m : l;
               function l() {
                 d('onend'), e.end();
               }
@@ -1500,12 +1500,12 @@ define(
                       ((i.hasUnpiped = !0),
                       d('cleanup'),
                       e.removeListener('close', g),
-                      e.removeListener('finish', m),
+                      e.removeListener('finish', v),
                       e.removeListener('drain', f),
                       e.removeListener('error', y),
                       e.removeListener('unpipe', t),
                       n.removeListener('end', l),
-                      n.removeListener('end', v),
+                      n.removeListener('end', m),
                       n.removeListener('data', p),
                       (c = !0),
                       !o.awaitDrain ||
@@ -1538,17 +1538,17 @@ define(
               }
               function y(t) {
                 d('onerror', t),
-                  v(),
+                  m(),
                   e.removeListener('error', y),
                   0 === s(e, 'error') && e.emit('error', t);
               }
               function g() {
-                e.removeListener('finish', m), v();
-              }
-              function m() {
-                d('onfinish'), e.removeListener('close', g), v();
+                e.removeListener('finish', v), m();
               }
               function v() {
+                d('onfinish'), e.removeListener('close', g), m();
+              }
+              function m() {
                 d('unpipe'), n.unpipe(e);
               }
               return (
@@ -1563,7 +1563,7 @@ define(
                     : e.on(t, n);
                 })(e, 'error', y),
                 e.once('close', g),
-                e.once('finish', m),
+                e.once('finish', v),
                 e.emit('pipe', n),
                 o.flowing || (d('pipe resume'), n.resume()),
                 e
@@ -1658,7 +1658,7 @@ define(
                       return e[t].apply(e, arguments);
                     };
                   })(i));
-              for (var o = 0; o < m.length; o++) e.on(m[o], r.emit.bind(r, m[o]));
+              for (var o = 0; o < v.length; o++) e.on(v[o], r.emit.bind(r, v[o]));
               return (
                 (r._read = function(t) {
                   d('wrapped _read', t), n && ((n = !1), e.resume());
@@ -1852,7 +1852,7 @@ define(
               n = 0;
             }
             if (('string' == typeof t && (t = u.from(t, r)), u.isBuffer(t)))
-              return 0 === t.length ? -1 : m(e, t, n, r, i);
+              return 0 === t.length ? -1 : v(e, t, n, r, i);
             if ('number' == typeof t)
               return (
                 (t &= 255),
@@ -1860,11 +1860,11 @@ define(
                   ? i
                     ? Uint8Array.prototype.indexOf.call(e, t, n)
                     : Uint8Array.prototype.lastIndexOf.call(e, t, n)
-                  : m(e, [t], n, r, i)
+                  : v(e, [t], n, r, i)
               );
             throw new TypeError('val must be string, number or Buffer');
           }
-          function m(e, t, n, r, i) {
+          function v(e, t, n, r, i) {
             var o,
               a = 1,
               s = e.length,
@@ -1899,7 +1899,7 @@ define(
               }
             return -1;
           }
-          function v(e, t, n, r) {
+          function m(e, t, n, r) {
             n = Number(n) || 0;
             var i = e.length - n;
             r ? (r = Number(r)) > i && (r = i) : (r = i);
@@ -2267,7 +2267,7 @@ define(
               for (var o = !1; ; )
                 switch (r) {
                   case 'hex':
-                    return v(this, e, t, n);
+                    return m(this, e, t, n);
                   case 'utf8':
                   case 'utf-8':
                     return b(this, e, t, n);
@@ -3250,10 +3250,10 @@ define(
             y = 2 & n ? new r() : void 0;
           for (u.set(e, t), u.set(t, e); ++d < f; ) {
             var g = e[d],
-              m = t[d];
-            if (a) var v = l ? a(m, g, d, t, e, u) : a(g, m, d, e, t, u);
-            if (void 0 !== v) {
-              if (v) continue;
+              v = t[d];
+            if (a) var m = l ? a(v, g, d, t, e, u) : a(g, v, d, e, t, u);
+            if (void 0 !== m) {
+              if (m) continue;
               p = !1;
               break;
             }
@@ -3266,7 +3266,7 @@ define(
                 p = !1;
                 break;
               }
-            } else if (g !== m && !s(g, m, n, a, u)) {
+            } else if (g !== v && !s(g, v, n, a, u)) {
               p = !1;
               break;
             }
@@ -3546,206 +3546,188 @@ define(
           return e && e.__esModule ? e : {default: e};
         }
         var u =
-          Object.assign ||
-          function(e) {
-            for (var t, n = 1, r = arguments.length; n < r; n++)
-              for (var i in (t = arguments[n]))
-                Object.prototype.hasOwnProperty.call(t, i) && (e[i] = t[i]);
-            return e;
-          };
-        function l(e) {
-          return e
-            ? r.default
-                .reduce(
-                  e,
-                  function(e, t, n) {
-                    return null === t || void 0 === t
-                      ? e
-                      : (e.push(encodeURIComponent(n) + '=' + encodeURIComponent(t)), e);
-                  },
-                  []
-                )
-                .join('&')
-            : '';
-        }
-        var f = (function() {
-          function e(e, t, n) {
-            (this.backendSrv = t),
-              (this.templateSrv = n),
-              (this.type = 'influxdb-flux'),
-              (this.url = e.url.trim()),
-              (this.username = e.username),
-              (this.password = e.password),
-              (this.name = e.name),
-              (this.orgName = e.orgName || 'defaultorgname'),
-              (this.basicAuth = e.basicAuth),
-              (this.withCredentials = e.withCredentials),
-              (this.interval = (e.jsonData || {}).timeInterval),
-              (this.database = (e.jsonData || {}).database),
-              (this.supportAnnotations = !0),
-              (this.supportMetrics = !0);
-          }
-          return (
-            (e.$inject = ['instanceSettings', 'backendSrv', 'templateSrv']),
-            (e.prototype.prepareQueryTarget = function(e, t) {
-              var n = this.getTimeFilter(t);
-              t.scopedVars.range = {value: n};
-              var r = this.templateSrv.replace(e.query, t.scopedVars);
-              return u({}, e, {query: r});
-            }),
-            (e.prototype.query = function(e) {
-              var t = this,
-                n = e.targets
-                  .filter(function(e) {
-                    return e.query;
-                  })
-                  .map(function(n) {
-                    return t.prepareQueryTarget(n, e);
-                  });
-              if (0 === n.length) return Promise.resolve({data: []});
-              var i = n.map(function(n) {
-                var r = n.query;
-                return 'table' === n.resultFormat
-                  ? t
-                      ._seriesQuery(r, e)
-                      .then(function(e) {
-                        return (0, o.parseResults)(e.data);
-                      })
-                      .then(function(e) {
-                        return e.map(o.getTableModelFromResult);
-                      })
-                  : t
-                      ._seriesQuery(r, e)
-                      .then(function(e) {
-                        return (0, o.parseResults)(e.data);
-                      })
-                      .then(function(e) {
-                        return e.map(o.getTimeSeriesFromResult);
-                      });
-              });
-              return Promise.all(i).then(function(e) {
-                return {data: r.default.flattenDeep(e).slice(0, 20)};
-              });
-            }),
-            (e.prototype.annotationQuery = function(e) {
-              if (!e.annotation.query)
-                return Promise.reject({
-                  message: 'Query missing in annotation definition',
+            Object.assign ||
+            function(e) {
+              for (var t, n = 1, r = arguments.length; n < r; n++)
+                for (var i in (t = arguments[n]))
+                  Object.prototype.hasOwnProperty.call(t, i) && (e[i] = t[i]);
+              return e;
+            },
+          l = (function() {
+            function e(e, t, n) {
+              (this.backendSrv = t),
+                (this.templateSrv = n),
+                (this.type = 'influxdb-flux'),
+                (this.url = e.url.trim()),
+                (this.username = e.username),
+                (this.password = e.password),
+                (this.name = e.name),
+                (this.orgName = e.orgName || 'defaultorgname'),
+                (this.basicAuth = e.basicAuth),
+                (this.withCredentials = e.withCredentials),
+                (this.interval = (e.jsonData || {}).timeInterval),
+                (this.database = (e.jsonData || {}).database),
+                (this.supportAnnotations = !0),
+                (this.supportMetrics = !0);
+            }
+            return (
+              (e.$inject = ['instanceSettings', 'backendSrv', 'templateSrv']),
+              (e.prototype.prepareQueryTarget = function(e, t) {
+                var n = this.getTimeFilter(t);
+                t.scopedVars.range = {value: n};
+                var r = this.templateSrv.replace(e.query, t.scopedVars);
+                return u({}, e, {query: r});
+              }),
+              (e.prototype.query = function(e) {
+                var t = this,
+                  n = e.targets
+                    .filter(function(e) {
+                      return e.query;
+                    })
+                    .map(function(n) {
+                      return t.prepareQueryTarget(n, e);
+                    });
+                if (0 === n.length) return Promise.resolve({data: []});
+                var i = n.map(function(n) {
+                  var r = n.query;
+                  return 'table' === n.resultFormat
+                    ? t
+                        ._seriesQuery(r, e)
+                        .then(function(e) {
+                          return (0, o.parseResults)(e.data);
+                        })
+                        .then(function(e) {
+                          return e.map(o.getTableModelFromResult);
+                        })
+                    : t
+                        ._seriesQuery(r, e)
+                        .then(function(e) {
+                          return (0, o.parseResults)(e.data);
+                        })
+                        .then(function(e) {
+                          return e.map(o.getTimeSeriesFromResult);
+                        });
                 });
-              var t = e.annotation.query,
-                n = u({scopedVars: {}}, e, {silent: !0}),
-                i = this.prepareQueryTarget({query: t}, n);
-              return this._seriesQuery(i.query, n).then(function(t) {
-                var n = (0, o.parseResults)(t.data);
-                if (0 === n.length)
-                  throw {message: 'No results in response from InfluxDB'};
-                return r.default.flatten(
-                  n.map(function(t) {
-                    return (0, o.getAnnotationsFromResult)(t, e.annotation);
+                return Promise.all(i).then(function(e) {
+                  return {data: r.default.flattenDeep(e).slice(0, 20)};
+                });
+              }),
+              (e.prototype.annotationQuery = function(e) {
+                if (!e.annotation.query)
+                  return Promise.reject({
+                    message: 'Query missing in annotation definition',
+                  });
+                var t = e.annotation.query,
+                  n = u({scopedVars: {}}, e, {silent: !0}),
+                  i = this.prepareQueryTarget({query: t}, n);
+                return this._seriesQuery(i.query, n).then(function(t) {
+                  var n = (0, o.parseResults)(t.data);
+                  if (0 === n.length)
+                    throw {message: 'No results in response from InfluxDB'};
+                  return r.default.flatten(
+                    n.map(function(t) {
+                      return (0, o.getAnnotationsFromResult)(t, e.annotation);
+                    })
+                  );
+                });
+              }),
+              (e.prototype.metricFindQuery = function(e, t) {
+                var n = (0, a.default)(e),
+                  i = u({rangeRaw: {to: 'now', from: 'now - 1h'}, scopedVars: {}}, t, {
+                    silent: !0,
+                  }),
+                  s = this.prepareQueryTarget({query: n}, i);
+                return this._seriesQuery(s.query, i).then(function(e) {
+                  var t = (0, o.parseResults)(e.data);
+                  return r.default
+                    .uniq(r.default.flatten(t.map(o.getValuesFromResult)))
+                    .filter(function(e) {
+                      return e && '_' !== e[0];
+                    })
+                    .map(function(e) {
+                      return {text: e};
+                    });
+                });
+              }),
+              (e.prototype._seriesQuery = function(e, t) {
+                return e
+                  ? this._influxRequest('POST', '/v2/query', {query: e}, t)
+                  : Promise.resolve({data: ''});
+              }),
+              (e.prototype.testDatasource = function() {
+                var e = 'from(bucket:"' + this.database + '") |> last()';
+                return this._influxRequest('POST', '/v2/query', {query: e})
+                  .then(function(e) {
+                    return e && e.data && e.data.trim()
+                      ? {
+                          status: 'success',
+                          message: 'Data source connected and database found.',
+                        }
+                      : {
+                          status: 'error',
+                          message:
+                            'Data source connected, but has no data. Verify the "Database" field and make sure the database has data.',
+                        };
                   })
+                  .catch(function(e) {
+                    return {status: 'error', message: e.message};
+                  });
+              }),
+              (e.prototype._influxRequest = function(e, t, n, r) {
+                var i = {organization: 'my-org'};
+                this.username && ((i.u = this.username), (i.p = this.password));
+                var o = {
+                  method: e,
+                  url: this.url + t,
+                  params: i,
+                  data: n,
+                  precision: 'ms',
+                  inspect: {type: this.type},
+                  headers: {},
+                };
+                return (
+                  (this.basicAuth || this.withCredentials) && (o.withCredentials = !0),
+                  this.basicAuth && (o.headers.Authorization = this.basicAuth),
+                  this.backendSrv.datasourceRequest(o).then(
+                    function(e) {
+                      return e;
+                    },
+                    function(e) {
+                      if (0 !== e.status || e.status >= 300)
+                        throw e.data && e.data.error
+                          ? {
+                              message: 'InfluxDB Error: ' + e.data.error,
+                              data: e.data,
+                              config: e.config,
+                            }
+                          : {
+                              message:
+                                'Network Error: ' + e.statusText + '(' + e.status + ')',
+                              data: e.data,
+                              config: e.config,
+                            };
+                    }
+                  )
                 );
-              });
-            }),
-            (e.prototype.metricFindQuery = function(e, t) {
-              var n = (0, a.default)(e),
-                i = u({rangeRaw: {to: 'now', from: 'now - 1h'}, scopedVars: {}}, t, {
-                  silent: !0,
-                }),
-                s = this.prepareQueryTarget({query: n}, i);
-              return this._seriesQuery(s.query, i).then(function(e) {
-                var t = (0, o.parseResults)(e.data);
-                return r.default
-                  .uniq(r.default.flatten(t.map(o.getValuesFromResult)))
-                  .filter(function(e) {
-                    return e && '_' !== e[0];
-                  })
-                  .map(function(e) {
-                    return {text: e};
-                  });
-              });
-            }),
-            (e.prototype._seriesQuery = function(e, t) {
-              return e
-                ? this._influxRequest('POST', '/query', {query: e}, t)
-                : Promise.resolve({data: ''});
-            }),
-            (e.prototype.testDatasource = function() {
-              var e = 'from(bucket:"' + this.database + '") |> last()';
-              return this._influxRequest('POST', '/query', {query: e})
-                .then(function(e) {
-                  return e && e.data && e.data.trim()
-                    ? {
-                        status: 'success',
-                        message: 'Data source connected and database found.',
-                      }
-                    : {
-                        status: 'error',
-                        message:
-                          'Data source connected, but has no data. Verify the "Database" field and make sure the database has data.',
-                      };
-                })
-                .catch(function(e) {
-                  return {status: 'error', message: e.message};
-                });
-            }),
-            (e.prototype._influxRequest = function(e, t, n, i) {
-              var o = {organization: 'my-org'};
-              this.username && ((o.u = this.username), (o.p = this.password)),
-                r.default.extend(o, n),
-                (n = null);
-              var a = {
-                method: e,
-                url: this.url + t,
-                params: o,
-                data: n,
-                precision: 'ms',
-                inspect: {type: this.type},
-                paramSerializer: l,
-              };
-              return (
-                (a.headers = a.headers || {}),
-                (this.basicAuth || this.withCredentials) && (a.withCredentials = !0),
-                this.basicAuth && (a.headers.Authorization = this.basicAuth),
-                this.backendSrv.datasourceRequest(a).then(
-                  function(e) {
-                    return e;
-                  },
-                  function(e) {
-                    if (0 !== e.status || e.status >= 300)
-                      throw e.data && e.data.error
-                        ? {
-                            message: 'InfluxDB Error: ' + e.data.error,
-                            data: e.data,
-                            config: e.config,
-                          }
-                        : {
-                            message:
-                              'Network Error: ' + e.statusText + '(' + e.status + ')',
-                            data: e.data,
-                            config: e.config,
-                          };
-                  }
-                )
-              );
-            }),
-            (e.prototype.getTimeFilter = function(e) {
-              var t = this.getInfluxTime(e.rangeRaw.from, !1),
-                n = this.getInfluxTime(e.rangeRaw.to, !0);
-              return 'now' === n ? 'start: ' + t : 'start: ' + t + ', stop: ' + n;
-            }),
-            (e.prototype.getInfluxTime = function(e, t) {
-              if (r.default.isString(e)) {
-                if ('now' === e) return e;
-                var n = /^now\s*-\s*(\d+)([d|h|m|s])$/.exec(e);
-                if (n) return '-' + parseInt(n[1]) + n[2];
-                e = i.parse(e, t);
-              }
-              return e.toISOString();
-            }),
-            e
-          );
-        })();
-        t.default = f;
+              }),
+              (e.prototype.getTimeFilter = function(e) {
+                var t = this.getInfluxTime(e.rangeRaw.from, !1),
+                  n = this.getInfluxTime(e.rangeRaw.to, !0);
+                return 'now' === n ? 'start: ' + t : 'start: ' + t + ', stop: ' + n;
+              }),
+              (e.prototype.getInfluxTime = function(e, t) {
+                if (r.default.isString(e)) {
+                  if ('now' === e) return e;
+                  var n = /^now\s*-\s*(\d+)([d|h|m|s])$/.exec(e);
+                  if (n) return '-' + parseInt(n[1]) + n[2];
+                  e = i.parse(e, t);
+                }
+                return e.toISOString();
+              }),
+              e
+            );
+          })();
+        t.default = l;
       },
       function(e, t) {
         e.exports = n;
@@ -3761,7 +3743,7 @@ define(
             return e.trim().split(/\n\s*\s/);
           }),
           (t.getAnnotationsFromResult = function(e, t) {
-            var n = c(e);
+            var n = c(e).data;
             if (0 === n.length) return [];
             var r = [],
               o = t.textCol || '_value',
@@ -3780,40 +3762,45 @@ define(
                         return n[e].split(',');
                       })
                   );
-                r.push({annotation: t, time: d(e._time), tags: s, text: e[o]});
+                r.push({annotation: t, time: p(e._time), tags: s, text: e[o]});
               }),
               r
             );
           }),
           (t.getTableModelFromResult = function(e) {
             var t = c(e),
-              n = {type: 'table', columns: [], rows: []};
-            if (t.length > 0) {
-              var r = t[0],
-                i = Object.keys(r)
+              n = t.data,
+              r = t.types,
+              i = {type: 'table', columns: [], rows: []};
+            if (n.length > 0) {
+              var o = n[0],
+                a = Object.keys(o)
                   .filter(s)
                   .map(function(e) {
                     return {id: e, text: e};
                   }),
-                o = [
+                u = {id: '_value', text: 'Value'},
+                l = [
                   {text: 'Time', id: '_time'},
                   {text: 'Measurement', id: '_measurement'},
                   {text: 'Field', id: '_field'},
-                ].concat(i, [{id: '_value', text: 'Value'}]);
-              o.forEach(function(e) {
-                return n.columns.push(e);
-              }),
-                t.forEach(function(e) {
-                  var t = o.map(function(t) {
-                    return e[t.id];
-                  });
-                  n.rows.push(t);
+                ].concat(a, [u]);
+              l.forEach(function(e) {
+                return i.columns.push(e);
+              });
+              var f = l.length - 1,
+                h = r[u.id];
+              n.forEach(function(e) {
+                var t = l.map(function(t) {
+                  return e[t.id];
                 });
+                (t[f] = d(t[f], h)), i.rows.push(t);
+              });
             }
-            return n;
+            return i;
           }),
           (t.getTimeSeriesFromResult = function(e) {
-            var t = c(e);
+            var t = c(e).data;
             if (0 === t.length) return [];
             var n = (0, o.default)(t, 'table');
             return Object.keys(n)
@@ -3823,14 +3810,14 @@ define(
               .map(function(e) {
                 return {
                   datapoints: e.map(function(e) {
-                    return [h(e._value), d(e._time)];
+                    return [h(e._value), p(e._time)];
                   }),
                   target: f(e[0]),
                 };
               });
           }),
           (t.getValuesFromResult = function(e) {
-            return c(e).map(function(e) {
+            return c(e).data.map(function(e) {
               return e._value;
             });
           });
@@ -3865,13 +3852,48 @@ define(
             return t.concat(r).join(' ');
           }),
           c = function(e) {
-            return r.default.parse(e, {header: !0, comments: '#'}).data;
+            var t = r.default.parse(e, {header: !0, comments: '#'});
+            return {
+              data: t.data,
+              types: (function(e, t) {
+                var n = {};
+                if ('#' === e[0]) {
+                  var r = e
+                    .split('\n')[0]
+                    .slice(1)
+                    .split(',');
+                  r.length === t.fields.length &&
+                    t.fields.forEach(function(e, t) {
+                      n[e] = r[t];
+                    });
+                }
+                return n;
+              })(e, t.meta),
+            };
           },
           h = (t.parseValue = function(e) {
             var t = parseFloat(e);
             return isNaN(t) ? null : t;
           }),
-          d = (t.parseTime = function(e) {
+          d = function(e, t) {
+            var n = e;
+            if (t)
+              try {
+                switch (t) {
+                  case 'float':
+                  case 'double':
+                    n = parseFloat(e);
+                    break;
+                  case 'integer':
+                  case 'long':
+                    n = parseInt(e, 10);
+                }
+              } catch (e) {
+                console.error(e);
+              }
+            return n;
+          },
+          p = (t.parseTime = function(e) {
             return Date.parse(e);
           });
       },
@@ -4037,8 +4059,8 @@ define(
                 (l.LocalChunkSize = 10485760),
                 (l.RemoteChunkSize = 5242880),
                 (l.DefaultDelimiter = ','),
-                (l.Parser = v),
-                (l.ParserHandle = m),
+                (l.Parser = m),
+                (l.ParserHandle = v),
                 (l.NetworkStreamer = h),
                 (l.FileStreamer = d),
                 (l.StringStreamer = p),
@@ -4129,7 +4151,7 @@ define(
                     var t = x(e);
                     (t.chunkSize = parseInt(t.chunkSize)),
                       e.step || e.chunk || (t.chunkSize = null),
-                      (this._handle = new m(t)),
+                      (this._handle = new v(t)),
                       (this._handle.streamer = this),
                       (this._config = t);
                   }.call(this, e),
@@ -4417,7 +4439,7 @@ define(
                     write: A(this._onWrite, this),
                   })).once('finish', A(this._onWriteComplete, this));
               }
-              function m(e) {
+              function v(e) {
                 var t,
                   n,
                   r,
@@ -4481,7 +4503,7 @@ define(
                             o = d.data[t][n];
                           e.header && (i = n >= h.length ? '__parsed_extra' : h[n]),
                             e.transform && (o = e.transform(o, i)),
-                            (o = m(i, o)),
+                            (o = v(i, o)),
                             '__parsed_extra' === i
                               ? ((r[i] = r[i] || []), r[i].push(o))
                               : (r[i] = o);
@@ -4518,7 +4540,7 @@ define(
                 function g() {
                   return e.header && 0 === h.length;
                 }
-                function m(t, n) {
+                function v(t, n) {
                   return (function(t) {
                     return (
                       e.dynamicTypingFunction &&
@@ -4572,7 +4594,7 @@ define(
                           p = 0;
                         s = void 0;
                         for (
-                          var y = new v({
+                          var y = new m({
                               comments: i,
                               delimiter: c,
                               newline: n,
@@ -4585,11 +4607,11 @@ define(
                           if (r && 1 === y.data[g].length && 0 === y.data[g][0].length)
                             p++;
                           else {
-                            var m = y.data[g].length;
-                            (d += m),
+                            var v = y.data[g].length;
+                            (d += v),
                               void 0 !== s
-                                ? m > 1 && ((h += Math.abs(m - s)), (s = m))
-                                : (s = m);
+                                ? v > 1 && ((h += Math.abs(v - s)), (s = v))
+                                : (s = v);
                           }
                         y.data.length > 0 && (d /= y.data.length - p),
                           (void 0 === a || h < a) && d > 1.99 && ((a = h), (o = c));
@@ -4605,7 +4627,7 @@ define(
                   return (
                     e.preview && e.header && u.preview++,
                     (t = i),
-                    (n = new v(u)),
+                    (n = new m(u)),
                     (d = n.parse(t, o, a)),
                     y(),
                     f ? {meta: {paused: !0}} : d || {meta: {paused: !1}}
@@ -4631,7 +4653,7 @@ define(
                       (t = '');
                   });
               }
-              function v(e) {
+              function m(e) {
                 var t,
                   n = (e = e || {}).delimiter,
                   r = e.newline,
@@ -4659,9 +4681,9 @@ define(
                     p = n.length,
                     y = r.length,
                     g = i.length,
-                    m = E(o);
+                    v = E(o);
                   f = 0;
-                  var v = [],
+                  var m = [],
                     b = [],
                     _ = [],
                     w = 0;
@@ -4672,10 +4694,10 @@ define(
                         f += r.length;
                       else if (h) return q();
                       if (!i || _.substr(0, g) !== i) {
-                        if (m) {
-                          if (((v = []), O(_.split(n)), I(), c)) return q();
+                        if (v) {
+                          if (((m = []), O(_.split(n)), I(), c)) return q();
                         } else O(_.split(n));
-                        if (a && A >= a) return (v = v.slice(0, a)), q(!0);
+                        if (a && A >= a) return (m = m.slice(0, a)), q(!0);
                       }
                     }
                     return q();
@@ -4696,9 +4718,9 @@ define(
                         _.push(e.substring(f, C)), (f = C + p), (C = e.indexOf(n, f));
                       else {
                         if (-1 === S) break;
-                        if ((_.push(e.substring(f, S)), M(S + y), m && (I(), c)))
+                        if ((_.push(e.substring(f, S)), M(S + y), v && (I(), c)))
                           return q();
-                        if (a && v.length >= a) return q(!0);
+                        if (a && m.length >= a) return q(!0);
                       }
                     else
                       for (k = f, f++; ; ) {
@@ -4709,7 +4731,7 @@ define(
                                 type: 'Quotes',
                                 code: 'MissingQuotes',
                                 message: 'Quoted field unterminated',
-                                row: v.length,
+                                row: m.length,
                                 index: f,
                               }),
                             P()
@@ -4731,17 +4753,17 @@ define(
                                 (_.push(e.substring(f, k).replace(T, t)),
                                 M(k + 1 + j + y),
                                 (C = e.indexOf(n, f)),
-                                m && (I(), c))
+                                v && (I(), c))
                               )
                                 return q();
-                              if (a && v.length >= a) return q(!0);
+                              if (a && m.length >= a) return q(!0);
                               break;
                             }
                             b.push({
                               type: 'Quotes',
                               code: 'InvalidQuotes',
                               message: 'Trailing quote on quoted field is malformed',
-                              row: v.length,
+                              row: m.length,
                               index: f,
                             }),
                               k++;
@@ -4750,7 +4772,7 @@ define(
                       }
                   return P();
                   function O(e) {
-                    v.push(e), (w = f);
+                    m.push(e), (w = f);
                   }
                   function B(t) {
                     var n = 0;
@@ -4767,7 +4789,7 @@ define(
                         _.push(t),
                         (f = d),
                         O(_),
-                        m && I(),
+                        v && I(),
                         q());
                   }
                   function M(t) {
@@ -4775,7 +4797,7 @@ define(
                   }
                   function q(e) {
                     return {
-                      data: v,
+                      data: m,
                       errors: b,
                       meta: {
                         delimiter: n,
@@ -4787,7 +4809,7 @@ define(
                     };
                   }
                   function I() {
-                    o(q()), (v = []), (b = []);
+                    o(q()), (m = []), (b = []);
                   }
                 }),
                   (this.abort = function() {
@@ -5951,21 +5973,21 @@ define(
           h = '[object Array]',
           d = '[object Object]',
           p = Object.prototype.hasOwnProperty;
-        e.exports = function(e, t, n, y, g, m) {
-          var v = u(e),
+        e.exports = function(e, t, n, y, g, v) {
+          var m = u(e),
             b = u(t),
-            _ = v ? h : s(e),
+            _ = m ? h : s(e),
             w = b ? h : s(t),
             x = (_ = _ == c ? d : _) == d,
             A = (w = w == c ? d : w) == d,
             E = _ == w;
           if (E && l(e)) {
             if (!l(t)) return !1;
-            (v = !0), (x = !1);
+            (m = !0), (x = !1);
           }
           if (E && !x)
             return (
-              m || (m = new r()), v || f(e) ? i(e, t, n, y, g, m) : o(e, t, _, n, y, g, m)
+              v || (v = new r()), m || f(e) ? i(e, t, n, y, g, v) : o(e, t, _, n, y, g, v)
             );
           if (!(1 & n)) {
             var k = x && p.call(e, '__wrapped__'),
@@ -5973,10 +5995,10 @@ define(
             if (k || C) {
               var S = k ? e.value() : e,
                 T = C ? t.value() : t;
-              return m || (m = new r()), g(S, T, n, y, m);
+              return v || (v = new r()), g(S, T, n, y, v);
             }
           }
-          return !!E && (m || (m = new r()), a(e, t, n, y, g, m));
+          return !!E && (v || (v = new r()), a(e, t, n, y, g, v));
         };
       },
       function(e, t, n) {
@@ -6099,9 +6121,9 @@ define(
           s.set(e, t), s.set(t, e);
           for (var y = u; ++c < f; ) {
             var g = e[(h = l[c])],
-              m = t[h];
-            if (o) var v = u ? o(m, g, h, t, e, s) : o(g, m, h, e, t, s);
-            if (!(void 0 === v ? g === m || a(g, m, n, o, s) : v)) {
+              v = t[h];
+            if (o) var m = u ? o(v, g, h, t, e, s) : o(g, v, h, e, t, s);
+            if (!(void 0 === m ? g === v || a(g, v, n, o, s) : m)) {
               p = !1;
               break;
             }
@@ -6771,8 +6793,8 @@ define(
             return {text: e};
           },
           g = ['1m', '5m', '10m', '30m', '1h'],
-          m = 'telegraf',
-          v = (function(e) {
+          v = 'telegraf',
+          m = (function(e) {
             function t() {
               var t = (null !== e && e.apply(this, arguments)) || this;
               return (
@@ -6792,10 +6814,10 @@ define(
                       c = t.state.value.anchorText.text.slice(0, f),
                       h = [],
                       d = n.classList,
-                      v = null,
-                      b = t.props.defaultDatabase || m;
+                      m = null,
+                      b = t.props.defaultDatabase || v;
                     if (d.contains('context-range'))
-                      (v = 'context-range'),
+                      (m = 'context-range'),
                         h.push({label: 'Range vector', items: g.slice().map(y)});
                     else if (d.contains('short-delimiter') || d.contains('short-field')) {
                       var _ = (0, s.getPreviousCousin)(n, '.short-root'),
@@ -6825,17 +6847,17 @@ define(
                         });
                         var k = t.fields && t.fields[w] && t.fields[w][A];
                         if (!k) return void t.fetchFields(w, A);
-                        (v = 'context-fields'), h.push({label: 'Fields', items: k});
+                        (m = 'context-fields'), h.push({label: 'Fields', items: k});
                       } else if (w) {
                         var C = t.measurements && t.measurements[w];
                         if (!C) return void t.fetchMeasurements(w);
                         (l = l.replace(/\w*\.\./g, '')),
-                          (v = 'context-measurements'),
+                          (m = 'context-measurements'),
                           h.push({label: 'Measurements', items: C});
                       }
                     } else
                       c.match(/(^\s+$)|(\)\s+$)/)
-                        ? ((v = 'context-operator'),
+                        ? ((m = 'context-operator'),
                           h.push({
                             prefixMatch: !0,
                             label: 'Operators',
@@ -6857,7 +6879,7 @@ define(
                             ].map(y),
                           }))
                         : l && !d.contains('argument')
-                          ? ((v = 'context-builtin'),
+                          ? ((m = 'context-builtin'),
                             h.push({
                               prefixMatch: !0,
                               label: 'Functions',
@@ -6865,7 +6887,7 @@ define(
                             }))
                           : ('' === r.default.serialize(t.state.value) ||
                               o.match(/[+\-*/^%]/)) &&
-                            ((v = 'context-new'),
+                            ((m = 'context-new'),
                             h.push({
                               prefixMatch: !0,
                               label: 'Templates',
@@ -6896,10 +6918,10 @@ define(
                           e
                         );
                       });
-                    console.log('handleTypeahead', e.anchorNode, d, o, a, l, v),
+                    console.log('handleTypeahead', e.anchorNode, d, o, a, l, m),
                       t.setState({
                         typeaheadPrefix: l,
-                        typeaheadContext: v,
+                        typeaheadContext: m,
                         typeaheadText: o,
                         suggestions: S > 0 ? T : [],
                       });
@@ -6996,7 +7018,7 @@ define(
               t
             );
           })(o.default);
-        t.default = v;
+        t.default = m;
       },
       function(e, t, n) {
         'use strict';
@@ -7030,8 +7052,8 @@ define(
         function g(e) {
           return e && e.__esModule ? e : {default: e};
         }
-        var m,
-          v = ((m =
+        var v,
+          m = ((v =
             Object.setPrototypeOf ||
             ({__proto__: []} instanceof Array &&
               function(e, t) {
@@ -7044,7 +7066,7 @@ define(
             function n() {
               this.constructor = e;
             }
-            m(e, t),
+            v(e, t),
               (e.prototype =
                 null === t ? Object.create(t) : ((n.prototype = t.prototype), new n()));
           });
@@ -7080,7 +7102,7 @@ define(
               );
             }
             return (
-              v(t, e),
+              m(t, e),
               (t.prototype.componentWillUnmount = function() {
                 document.body.removeChild(this.node);
               }),
@@ -7219,14 +7241,14 @@ define(
               var a = t.prismDefinition,
                 s = void 0 === a ? {} : a,
                 g = t.prismLanguage,
-                m = void 0 === g ? 'promql' : g;
+                v = void 0 === g ? 'promql' : g;
               return (
                 (o.plugins = [
                   (0, l.default)(),
                   (0, f.default)(),
                   (0, p.default)({handler: t.onPressEnter}),
                   (0, c.default)(),
-                  (0, d.default)({definition: s, language: m}),
+                  (0, d.default)({definition: s, language: v}),
                 ]),
                 (o.state = {
                   labelKeys: {},
@@ -7241,7 +7263,7 @@ define(
               );
             }
             return (
-              v(t, e),
+              m(t, e),
               (t.prototype.componentDidMount = function() {
                 this.updateMenu();
               }),
@@ -7427,18 +7449,18 @@ define(
                         s = i.length - o,
                         y = d + s,
                         g = l.text.length - c,
-                        m = s;
-                      for (h = c + m; g < m; )
-                        (m = s - g), (g = (f = t.shift()).text.length), (h = m);
+                        v = s;
+                      for (h = c + v; g < v; )
+                        (v = s - g), (g = (f = t.shift()).text.length), (h = v);
                       if ('string' != typeof e || n) {
-                        var v = {
+                        var m = {
                           anchorKey: l.key,
                           anchorOffset: c,
                           focusKey: f.key,
                           focusOffset: h,
                           marks: [{type: a, data: {types: r}}],
                         };
-                        u.push(v);
+                        u.push(m);
                       }
                       d = y;
                     } else if (e.content && e.content.length)
@@ -7706,7 +7728,7 @@ define(
           {
             version: 3,
             sources: [
-              '/Users/david/go/src/github.com/grafana/grafana/data/plugins/flux-datasource/src/styles.css',
+              '/home/ahebert/workspace/metrics/influxdb-flux-datasource/src/styles.css',
             ],
             names: [],
             mappings:
@@ -7807,10 +7829,10 @@ define(
             if (i) {
               i.refs++;
               for (var a = 0; a < i.parts.length; a++) i.parts[a](r.parts[a]);
-              for (; a < r.parts.length; a++) i.parts.push(v(r.parts[a], t));
+              for (; a < r.parts.length; a++) i.parts.push(m(r.parts[a], t));
             } else {
               var s = [];
-              for (a = 0; a < r.parts.length; a++) s.push(v(r.parts[a], t));
+              for (a = 0; a < r.parts.length; a++) s.push(m(r.parts[a], t));
               o[r.id] = {id: r.id, refs: 1, parts: s};
             }
           }
@@ -7856,17 +7878,17 @@ define(
           var t = document.createElement('style');
           return (
             void 0 === e.attrs.type && (e.attrs.type = 'text/css'),
-            m(t, e.attrs),
+            v(t, e.attrs),
             p(e, t),
             t
           );
         }
-        function m(e, t) {
+        function v(e, t) {
           Object.keys(t).forEach(function(n) {
             e.setAttribute(n, t[n]);
           });
         }
-        function v(e, t) {
+        function m(e, t) {
           var n, r, i, o;
           if (t.transform && e.css) {
             if (!(o = t.transform(e.css))) return function() {};
@@ -7889,7 +7911,7 @@ define(
                   return (
                     void 0 === e.attrs.type && (e.attrs.type = 'text/css'),
                     (e.attrs.rel = 'stylesheet'),
-                    m(t, e.attrs),
+                    v(t, e.attrs),
                     p(e, t),
                     t
                   );
