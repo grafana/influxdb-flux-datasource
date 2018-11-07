@@ -37,7 +37,7 @@ export const FUNCTIONS = [
   },
   {
     text: 'from',
-    display: 'from(db: "database)',
+    display: 'from(bucket: "database)',
     hint: 'Starting point of a query, produces a table from the given "db".',
   },
   {

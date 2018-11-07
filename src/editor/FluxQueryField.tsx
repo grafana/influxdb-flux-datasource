@@ -29,11 +29,11 @@ const DEFAULT_DATABASE = 'telegraf';
 function expandQuery(database, measurement, field) {
   if (field) {
     return (
-      `from(db: "${database}")\n` +
+      `from(bucket: "${database}")\n` +
       `  |> filter(fn: (r) => r["_measurement"] == "${measurement}" AND r["_field"] == "${field}")\n  |> range($range)\n  |> limit(n: 1000)`
     );
   }
-  return `from(db: "${database}")\n  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> range($range)\n  |> limit(n: 1000)`;
+  return `from(bucket: "${database}")\n  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> range($range)\n  |> limit(n: 1000)`;
 }
 
 export default class FluxQueryField extends QueryField {
@@ -154,7 +154,7 @@ export default class FluxQueryField extends QueryField {
         suggestionGroups.push({
           prefixMatch: true,
           label: 'Templates',
-          items: [`from(db: "${database}") |> range($range) `].map(wrapText),
+          items: [`from(bucket: "${database}") |> range($range) `].map(wrapText),
         });
         suggestionGroups.push({
           prefixMatch: true,
