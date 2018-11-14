@@ -14481,13 +14481,14 @@ define(
                 });
               };
               InfluxDatasource.prototype.testDatasource = function() {
-                var query = '';
+                var query = 'fromMetrics(token:"' + this.database + '")';
                 return this._influxRequest('POST', '/v2/query', {query: query})
                   .then(function(res) {
                     if (res && res.data && res.data.trim()) {
                       return {
                         status: 'success',
-                        message: 'Data source connected and database found.',
+                        message:
+                          'Data source connected and main token saved can be re-used with "${this.database}"',
                       };
                     }
                     return {
@@ -14788,7 +14789,7 @@ define(
             function expandQuery(database, measurement, field) {
               if (field) {
                 return (
-                  'from(db: "' +
+                  'fromMetrics(token: "' +
                   database +
                   '")\n' +
                   ('  |> filter(fn: (r) => r["_measurement"] == "' +
@@ -14799,7 +14800,7 @@ define(
                 );
               }
               return (
-                'from(db: "' +
+                'fromMetrics(token: "' +
                 database +
                 '")\n  |> filter(fn: (r) => r["_measurement"] == "' +
                 measurement +
@@ -16542,7 +16543,7 @@ define(
               if (measurementsQuery) {
                 var database = measurementsQuery[1];
                 return (
-                  'from(db:"' +
+                  'fromMetrics(token:"' +
                   database +
                   '")\n    |> range($range)\n    |> group(by:["_measurement"])\n    |> distinct(column:"_measurement")\n    |> group(none:true)'
                 );
@@ -16552,7 +16553,7 @@ define(
                 var database = tagsQuery[1];
                 var measurement = tagsQuery[2];
                 return (
-                  'from(db:"' +
+                  'fromMetrics(token:"' +
                   database +
                   '")\n    |> range($range)\n    |> filter(fn:(r) => r._measurement == "' +
                   measurement +
@@ -16565,7 +16566,7 @@ define(
                 var measurement = tagValuesQuery[2];
                 var tag = tagValuesQuery[3];
                 return (
-                  'from(db:"' +
+                  'fromMetrics(token:"' +
                   database +
                   '")\n    |> range($range)\n    |> filter(fn:(r) => r._measurement == "' +
                   measurement +
@@ -16581,7 +16582,7 @@ define(
                 var database = fieldKeysQuery[1];
                 var measurement = fieldKeysQuery[2];
                 return (
-                  'from(db:"' +
+                  'fromMetrics(token:"' +
                   database +
                   '")\n    |> range($range)\n    |> filter(fn:(r) => r._measurement == "' +
                   measurement +
@@ -16695,7 +16696,9 @@ define(
 
             function makeDefaultQuery(database) {
               return (
-                'from(db: "' + database + '")\n  |> range($range)\n  |> limit(n:1000)\n'
+                'fromMetrics(token: "' +
+                database +
+                '")\n  |> range($range)\n  |> limit(n:1000)\n'
               );
             }
             var InfluxFluxQueryCtrl = /** @class */ (function(_super) {

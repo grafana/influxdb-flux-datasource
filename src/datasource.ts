@@ -138,14 +138,15 @@ export default class InfluxDatasource {
   }
 
   testDatasource() {
-    const query = ``;
+    const query = `fromMetrics(token:\"${this.database}\")`;
 
     return this._influxRequest('POST', '/v2/query', {query: query})
       .then(res => {
         if (res && res.data && res.data.trim()) {
           return {
             status: 'success',
-            message: 'Data source connected and database found.',
+            message:
+              'Data source connected and main token saved can be re-used with "${this.database}"',
           };
         }
         return {

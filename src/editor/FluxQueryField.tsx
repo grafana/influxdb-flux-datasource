@@ -29,11 +29,11 @@ const DEFAULT_DATABASE = 'telegraf';
 function expandQuery(database, measurement, field) {
   if (field) {
     return (
-      `from(db: "${database}")\n` +
+      `fromMetrics(token: "${database}")\n` +
       `  |> filter(fn: (r) => r["_measurement"] == "${measurement}" AND r["_field"] == "${field}")\n  |> range($range)\n  |> limit(n: 1000)`
     );
   }
-  return `from(db: "${database}")\n  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> range($range)\n  |> limit(n: 1000)`;
+  return `fromMetrics(token: "${database}")\n  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> range($range)\n  |> limit(n: 1000)`;
 }
 
 export default class FluxQueryField extends QueryField {

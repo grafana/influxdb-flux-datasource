@@ -16,7 +16,7 @@ export default function expandMacros(query) {
   const measurementsQuery = query.match(MEASUREMENTS_REGEXP);
   if (measurementsQuery) {
     const database = measurementsQuery[1];
-    return `from(db:"${database}")
+    return `fromMetrics(token:"${database}")
     |> range($range)
     |> group(by:["_measurement"])
     |> distinct(column:"_measurement")
@@ -27,7 +27,7 @@ export default function expandMacros(query) {
   if (tagsQuery) {
     const database = tagsQuery[1];
     const measurement = tagsQuery[2];
-    return `from(db:"${database}")
+    return `fromMetrics(token:"${database}")
     |> range($range)
     |> filter(fn:(r) => r._measurement == "${measurement}")
     |> keys()`;
@@ -38,7 +38,7 @@ export default function expandMacros(query) {
     const database = tagValuesQuery[1];
     const measurement = tagValuesQuery[2];
     const tag = tagValuesQuery[3];
-    return `from(db:"${database}")
+    return `fromMetrics(token:"${database}")
     |> range($range)
     |> filter(fn:(r) => r._measurement == "${measurement}")
     |> group(by:["${tag}"])
@@ -50,7 +50,7 @@ export default function expandMacros(query) {
   if (fieldKeysQuery) {
     const database = fieldKeysQuery[1];
     const measurement = fieldKeysQuery[2];
-    return `from(db:"${database}")
+    return `fromMetrics(token:"${database}")
     |> range($range)
     |> filter(fn:(r) => r._measurement == "${measurement}")
     |> group(by:["_field"])
