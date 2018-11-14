@@ -134,7 +134,7 @@ export default class InfluxDatasource {
       return Promise.resolve({data: ''});
     }
 
-    return this._influxRequest('POST', '/api/v2/query', {query: query, options: options});
+    return this._influxRequest('POST', '/api/v2/query', {query: query, range: options.range});
   }
 
   testDatasource() {
