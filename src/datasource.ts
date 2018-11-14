@@ -134,13 +134,13 @@ export default class InfluxDatasource {
       return Promise.resolve({data: ''});
     }
 
-    return this._influxRequest('POST', '/api/v2/query', {query: query, range: options.range});
+    return this._influxRequest('POST', '/v2/query', {query: query, range: options.range});
   }
 
   testDatasource() {
-    const query = `from(bucket:"${this.database}") |> last()`;
+    const query = ``;
 
-    return this._influxRequest('POST', '/api/v2/query', {query: query})
+    return this._influxRequest('POST', '/v2/query', {query: query})
       .then(res => {
         if (res && res.data && res.data.trim()) {
           return {

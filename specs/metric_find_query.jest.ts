@@ -3,7 +3,7 @@ import expandMacros from '../src/metric_find_query';
 describe('metric find query', () => {
   describe('expandMacros()', () => {
     it('returns a non-macro query unadulterated', () => {
-      const query = 'from(db:"telegraf") |> last()';
+      const query = '';
       const result = expandMacros(query);
       expect(result).toBe(query);
     });
@@ -19,7 +19,9 @@ describe('metric find query', () => {
     it('returns a tags query for tags()', () => {
       const query = ' tags(mydb , mymetric) ';
       const result = expandMacros(query).replace(/\s/g, '');
-      expect(result).toBe('from(db:"mydb")|>range($range)|>filter(fn:(r)=>r._measurement=="mymetric")|>keys()');
+      expect(result).toBe(
+        'from(db:"mydb")|>range($range)|>filter(fn:(r)=>r._measurement=="mymetric")|>keys()'
+      );
     });
 
     it('returns a tag values query for tag_values()', () => {
@@ -27,7 +29,7 @@ describe('metric find query', () => {
       const result = expandMacros(query).replace(/\s/g, '');
       expect(result).toBe(
         'from(db:"mydb")|>range($range)|>filter(fn:(r)=>r._measurement=="mymetric")' +
-        '|>group(by:["mytag"])|>distinct(column:"mytag")|>group(none:true)'
+          '|>group(by:["mytag"])|>distinct(column:"mytag")|>group(none:true)'
       );
     });
 
@@ -36,7 +38,7 @@ describe('metric find query', () => {
       const result = expandMacros(query).replace(/\s/g, '');
       expect(result).toBe(
         'from(db:"mydb")|>range($range)|>filter(fn:(r)=>r._measurement=="mymetric")' +
-        '|>group(by:["_field"])|>distinct(column:"_field")|>group(none:true)'
+          '|>group(by:["_field"])|>distinct(column:"_field")|>group(none:true)'
       );
     });
   });
