@@ -1,7 +1,8 @@
 {
   "name": "grafana-flux-datasource",
-  "version": "5.1.0-dev",
+  "version": "5.2.0",
   "description": "Grafana data source for InfluxDB (Flux query support)",
+  "private": true,
   "scripts": {
     "build": "webpack --config webpack.config.prod.js",
     "dev": "webpack --mode development",
