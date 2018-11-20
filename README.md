@@ -35,6 +35,14 @@ Getting started:
 
 3. Clone this plugin into Grafana's `data/plugins` directory. Install the deps: `yarn install`, build the JS bundle `yarn dev`. Then load Grafana in your browser and add Flux as a new datasource with the URL `http://localhost:8086`.
 
+## Releasing
+
+This plugin uses [release-it](https://github.com/webpro/release-it) to release to GitHub.
+
+```
+env GITHUB_TOKEN=your_token yarn release-it patch
+```
+
 ## Roadmap
 
 * Alerting integration

@@ -1,0 +1,8 @@
+{
+  "github": {
+    "release": true,
+    "assets": ["dist/*.zip"]
+  },
+  "buildCommand":
+    "npm run build; cd dist; zip -r influxdb-flux-datasource-${version}.zip *"
+}
