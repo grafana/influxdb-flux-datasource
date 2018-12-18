@@ -131,7 +131,7 @@ export default class InfluxDatasource {
     if (!query) {
       return Promise.resolve({data: ''});
     }
-    return this._influxRequest('POST', '/api/v2/query', {query: query}, options);
+    return this._influxRequest('POST', '/api/v2/query', query, options);
   }
 
   testDatasource() {
@@ -145,7 +145,7 @@ export default class InfluxDatasource {
       });
     }
 
-    return this._influxRequest('POST', '/api/v2/query', {query: query})
+    return this._influxRequest('POST', '/api/v2/query', query)
       .then(res => {
         if (res && res.data && res.data.trim()) {
           return {
@@ -164,7 +164,7 @@ export default class InfluxDatasource {
       });
   }
 
-  _influxRequest(method: string, url: string, data: any, options?: any) {
+  _influxRequest(method: string, url: string, query: string, options?: any) {
     let params: any = {};
 
     if (this.username) {
@@ -176,13 +176,14 @@ export default class InfluxDatasource {
       method: method,
       url: this.url + url,
       params: params,
-      data: data,
+      data: query,
       precision: 'ms',
       inspect: {type: this.type},
     };
 
     req.headers = {
       Accept: 'application/csv',
+      'Content-Type': 'application/vnd.flux',
     };
 
     if (this.basicAuth || this.withCredentials) {
