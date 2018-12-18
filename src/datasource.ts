@@ -18,8 +18,7 @@ export default class InfluxDatasource {
   username: string;
   password: string;
   name: string;
-  orgName: string;
-  database: any;
+  bucket: any;
   basicAuth: any;
   withCredentials: any;
   interval: any;
@@ -34,11 +33,10 @@ export default class InfluxDatasource {
     this.username = instanceSettings.username;
     this.password = instanceSettings.password;
     this.name = instanceSettings.name;
-    this.orgName = instanceSettings.orgName || 'defaultorgname';
     this.basicAuth = instanceSettings.basicAuth;
     this.withCredentials = instanceSettings.withCredentials;
     this.interval = (instanceSettings.jsonData || {}).timeInterval;
-    this.database = (instanceSettings.jsonData || {}).database;
+    this.bucket = (instanceSettings.jsonData || {}).bucket;
     this.supportAnnotations = true;
     this.supportMetrics = true;
   }
@@ -137,7 +135,15 @@ export default class InfluxDatasource {
   }
 
   testDatasource() {
-    const query = `from(bucket:"${this.database}") |> last()`;
+    const query = `from(bucket:"${this.bucket}") 
+        |> range(start:-10y) 
+        |> last()`;
+    if (this.bucket.indexOf('/') < 0) {
+      return Promise.resolve({
+        status: 'error',
+        message: 'The bucket is missing a retention policy',
+      });
+    }
 
     return this._influxRequest('POST', '/api/v2/query', {query: query})
       .then(res => {
@@ -150,7 +156,7 @@ export default class InfluxDatasource {
         return {
           status: 'error',
           message:
-            'Data source connected, but has no data. Verify the "Database" field and make sure the database has data.',
+            'Data source connected, but has no data. Verify the "bucket" field and make sure the bucket has data.',
         };
       })
       .catch(err => {
@@ -159,9 +165,7 @@ export default class InfluxDatasource {
   }
 
   _influxRequest(method: string, url: string, data: any, options?: any) {
-    let params: any = {
-      organization: `my-org`,
-    };
+    let params: any = {};
 
     if (this.username) {
       params.u = this.username;
@@ -177,7 +181,9 @@ export default class InfluxDatasource {
       inspect: {type: this.type},
     };
 
-    req.headers = {};
+    req.headers = {
+      Accept: 'application/csv',
+    };
 
     if (this.basicAuth || this.withCredentials) {
       req.withCredentials = true;

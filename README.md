@@ -29,7 +29,7 @@ Read more about InfluxDB here:
 
 Getting started:
 
-1. Install a recent [InfluxDB nightly](https://portal.influxdata.com/downloads), then run `influxd -config` and catch that config as config.toml. Then run `influxd -config config.toml`. The recent nighlies contain the Flux engine.
+1. Install [InfluxDB 1.7+](https://portal.influxdata.com/downloads), then edit `influxdb.conf` setting [`[http] flux-enabled = true`](https://docs.influxdata.com/influxdb/v1.7/administration/config#flux-enabled-false) See also: [https://docs.influxdata.com/flux/v0.7/introduction/installation/](https://docs.influxdata.com/flux/v0.7/introduction/installation/)
 
 2. Install telegraph to get some data: brew install telegraf. Then run telegraf.
 
