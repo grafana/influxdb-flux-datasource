@@ -6,9 +6,9 @@ import Datasource from '../src/datasource';
 
 describe('InfluxDB (Flux)', () => {
   const templateSrv = new TemplateSrv();
-  const ds = new Datasource({ url: '' }, {}, templateSrv);
+  const ds = new Datasource({url: ''}, {}, templateSrv);
   const DEFAULT_OPTIONS = {
-    rangeRaw: { to: 'now', from: 'now - 3h' },
+    rangeRaw: {to: 'now', from: 'now - 3h'},
     scopedVars: {},
     targets: [],
   };
@@ -18,23 +18,28 @@ describe('InfluxDB (Flux)', () => {
     let target: any;
 
     it.skip('replaces $range variable', () => {
-      target = ds.prepareQueryTarget({ query: 'from(db: "test") |> range($range)' }, DEFAULT_OPTIONS);
-      expect(target.query).toBe('from(db: "test") |> range(start: -3h)');
+      target = ds.prepareQueryTarget(
+        {query: 'from(bucket: "test") |> range($range)'},
+        DEFAULT_OPTIONS
+      );
+      expect(target.query).toBe('from(bucket: "test") |> range(start: -3h)');
     });
 
     it.skip('replaces $range variable with custom dates', () => {
       const to = moment();
       const from = moment().subtract(1, 'hours');
       target = ds.prepareQueryTarget(
-        { query: 'from(db: "test") |> range($range)' },
+        {query: 'from(bucket: "test") |> range($range)'},
         {
           ...DEFAULT_OPTIONS,
-          rangeRaw: { to, from },
+          rangeRaw: {to, from},
         }
       );
       const start = from.toISOString();
       const stop = to.toISOString();
-      expect(target.query).toBe(`from(db: "test") |> range(start: ${start}, stop: ${stop})`);
+      expect(target.query).toBe(
+        `from(bucket: "test") |> range(start: ${start}, stop: ${stop})`
+      );
     });
   });
 });
