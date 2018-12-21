@@ -47,7 +47,7 @@ export default class InfluxDatasource {
     // Replace grafana variables
     const timeFilter = this.getTimeFilter(options);
     options.scopedVars.range = {value: timeFilter};
-    const interpolated = this.templateSrv.replace(target.query, options.scopedVars);
+    const interpolated = this.templateSrv.replace(target.query, options.scopedVars, 'pipe');
     return {
       ...target,
       query: interpolated,
