@@ -41,26 +41,26 @@
     "@types/jest": "^22.2.3",
     "@types/lodash": "^4.14.74",
     "@types/react": "^16.2.0",
-    "babel-core": "^6.26.3",
-    "babel-jest": "^23.0.1",
-    "babel-loader": "^7.1.4",
-    "babel-preset-env": "^1.7.0",
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.1",
-    "css-loader": "^0.28.11",
+    "css-loader": "2.1.0",
     "grafana-sdk-mocks": "github:grafana/grafana-sdk-mocks",
     "husky": "^1.0.0-rc.13",
-    "jest": "^23.0.1",
+    "jest": "23.6.0",
     "lint-staged": "^7.2.0",
     "ng-annotate-webpack-plugin": "^0.3.0",
     "prettier": "1.10.2",
     "release-it": "^8.0.0",
     "replace-in-file-webpack-plugin": "^1.0.6",
     "style-loader": "^0.21.0",
-    "ts-jest": "^22.4.6",
+    "ts-jest": "23.10.5",
     "ts-loader": "^4.3.0",
     "typescript": "^2.8.3",
-    "webpack": "^4.9.1",
-    "webpack-cli": "^2.1.4"
+    "webpack": "4.28.4",
+    "webpack-cli": "3.2.1"
+  },
+  "resolutions": {
+    "jest/jest-cli/jest-haste-map/sane/fsevents": "1.2.4",
+    "webpack/watchpack/chokidar/fsevents": "1.2.4"
   }
 }
