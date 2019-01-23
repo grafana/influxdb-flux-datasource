@@ -4,8 +4,6 @@
 [![dependencies Status](https://david-dm.org/grafana/influxdb-flux-datasource/status.svg)](https://david-dm.org/grafana/influxdb-flux-datasource)
 [![devDependencies Status](https://david-dm.org/grafana/influxdb-flux-datasource/dev-status.svg)](https://david-dm.org/grafana/influxdb-flux-datasource?type=dev)
 
-Grafana ships with **built in** support for InfluxDB (>= 1.4.1).
-
 Use this datasource if you want to use Flux to query your InfluxDB.
 Feel free to run this datasource side-by-side with the non-Flux datasource.
 If you point both datasources to the same InfluxDB instance, you can switch query mode by switching the datasources.
@@ -17,6 +15,16 @@ Read more about Flux here:
 Read more about InfluxDB here:
 
 [http://docs.grafana.org/datasources/influxdb/](http://docs.grafana.org/datasources/influxdb/)
+
+## Getting Started
+
+While this plugin is in BETA, it is not frequently pushed to the central plugin directory on grafana.com.
+Until then, please follow these steps:
+
+1. Make sure you have Grafana and Influx v1.7+ running.
+2. Download [the latest release](https://github.com/grafana/influxdb-flux-datasource/releases) into Grafana's `data/plugins` directory and unzip it.
+3. Restart Grafana
+4. Add Flux as a datasource using the hostname that your Influx DB is running on and port 8086.
 
 ## Supported Template Variable Macros:
 
