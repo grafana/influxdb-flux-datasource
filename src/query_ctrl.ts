@@ -1,10 +1,10 @@
 import appEvents from 'grafana/app/core/app_events';
-import { QueryCtrl } from 'grafana/app/plugins/sdk';
+import {QueryCtrl} from 'grafana/app/plugins/sdk';
 
 import './editor/editor_component';
 
-function makeDefaultQuery(database) {
-  return `from(db: "${database}")
+function makeDefaultQuery(bucket) {
+  return `from(bucket: "${bucket}")
   |> range($range)
   |> limit(n:1000)
 `;
@@ -13,7 +13,7 @@ export class InfluxFluxQueryCtrl extends QueryCtrl {
   static templateUrl = 'partials/query.editor.html';
 
   dataPreview: string;
-  defaultDatabase: string;
+  defaultBucket: string;
   resultRecordCount: string;
   resultTableCount: string;
   resultFormats: any[];
@@ -26,11 +26,14 @@ export class InfluxFluxQueryCtrl extends QueryCtrl {
     this.resultTableCount = '';
 
     if (this.target.query === undefined) {
-      this.target.query = makeDefaultQuery(this.datasource.database);
+      this.target.query = makeDefaultQuery(this.datasource.bucket);
     }
 
-    this.defaultDatabase = this.datasource.database;
-    this.resultFormats = [{ text: 'Time series', value: 'time_series' }, { text: 'Table', value: 'table' }];
+    this.defaultBucket = this.datasource.bucket;
+    this.resultFormats = [
+      {text: 'Time series', value: 'time_series'},
+      {text: 'Table', value: 'table'},
+    ];
 
     appEvents.on('ds-request-response', this.onResponseReceived, $scope);
     this.panelCtrl.events.on('refresh', this.onRefresh, $scope);
@@ -39,7 +42,8 @@ export class InfluxFluxQueryCtrl extends QueryCtrl {
 
   onDataReceived = dataList => {
     this.resultRecordCount = dataList.reduce((count, model) => {
-      const records = model.type === 'table' ? model.rows.length : model.datapoints.length;
+      const records =
+        model.type === 'table' ? model.rows.length : model.datapoints.length;
       return count + records;
     }, 0);
     this.resultTableCount = dataList.length;
