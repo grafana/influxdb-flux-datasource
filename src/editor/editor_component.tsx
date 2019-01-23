@@ -1,8 +1,6 @@
-
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import coreModule from 'grafana/app/core/core_module';
-
 
 import FluxQueryField from './FluxQueryField';
 import flux from './flux';
@@ -20,28 +18,28 @@ class Editor extends Component<any, any> {
   }
 
   handleChangeQuery = value => {
-    const { index, change } = this.props;
-    const { query } = this.state;
+    const {index, change} = this.props;
+    const {query} = this.state;
     const edited = query !== value;
-    this.setState({ edited, query: value });
+    this.setState({edited, query: value});
     if (change) {
       change(value, index);
     }
   };
 
   handlePressEnter = () => {
-    const { execute } = this.props;
+    const {execute} = this.props;
     if (execute) {
       execute();
     }
   };
 
   render() {
-    const { database, request } = this.props;
-    const { edited, query } = this.state;
+    const {database, request} = this.props;
+    const {edited, query} = this.state;
 
     return (
-      <div className="gf-form-input">
+      <div className="gf-form-input" style={{height: 'initial'}}>
         <FluxQueryField
           defaultDatabase={database}
           initialQuery={edited ? null : query}
