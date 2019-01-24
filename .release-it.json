@@ -3,6 +3,11 @@
     "release": true,
     "assets": ["dist/*.zip"]
   },
-  "buildCommand":
-    "npm run build; cd dist; zip -r influxdb-flux-datasource-${version}.zip *"
+  "npm": {
+    "publish": false
+  },
+  "scripts": {
+    "afterBump":
+      "npm run build; cd dist; zip -r influxdb-flux-datasource-${version}.zip *"
+  }
 }
