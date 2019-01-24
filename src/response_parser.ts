@@ -47,7 +47,7 @@ const determineFieldTypes = (input: string, meta: any) => {
     const types = firstLine.slice(1).split(',');
     if (types.length === meta.fields.length) {
       meta.fields.forEach((f, i) => {
-        typesByField[f] = types[i];
+        typesByField[f] = types[i].trim();
       });
     }
   }
@@ -152,13 +152,15 @@ export function getTableModelFromResult(result: string) {
     columns.forEach(c => table.columns.push(c));
 
     // Add rows
-    const valueColumnIndex = columns.length - 1;
-    const valueColumnType = types[valueColumn.id];
-    data.forEach(record => {
-      const row = columns.map(c => record[c.id]);
-      row[valueColumnIndex] = parseValueWithType(row[valueColumnIndex], valueColumnType);
-      table.rows.push(row);
-    });
+    table.rows = data.map((record) => {
+      return columns.map((c, index) => {
+        let value = record[c.id];
+        if (index > firstColumns.length && types[c.id]) {
+          value = parseValueWithType(record[c.id], types[c.id])
+        }
+        return value;
+      });
+    })
   }
 
   return table;
