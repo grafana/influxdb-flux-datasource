@@ -155,7 +155,7 @@ export function getTableModelFromResult(result: string) {
     table.rows = data.map((record) => {
       return columns.map((c, index) => {
         let value = record[c.id];
-        if (index > firstColumns.length && types[c.id]) {
+        if (index >= firstColumns.length && types[c.id]) {
           value = parseValueWithType(record[c.id], types[c.id])
         }
         return value;
