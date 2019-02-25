@@ -190,7 +190,7 @@ export default class FluxQueryField extends QueryField {
 
   applyTypeahead(change, suggestion) {
     const { typeaheadPrefix, typeaheadContext, typeaheadText } = this.state;
-    let suggestionText = suggestion.display || suggestion.text;
+    let suggestionText = suggestion.display || suggestion.text || suggestion;
     let move = 0;
 
     // Modify suggestion based on context
