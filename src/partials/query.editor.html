@@ -22,10 +22,11 @@
       <div class="gf-form-select-wrapper">
         <select
           class="gf-form-input gf-size-auto"
+          ng-init="time_series"
           ng-model="ctrl.target.resultFormat"
           ng-options="f.value as f.text for f in ctrl.resultFormats"
-          ng-change="ctrl.refresh()"
-        ></select>
+          ng-change="ctrl.refresh()">
+        </select>
       </div>
     </div>
     <div class="gf-form" ng-if="ctrl.panelCtrl.loading">

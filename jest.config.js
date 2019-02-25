@@ -2,7 +2,7 @@ module.exports = {
   verbose: true,
   "globals": {
     "ts-jest": {
-      "tsConfigFile": "tsconfig.jest.json"
+      "tsConfig": "tsconfig.jest.json"
     }
   },
   "moduleNameMapper": {
@@ -14,7 +14,7 @@ module.exports = {
     "<rootDir>/node_modules/(?!grafana-sdk-mocks)"
   ],
   "transform": {
-    ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    ".(ts|tsx)": "ts-jest"
   },
   "testRegex": "(\\.|/)([jt]est)\\.ts$",
   "moduleFileExtensions": [

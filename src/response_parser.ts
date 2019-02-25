@@ -1,6 +1,5 @@
-import Papa from 'papaparse';
-import flatten from 'lodash/flatten';
-import groupBy from 'lodash/groupBy';
+import { parse } from 'papaparse';
+import * as _ from 'lodash';
 
 interface Annotation {
   time: number;
@@ -55,7 +54,7 @@ const determineFieldTypes = (input: string, meta: any) => {
 };
 
 const parseCSV = (input: string) => {
-  const {data, meta} = Papa.parse(input, {
+  const {data, meta} = parse(input, {
     header: true,
     comments: '#',
   });
@@ -114,7 +113,7 @@ export function getAnnotationsFromResult(result: string, options: any) {
   data.forEach(record => {
     // Remove empty values, then split in different tags for comma separated values
     const tags = getTagsFromRecord(record);
-    const tagValues = flatten(
+    let tagValues = _.flatten(
       tagSelection.filter(tag => tags[tag]).map(tag => tags[tag].split(','))
     );
 
@@ -171,7 +170,7 @@ export function getTimeSeriesFromResult(result: string) {
   }
 
   // Group results by table ID (assume one table per timeseries for now)
-  const tables = groupBy(data, 'table');
+  const tables = _.groupBy(data, 'table');
   const seriesList = Object.keys(tables)
     .map(id => tables[id])
     .map(series => {

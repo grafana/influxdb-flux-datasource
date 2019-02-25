@@ -30,7 +30,7 @@ function expandQuery(bucket, measurement, field) {
   if (field) {
     return (
       `from(bucket: "${bucket}")\n` +
-      `  |> filter(fn: (r) => r["_measurement"] == "${measurement}" AND r["_field"] == "${field}")\n  |> range($range)\n  |> limit(n: 1000)`
+      `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> filter(fn: (r) => r["_field"] == "${field}")\n  |> range($range)\n  |> limit(n: 1000)`
     );
   }
   return `from(bucket: "${bucket}")\n  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> range($range)\n  |> limit(n: 1000)`;

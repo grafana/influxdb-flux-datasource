@@ -12,7 +12,7 @@ describe('metric find query', () => {
       const query = ' measurements(mydb) ';
       const result = expandMacros(query).replace(/\s/g, '');
       expect(result).toBe(
-        'from(bucket:"mydb")|>range($range)|>group(by:["_measurement"])|>distinct(column:"_measurement")|>group(none:true)'
+        'from(bucket:"mydb")|>range($range)|>group(columns:["_measurement"])|>distinct(column:"_measurement")'
       );
     });
 
@@ -29,7 +29,7 @@ describe('metric find query', () => {
       const result = expandMacros(query).replace(/\s/g, '');
       expect(result).toBe(
         'from(bucket:"mydb")|>range($range)|>filter(fn:(r)=>r._measurement=="mymetric")' +
-          '|>group(by:["mytag"])|>distinct(column:"mytag")|>group(none:true)'
+          '|>group(columns:["mytag"])|>distinct(column:"mytag")'
       );
     });
 
@@ -38,7 +38,7 @@ describe('metric find query', () => {
       const result = expandMacros(query).replace(/\s/g, '');
       expect(result).toBe(
         'from(bucket:"mydb")|>range($range)|>filter(fn:(r)=>r._measurement=="mymetric")' +
-          '|>group(by:["_field"])|>distinct(column:"_field")|>group(none:true)'
+          '|>group(columns:["_field"])|>distinct(column:"_field")'
       );
     });
   });

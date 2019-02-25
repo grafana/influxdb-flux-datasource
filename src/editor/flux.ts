@@ -42,7 +42,7 @@ export const FUNCTIONS = [
   },
   {
     text: 'group',
-    display: 'group(by: ["host"]) ',
+    display: 'group(columns: ["host"], mode:"by") ',
     hint: 'Groups results by a specified list of columns',
   },
   {

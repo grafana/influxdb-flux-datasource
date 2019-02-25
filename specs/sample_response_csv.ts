@@ -1,4 +1,4 @@
-const result = `#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTime:RFC3339,double,string,string,string,string
+const response = `#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTime:RFC3339,double,string,string,string,string
 #partition,false,false,true,true,false,false,true,true,true,true
 #default,_result,,,,,,,,,
 ,result,table,_start,_stop,_time,_value,_field,_measurement,cpu,host
@@ -346,4 +346,4 @@ const result = `#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTime
 
 `;
 
-export default result;
+export default response;
