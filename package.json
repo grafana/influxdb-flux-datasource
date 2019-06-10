@@ -63,9 +63,5 @@
     "typescript": "3.5.1",
     "webpack": "4.12.2",
     "webpack-cli": "^3.3.3"
-  },
-  "resolutions": {
-    "jest/jest-cli/jest-haste-map/sane/fsevents": "1.2.7",
-    "webpack/watchpack/chokidar/fsevents": "1.2.7"
   }
 }
