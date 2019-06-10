@@ -265,6 +265,9 @@ class QueryField extends React.Component<any, any> {
     const {suggestions} = this.state;
     const menu = this.menuEl;
     const selection = window.getSelection();
+    if (selection === null) {
+      return;
+    }
     const node = selection.anchorNode;
 
     // No menu, nothing to do
