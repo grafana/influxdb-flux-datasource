@@ -17,7 +17,7 @@ aliases:
       only: master
 
 defaults: &defaults
-  working_directory: ~/grafana-influxdb-flux-datasource
+  working_directory: ~/influxdb-flux-datasource
   docker:
     - image: circleci/node:10.15.3-stretch
 
@@ -32,7 +32,7 @@ jobs:
       - run:
           name: Build
           command: |
-            DATASOURCE_NAME=grafana-influxdb-flux-datasource
+            DATASOURCE_NAME=influxdb-flux-datasource
             yarn install --pure-lockfile --no-progress
             yarn build
             sudo apt-get install jq
@@ -90,7 +90,7 @@ jobs:
           path: coverage
 
   publish-github-release:
-    working_directory: ~/grafana-influxdb-flux-datasource
+    working_directory: ~/influxdb-flux-datasource
     docker:
       - image: cibuilds/github:0.12
     steps:
@@ -103,7 +103,7 @@ jobs:
       - run:
           name: "Publish Release on GitHub"
           command: |
-            DATASOURCE_NAME=grafana-influxdb-flux-datasource
+            DATASOURCE_NAME=influxdb-flux-datasource
             apk add --update --no-cache jq
             RELEASE_NOTES=`awk 'BEGIN {FS="##"; RS=""} FNR==3 {print; exit}' CHANGELOG.md`
             VERSION=`cat src/plugin.json|jq '.info.version'| sed s/\"//g`
