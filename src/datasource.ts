@@ -18,6 +18,7 @@ export default class InfluxDatasource {
   username: string;
   password: string;
   name: string;
+  organization: string;
   bucket: any;
   basicAuth: any;
   withCredentials: any;
@@ -36,6 +37,7 @@ export default class InfluxDatasource {
     this.basicAuth = instanceSettings.basicAuth;
     this.withCredentials = instanceSettings.withCredentials;
     this.interval = (instanceSettings.jsonData || {}).timeInterval;
+    this.organization = (instanceSettings.jsonData || {}).organization;
     this.bucket = (instanceSettings.jsonData || {}).bucket;
     this.supportAnnotations = true;
     this.supportMetrics = true;
@@ -45,7 +47,11 @@ export default class InfluxDatasource {
     // Replace grafana variables
     const timeFilter = this.getTimeFilter(options);
     options.scopedVars.range = {value: timeFilter};
-    const interpolated = this.templateSrv.replace(target.query, options.scopedVars, 'pipe');
+    const interpolated = this.templateSrv.replace(
+      target.query,
+      options.scopedVars,
+      'pipe'
+    );
     return {
       ...target,
       query: interpolated,
@@ -138,12 +144,6 @@ export default class InfluxDatasource {
     const query = `from(bucket:"${this.bucket}") 
         |> range(start:-10y) 
         |> last()`;
-    if (this.bucket.indexOf('/') < 0) {
-      return Promise.resolve({
-        status: 'error',
-        message: 'The bucket is missing a retention policy',
-      });
-    }
 
     return this._influxRequest('POST', '/api/v2/query', query)
       .then(res => {
@@ -174,7 +174,7 @@ export default class InfluxDatasource {
 
     let req: any = {
       method: method,
-      url: this.url + url,
+      url: `${this.url}/flux${url}?org=${this.organization}`,
       params: params,
       data: query,
       precision: 'ms',

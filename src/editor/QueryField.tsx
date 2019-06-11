@@ -58,7 +58,7 @@ class QueryField extends React.Component<any, any> {
   menuEl: any;
   plugins: any;
   resetTimer: any;
-
+  editorEl: any;
   constructor(props, context) {
     super(props, context);
 
@@ -242,7 +242,7 @@ class QueryField extends React.Component<any, any> {
     const {onBlur} = this.props;
     // If we dont wait here, menu clicks wont work because the menu
     // will be gone.
-    this.resetTimer = setTimeout(this.resetTypeahead, 100);
+    this.resetTimer = setTimeout(this.resetTypeahead, 500);
     if (onBlur) {
       onBlur();
     }
@@ -264,13 +264,17 @@ class QueryField extends React.Component<any, any> {
   updateMenu = () => {
     const {suggestions} = this.state;
     const menu = this.menuEl;
-    const selection = window.getSelection();
-    const node = selection.anchorNode;
-
     // No menu, nothing to do
     if (!menu) {
       return;
     }
+
+    const selection = window.getSelection();
+    if (selection === null) {
+      return;
+    }
+    const node = selection.anchorNode;
+
 
     // No suggestions or blur, remove menu
     const hasSuggesstions = suggestions && suggestions.length > 0;
@@ -297,6 +301,10 @@ class QueryField extends React.Component<any, any> {
 
   menuRef = el => {
     this.menuEl = el;
+  };
+
+  editorRef = editor => {
+    this.editorEl = editor;
   };
 
   renderMenu = () => {
@@ -341,6 +349,7 @@ class QueryField extends React.Component<any, any> {
           onFocus={this.handleFocus}
           placeholder={this.props.placeholder}
           plugins={this.plugins}
+          ref={this.editorRef}
           spellCheck={false}
           value={this.state.value}
         />

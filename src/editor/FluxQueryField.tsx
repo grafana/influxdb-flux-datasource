@@ -53,6 +53,9 @@ export default class FluxQueryField extends QueryField {
 
   handleTypeahead = debounce(() => {
     const selection = window.getSelection();
+    if (selection === null) {
+      return null;
+    }
     if (selection.anchorNode) {
       const wrapperNode = selection.anchorNode.parentElement;
       if (wrapperNode === null) {
@@ -185,6 +188,9 @@ export default class FluxQueryField extends QueryField {
         typeaheadText: text,
         suggestions: results > 0 ? filteredSuggestions : [],
       });
+      return;
+    } else {
+      return;
     }
   }, 500);
 

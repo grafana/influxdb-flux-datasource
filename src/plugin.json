@@ -1,7 +1,7 @@
 {
   "type": "datasource",
   "name": "Flux (InfluxDB) [BETA]",
-  "id": "grafana-influxdb-flux-datasource",
+  "id": "influxdb-flux-datasource",
   "defaultMatchFormat": "regex values",
   "metrics": true,
   "annotations": true,
@@ -19,7 +19,15 @@
       "small": "img/influxdb_logo.svg",
       "large": "img/influxdb_logo.svg"
     },
-    "version": "%VERSION%",
-    "updated": "%TODAY%"
-  }
+    "version": "5.3.0",
+    "updated": "06-11-2019"
+  },
+  "routes": [
+    {
+      "path": "flux",
+      "method": "POST",
+      "url": "{{.JsonData.url}}",
+      "headers": [{"name": "Authorization", "content": "Token {{.SecureJsonData.token}}"}]
+    }
+  ]
 }
