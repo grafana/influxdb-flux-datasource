@@ -28,10 +28,10 @@ Until then, please follow these steps:
 
 ## Supported Template Variable Macros:
 
-* List all measurements for a given database: `measurements(database)`
-* List all tags for a given database and measurement: `tags(database, measurement)`
-* List all tag values for a given database, measurement, and tag: `tag_valuess(database, measurement, tag)`
-* List all field keys for a given database and measurement: `field_keys(database, measurement)`
+- List all measurements for a given database: `measurements(database)`
+- List all tags for a given database and measurement: `tags(database, measurement)`
+- List all tag values for a given database, measurement, and tag: `tag_valuess(database, measurement, tag)`
+- List all field keys for a given database and measurement: `field_keys(database, measurement)`
 
 ## Contributing
 
@@ -55,5 +55,5 @@ env GITHUB_TOKEN=your_token yarn release-it patch
 
 ## Roadmap
 
-* Alerting integration
-* Explore UI integration
+- Alerting integration
+- Explore UI integration
