@@ -7,7 +7,6 @@
     "publish": false
   },
   "scripts": {
-    "afterBump":
-      "npm run build; cd dist; zip -r influxdb-flux-datasource-${version}.zip *"
+    "afterBump": "npm run build; cd dist; zip -r grafana-influxdb-flux-datasource-${version}.zip *"
   }
 }

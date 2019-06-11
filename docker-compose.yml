@@ -3,7 +3,7 @@ grafana:
   ports:
     - "3000:3000"
   volumes:
-    - ./:/var/lib/grafana/plugins/influxdb-flux-datasource
+    - ./:/var/lib/grafana/plugins/grafana-influxdb-flux-datasource
     - ./provisioning:/etc/grafana/provisioning
   environment:
     - TERM=linux
