@@ -126,7 +126,7 @@ export default class FluxQueryField extends QueryField {
           }
         } else if (db) {
           const measurements = this.measurements && this.measurements[db];
-          if (measurements) {
+          if (measurements && measurements.length > 0) {
             prefix = prefix.replace(/\w*\.\./g, '');
             typeaheadContext = 'context-measurements';
             suggestionGroups.push({ label: 'Measurements', items: measurements });

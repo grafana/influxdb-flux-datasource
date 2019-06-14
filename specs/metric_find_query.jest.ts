@@ -10,9 +10,9 @@ describe('metric find query', () => {
 
     it('returns a measurement query for measurements()', () => {
       const query = ' measurements(mydb) ';
-      const result = expandMacros(query).replace(/\s/g, '');
+      const result = expandMacros(query);
       expect(result).toBe(
-        'from(bucket:"mydb")|>range($range)|>group(columns:["_measurement"])|>distinct(column:"_measurement")'
+        'import "influxdata/influxdb/v1" v1.measurements(bucket: "mydb")'
       );
     });
 
