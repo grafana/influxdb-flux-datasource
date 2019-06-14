@@ -30,10 +30,10 @@ function expandQuery(bucket, measurement, field) {
   if (field) {
     return (
       `from(bucket: "${bucket}")\n  |> range($range)\n` +
-      `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> filter(fn: (r) => r["_field"] == "${field}")\n  |> limit(n: 1000)`
+      `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> filter(fn: (r) => r["_field"] == "${field}")\n  |> aggregateWindow(every: $__interval, fn: last)`
     );
   }
-  return `from(bucket: "${bucket}")\n  |> range($range)\n  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> limit(n: 1000)`;
+  return `from(bucket: "${bucket}")\n  |> range($range)\n  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> aggregateWindow(every: $__interval, fn: last)`;
 }
 
 export default class FluxQueryField extends QueryField {
