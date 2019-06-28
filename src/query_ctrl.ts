@@ -3,7 +3,7 @@ import {QueryCtrl} from 'grafana/app/plugins/sdk';
 
 import './editor/editor_component';
 
-function makeDefaultQuery(bucket) {
+function makeDefaultQuery(bucket: string) {
   return `from(bucket: "${bucket}")
   |> range($range)
   |> limit(n:1000)
@@ -12,14 +12,14 @@ function makeDefaultQuery(bucket) {
 export class InfluxFluxQueryCtrl extends QueryCtrl {
   static templateUrl = 'partials/query.editor.html';
 
-  dataPreview: string;
+  dataPreview?: string;
   defaultBucket: string;
   resultRecordCount: string;
   resultTableCount: string;
   resultFormats: any[];
 
-  /** @ngInject **/
-  constructor($scope, $injector) {
+  /** @ngInject */
+  constructor($scope: any, $injector: any) {
     super($scope, $injector);
 
     this.resultRecordCount = '';

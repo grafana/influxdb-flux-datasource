@@ -113,7 +113,7 @@ export function getAnnotationsFromResult(result: string, options: any) {
   data.forEach(record => {
     // Remove empty values, then split in different tags for comma separated values
     const tags = getTagsFromRecord(record);
-    let tagValues = _.flatten(
+    const tagValues = _.flatten(
       tagSelection.filter(tag => tags[tag]).map(tag => tags[tag].split(','))
     );
 
@@ -155,11 +155,11 @@ export function getTableModelFromResult(result: string) {
       return columns.map((c, index) => {
         let value = record[c.id];
         if (index >= firstColumns.length && types[c.id]) {
-          value = parseValueWithType(record[c.id], types[c.id])
+          value = parseValueWithType(record[c.id], types[c.id]);
         }
         return value;
       });
-    })
+    });
   }
 
   return table;

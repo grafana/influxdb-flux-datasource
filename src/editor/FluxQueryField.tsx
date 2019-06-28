@@ -30,10 +30,16 @@ function expandQuery(bucket, measurement, field) {
   if (field) {
     return (
       `from(bucket: "${bucket}")\n` +
-      `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> filter(fn: (r) => r["_field"] == "${field}")\n  |> range($range)\n  |> limit(n: 1000)`
+      `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n` +
+      `  |> filter(fn: (r) => r["_field"] == "${field}")\n` +
+      `  |> range($range)\n` +
+      `  |> limit(n: 1000)`
     );
   }
-  return `from(bucket: "${bucket}")\n  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> range($range)\n  |> limit(n: 1000)`;
+  return `from(bucket: "${bucket}")\n` +
+         `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n` +
+         `  |> range($range)\n` +
+         `  |> limit(n: 1000)`;
 }
 
 export default class FluxQueryField extends QueryField {
@@ -197,7 +203,7 @@ export default class FluxQueryField extends QueryField {
   applyTypeahead(change, suggestion) {
     const { typeaheadPrefix, typeaheadContext, typeaheadText } = this.state;
     let suggestionText = suggestion.display || suggestion.text || suggestion;
-    let move = 0;
+    const move = 0;
 
     // Modify suggestion based on context
     switch (typeaheadContext) {

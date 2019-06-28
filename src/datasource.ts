@@ -81,7 +81,7 @@ export default class InfluxDatasource {
     });
 
     return Promise.all(queries).then((series: any) => {
-      let seriesList = _.flattenDeep(series).slice(0, MAX_SERIES);
+      const seriesList = _.flattenDeep(series).slice(0, MAX_SERIES);
       return {data: seriesList};
     });
   }
@@ -141,8 +141,8 @@ export default class InfluxDatasource {
   }
 
   testDatasource() {
-    const query = `from(bucket:"${this.bucket}") 
-        |> range(start:-10y) 
+    const query = `from(bucket:"${this.bucket}")
+        |> range(start:-10y)
         |> last()`;
 
     return this._influxRequest('POST', '/api/v2/query', query)
@@ -165,14 +165,14 @@ export default class InfluxDatasource {
   }
 
   _influxRequest(method: string, url: string, query: string, options?: any) {
-    let params: any = {};
+    const params: any = {};
 
     if (this.username) {
       params.u = this.username;
       params.p = this.password;
     }
 
-    let req: any = {
+    const req: any = {
       method: method,
       url: `${this.url}/flux${url}?org=${this.organization}`,
       params: params,
@@ -197,7 +197,7 @@ export default class InfluxDatasource {
       result => {
         return result;
       },
-      function(err) {
+      (err) => {
         if (err.status !== 0 || err.status >= 300) {
           if (err.data && err.data.error) {
             throw {
@@ -234,7 +234,7 @@ export default class InfluxDatasource {
 
       const parts = /^now\s*-\s*(\d+)([d|h|m|s])$/.exec(date);
       if (parts) {
-        const amount = parseInt(parts[1]);
+        const amount = parseInt(parts[1],10);
         const unit = parts[2];
         return '-' + amount + unit;
       }
