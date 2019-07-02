@@ -13,9 +13,6 @@
   "author": "Grafana Labs",
   "license": "Apache",
   "dependencies": {
-    "@babel/core": "^7.4.5",
-    "@babel/preset-env": "^7.4.5",
-    "babel-loader": "^8.0.6",
     "immutable": "3.8.2",
     "lodash": "4.17.11",
     "moment": "2.24.0",
@@ -23,20 +20,13 @@
     "prismjs": "1.16.0",
     "slate": "0.47.4",
     "slate-plain-serializer": "0.7.6",
-    "slate-react": "0.22.4",
-    "ts-loader": "^6.0.4"
+    "slate-react": "0.22.4"
   },
   "devDependencies": {
+    "@grafana/toolkit": "next",
     "@grafana/ui": "next",
     "@types/grafana": "github:CorpGlory/types-grafana.git",
-    "@types/jest": "^24.0.13",
-    "@types/lodash": "4.14.132",
     "@types/slate-plain-serializer": "^0.6.1",
-    "grafana-sdk-mocks": "github:grafana/grafana-sdk-mocks",
-    "jest": "^24.8.0",
-    "lodash": "4.17.11",
-    "ts-jest": "^24.0.2",
-    "tslib": "^1.10.0",
-    "typescript": "^3.5.2"
+    "grafana-sdk-mocks": "github:grafana/grafana-sdk-mocks"
   }
 }
