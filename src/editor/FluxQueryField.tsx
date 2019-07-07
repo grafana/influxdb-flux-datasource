@@ -30,16 +30,16 @@ function expandQuery(bucket, measurement, field) {
   if (field) {
     return (
       `from(bucket: "${bucket}")\n` +
-      `  |> range($range)\n` +
       `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n` +
       `  |> filter(fn: (r) => r["_field"] == "${field}")\n` +
-      `  |> aggregateWindow(every: $__interval, fn: last)`
+      `  |> range($range)\n` +
+      `  |> limit(n: 1000)`
     );
   }
   return `from(bucket: "${bucket}")\n` +
-  `  |> range($range)\n` +
   `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n` +
-  `  |> aggregateWindow(every: $__interval, fn: last)`;
+  `  |> range($range)\n` +
+  `  |> limit(n: 1000)`;
 }
 
 export default class FluxQueryField extends QueryField {
@@ -132,7 +132,7 @@ export default class FluxQueryField extends QueryField {
           }
         } else if (db) {
           const measurements = this.measurements && this.measurements[db];
-          if (measurements && measurements.length > 0) {
+          if (measurements) {
             prefix = prefix.replace(/\w*\.\./g, '');
             typeaheadContext = 'context-measurements';
             suggestionGroups.push({ label: 'Measurements', items: measurements });
