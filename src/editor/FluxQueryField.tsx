@@ -7,7 +7,6 @@ import { getNextCharacter, getPreviousCousin } from './utils/dom';
 import { FUNCTIONS } from './flux';
 import '../styles.css';
 
-
 interface Suggestion {
   text: string;
   deleteBackwards?: number;
@@ -29,17 +28,18 @@ const DEFAULT_DATABASE = 'telegraf';
 function expandQuery(bucket, measurement, field) {
   if (field) {
     return (
-      `from(bucket: "${bucket}")\n` +
+      `from(bucket: "${bucket}")\n  |> range($range)\n` +
       `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n` +
       `  |> filter(fn: (r) => r["_field"] == "${field}")\n` +
-      `  |> range($range)\n` +
-      `  |> limit(n: 1000)`
+      `  |> aggregateWindow(every: $__interval, fn: last)`
     );
   }
-  return `from(bucket: "${bucket}")\n` +
-         `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n` +
-         `  |> range($range)\n` +
-         `  |> limit(n: 1000)`;
+  return (
+    `from(bucket: "${bucket}")\n` +
+    `  |> range($range)\n` +
+    `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n` +
+    `  |> aggregateWindow(every: $__interval, fn: last)`
+  );
 }
 
 export default class FluxQueryField extends QueryField {
@@ -52,7 +52,10 @@ export default class FluxQueryField extends QueryField {
 
   componentWillReceiveProps(nextProps) {
     // initialQuery is null in case the user typed
-    if (nextProps.initialQuery !== null && nextProps.initialQuery !== this.props.initialQuery) {
+    if (
+      nextProps.initialQuery !== null &&
+      nextProps.initialQuery !== this.props.initialQuery
+    ) {
       this.setState({ value: getInitialValue(nextProps.initialQuery) });
     }
   }
@@ -84,7 +87,10 @@ export default class FluxQueryField extends QueryField {
 
       // Model ranges
       const modelOffset = this.state.value.anchorOffset;
-      const modelPrefix = this.state.value.anchorText.text.slice(0, modelOffset);
+      const modelPrefix = this.state.value.anchorText.text.slice(
+        0,
+        modelOffset,
+      );
 
       // Determine candidates by context
       const suggestionGroups: SuggestionGroup[] = [];
@@ -100,7 +106,10 @@ export default class FluxQueryField extends QueryField {
           label: 'Range vector',
           items: [...RATE_RANGES].map(wrapText),
         });
-      } else if (wrapperClasses.contains('short-delimiter') || wrapperClasses.contains('short-field')) {
+      } else if (
+        wrapperClasses.contains('short-delimiter') ||
+        wrapperClasses.contains('short-field')
+      ) {
         // Suggest measurements or fields
         const databaseNode = getPreviousCousin(wrapperNode, '.short-root');
         const db = databaseNode && databaseNode.textContent.replace('..', '');
@@ -122,7 +131,8 @@ export default class FluxQueryField extends QueryField {
             skipFilter: true,
           });
           // Additional fields
-          const fields = this.fields && this.fields[db] && this.fields[db][measurement];
+          const fields =
+            this.fields && this.fields[db] && this.fields[db][measurement];
           if (fields) {
             typeaheadContext = 'context-fields';
             suggestionGroups.push({ label: 'Fields', items: fields });
@@ -132,10 +142,13 @@ export default class FluxQueryField extends QueryField {
           }
         } else if (db) {
           const measurements = this.measurements && this.measurements[db];
-          if (measurements) {
+          if (measurements && measurements.length > 0) {
             prefix = prefix.replace(/\w*\.\./g, '');
             typeaheadContext = 'context-measurements';
-            suggestionGroups.push({ label: 'Measurements', items: measurements });
+            suggestionGroups.push({
+              label: 'Measurements',
+              items: measurements,
+            });
           } else {
             this.fetchMeasurements(db);
             return;
@@ -147,7 +160,22 @@ export default class FluxQueryField extends QueryField {
         suggestionGroups.push({
           prefixMatch: true,
           label: 'Operators',
-          items: ['|>', '<-', '+', '-', '*', '/', '<', '>', '<=', '=>', '==', '=~', '!=', '!~'].map(wrapText),
+          items: [
+            '|>',
+            '<-',
+            '+',
+            '-',
+            '*',
+            '/',
+            '<',
+            '>',
+            '<=',
+            '=>',
+            '==',
+            '=~',
+            '!=',
+            '!~',
+          ].map(wrapText),
         });
       } else if (prefix && !wrapperClasses.contains('argument')) {
         // Need prefix for functions
@@ -157,13 +185,18 @@ export default class FluxQueryField extends QueryField {
           label: 'Functions',
           items: FUNCTIONS,
         });
-      } else if (Plain.serialize(this.state.value) === '' || text.match(/[+\-*/^%]/)) {
+      } else if (
+        Plain.serialize(this.state.value) === '' ||
+        text.match(/[+\-*/^%]/)
+      ) {
         // Need prefix for functions
         typeaheadContext = 'context-new';
         suggestionGroups.push({
           prefixMatch: true,
           label: 'Templates',
-          items: [`from(bucket: "${database}") |> range($range) `].map(wrapText),
+          items: [`from(bucket: "${database}") |> range($range) `].map(
+            wrapText,
+          ),
         });
         suggestionGroups.push({
           prefixMatch: true,
@@ -186,7 +219,15 @@ export default class FluxQueryField extends QueryField {
         return group;
       });
 
-      console.log('handleTypeahead', selection.anchorNode, wrapperClasses, text, offset, prefix, typeaheadContext);
+      console.log(
+        'handleTypeahead',
+        selection.anchorNode,
+        wrapperClasses,
+        text,
+        offset,
+        prefix,
+        typeaheadContext,
+      );
 
       this.setState({
         typeaheadPrefix: prefix,
@@ -233,7 +274,9 @@ export default class FluxQueryField extends QueryField {
     const text = cleanText(typeaheadText);
     const suffixLength = text.length - typeaheadPrefix.length;
     const offset = typeaheadText.indexOf(typeaheadPrefix);
-    const midWord = typeaheadPrefix && ((suffixLength > 0 && offset > -1) || suggestionText === typeaheadText);
+    const midWord =
+      typeaheadPrefix &&
+      ((suffixLength > 0 && offset > -1) || suggestionText === typeaheadText);
     const forward = midWord ? suffixLength + offset : 0;
 
     // If new-lines, apply suggestion as block
