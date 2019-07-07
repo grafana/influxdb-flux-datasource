@@ -19,8 +19,8 @@
       "small": "img/influxdb_logo.svg",
       "large": "img/influxdb_logo.svg"
     },
-    "version": "5.3.1",
-    "updated": "06-13-2019"
+    "version": "5.3.2",
+    "updated": "2019-07-07"
   },
   "routes": [
     {

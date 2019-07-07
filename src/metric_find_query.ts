@@ -16,10 +16,7 @@ export default function expandMacros(query) {
   const measurementsQuery = query.match(MEASUREMENTS_REGEXP);
   if (measurementsQuery) {
     const database = measurementsQuery[1];
-    return `from(bucket:"${database}")
-    |> range($range)
-    |> group(columns:["_measurement"])
-    |> distinct(column:"_measurement")`;
+    return `import "influxdata/influxdb/v1" v1.measurements(bucket: "${database}")`;
   }
 
   const tagsQuery = query.match(TAGS_REGEXP);
