@@ -28,6 +28,7 @@
     "semi": true
   },
   "dependencies": {
+    "diff": "^4.0.1",
     "immutable": "3.8.2",
     "lodash": "4.17.11",
     "moment": "2.24.0",
@@ -35,6 +36,7 @@
     "prismjs": "1.16.0",
     "react": "16.8.6",
     "react-dom": "16.8.6",
+    "shelljs": "^0.8.3",
     "slate": "0.47.4",
     "slate-plain-serializer": "0.7.6",
     "slate-react": "0.22.4"
