@@ -1,6 +1,5 @@
-import Papa from 'papaparse';
-import flatten from 'lodash/flatten';
-import groupBy from 'lodash/groupBy';
+import { parse } from 'papaparse';
+import * as _ from 'lodash';
 
 interface Annotation {
   time: number;
@@ -47,7 +46,7 @@ const determineFieldTypes = (input: string, meta: any) => {
     const types = firstLine.slice(1).split(',');
     if (types.length === meta.fields.length) {
       meta.fields.forEach((f, i) => {
-        typesByField[f] = types[i];
+        typesByField[f] = types[i].trim();
       });
     }
   }
@@ -55,7 +54,7 @@ const determineFieldTypes = (input: string, meta: any) => {
 };
 
 const parseCSV = (input: string) => {
-  const {data, meta} = Papa.parse(input, {
+  const {data, meta} = parse(input, {
     header: true,
     comments: '#',
   });
@@ -114,7 +113,7 @@ export function getAnnotationsFromResult(result: string, options: any) {
   data.forEach(record => {
     // Remove empty values, then split in different tags for comma separated values
     const tags = getTagsFromRecord(record);
-    const tagValues = flatten(
+    let tagValues = _.flatten(
       tagSelection.filter(tag => tags[tag]).map(tag => tags[tag].split(','))
     );
 
@@ -152,13 +151,15 @@ export function getTableModelFromResult(result: string) {
     columns.forEach(c => table.columns.push(c));
 
     // Add rows
-    const valueColumnIndex = columns.length - 1;
-    const valueColumnType = types[valueColumn.id];
-    data.forEach(record => {
-      const row = columns.map(c => record[c.id]);
-      row[valueColumnIndex] = parseValueWithType(row[valueColumnIndex], valueColumnType);
-      table.rows.push(row);
-    });
+    table.rows = data.map((record) => {
+      return columns.map((c, index) => {
+        let value = record[c.id];
+        if (index >= firstColumns.length && types[c.id]) {
+          value = parseValueWithType(record[c.id], types[c.id])
+        }
+        return value;
+      });
+    })
   }
 
   return table;
@@ -171,7 +172,7 @@ export function getTimeSeriesFromResult(result: string) {
   }
 
   // Group results by table ID (assume one table per timeseries for now)
-  const tables = groupBy(data, 'table');
+  const tables = _.groupBy(data, 'table');
   const seriesList = Object.keys(tables)
     .map(id => tables[id])
     .map(series => {

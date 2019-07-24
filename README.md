@@ -21,17 +21,17 @@ Read more about InfluxDB here:
 While this plugin is in BETA, it is not frequently pushed to the central plugin directory on grafana.com.
 Until then, please follow these steps:
 
-1. Make sure you have Grafana and Influx v1.7+ running.
+1. Make sure you have Grafana and Influx v1.7.4 or above running. (Note: v2.x.x is not yet supported.)
 2. Download [the latest release](https://github.com/grafana/influxdb-flux-datasource/releases) into Grafana's `data/plugins` directory and unzip it.
 3. Restart Grafana
 4. Add Flux as a datasource using the hostname that your Influx DB is running on and port 8086.
 
 ## Supported Template Variable Macros:
 
-* List all measurements for a given database: `measurements(database)`
-* List all tags for a given database and measurement: `tags(database, measurement)`
-* List all tag values for a given database, measurement, and tag: `tag_valuess(database, measurement, tag)`
-* List all field keys for a given database and measurement: `field_keys(database, measurement)`
+- List all measurements for a given database: `measurements(database)`
+- List all tags for a given database and measurement: `tags(database, measurement)`
+- List all tag values for a given database, measurement, and tag: `tag_valuess(database, measurement, tag)`
+- List all field keys for a given database and measurement: `field_keys(database, measurement)`
 
 ## Contributing
 
@@ -55,5 +55,5 @@ env GITHUB_TOKEN=your_token yarn release-it patch
 
 ## Roadmap
 
-* Alerting integration
-* Explore UI integration
+- Alerting integration
+- Explore UI integration

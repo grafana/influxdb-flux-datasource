@@ -16,11 +16,7 @@ export default function expandMacros(query) {
   const measurementsQuery = query.match(MEASUREMENTS_REGEXP);
   if (measurementsQuery) {
     const database = measurementsQuery[1];
-    return `from(bucket:"${database}")
-    |> range($range)
-    |> group(by:["_measurement"])
-    |> distinct(column:"_measurement")
-    |> group(none:true)`;
+    return `import "influxdata/influxdb/v1" v1.measurements(bucket: "${database}")`;
   }
 
   const tagsQuery = query.match(TAGS_REGEXP);
@@ -41,9 +37,8 @@ export default function expandMacros(query) {
     return `from(bucket:"${database}")
     |> range($range)
     |> filter(fn:(r) => r._measurement == "${measurement}")
-    |> group(by:["${tag}"])
-    |> distinct(column:"${tag}")
-    |> group(none:true)`;
+    |> group(columns:["${tag}"])
+    |> distinct(column:"${tag}")`;
   }
 
   const fieldKeysQuery = query.match(FIELD_KEYS_REGEXP);
@@ -53,9 +48,8 @@ export default function expandMacros(query) {
     return `from(bucket:"${database}")
     |> range($range)
     |> filter(fn:(r) => r._measurement == "${measurement}")
-    |> group(by:["_field"])
-    |> distinct(column:"_field")
-    |> group(none:true)`;
+    |> group(columns:["_field"])
+    |> distinct(column:"_field")`;
   }
 
   // By default return pure query

@@ -10,9 +10,9 @@ describe('metric find query', () => {
 
     it('returns a measurement query for measurements()', () => {
       const query = ' measurements(mydb) ';
-      const result = expandMacros(query).replace(/\s/g, '');
+      const result = expandMacros(query);
       expect(result).toBe(
-        'from(bucket:"mydb")|>range($range)|>group(by:["_measurement"])|>distinct(column:"_measurement")|>group(none:true)'
+        'import "influxdata/influxdb/v1" v1.measurements(bucket: "mydb")'
       );
     });
 
@@ -29,7 +29,7 @@ describe('metric find query', () => {
       const result = expandMacros(query).replace(/\s/g, '');
       expect(result).toBe(
         'from(bucket:"mydb")|>range($range)|>filter(fn:(r)=>r._measurement=="mymetric")' +
-          '|>group(by:["mytag"])|>distinct(column:"mytag")|>group(none:true)'
+          '|>group(columns:["mytag"])|>distinct(column:"mytag")'
       );
     });
 
@@ -38,7 +38,7 @@ describe('metric find query', () => {
       const result = expandMacros(query).replace(/\s/g, '');
       expect(result).toBe(
         'from(bucket:"mydb")|>range($range)|>filter(fn:(r)=>r._measurement=="mymetric")' +
-          '|>group(by:["_field"])|>distinct(column:"_field")|>group(none:true)'
+          '|>group(columns:["_field"])|>distinct(column:"_field")'
       );
     });
   });

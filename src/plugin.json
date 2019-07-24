@@ -12,14 +12,22 @@
   "info": {
     "description": "InfluxDB Data Source for Flux Queries for Grafana",
     "author": {
-      "name": "Grafana Project",
+      "name": "Grafana Labs",
       "url": "https://grafana.com"
     },
     "logos": {
       "small": "img/influxdb_logo.svg",
       "large": "img/influxdb_logo.svg"
     },
-    "version": "%VERSION%",
-    "updated": "%TODAY%"
-  }
+    "version": "5.3.2",
+    "updated": "2019-07-07"
+  },
+  "routes": [
+    {
+      "path": "flux",
+      "method": "POST",
+      "url": "{{.JsonData.url}}",
+      "headers": [{"name": "Authorization", "content": "Token {{.SecureJsonData.token}}"}]
+    }
+  ]
 }

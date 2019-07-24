@@ -29,11 +29,11 @@ const DEFAULT_DATABASE = 'telegraf';
 function expandQuery(bucket, measurement, field) {
   if (field) {
     return (
-      `from(bucket: "${bucket}")\n` +
-      `  |> filter(fn: (r) => r["_measurement"] == "${measurement}" AND r["_field"] == "${field}")\n  |> range($range)\n  |> limit(n: 1000)`
+      `from(bucket: "${bucket}")\n  |> range($range)\n` +
+      `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> filter(fn: (r) => r["_field"] == "${field}")\n  |> aggregateWindow(every: $__interval, fn: last)`
     );
   }
-  return `from(bucket: "${bucket}")\n  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> range($range)\n  |> limit(n: 1000)`;
+  return `from(bucket: "${bucket}")\n  |> range($range)\n  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> aggregateWindow(every: $__interval, fn: last)`;
 }
 
 export default class FluxQueryField extends QueryField {
@@ -53,6 +53,9 @@ export default class FluxQueryField extends QueryField {
 
   handleTypeahead = debounce(() => {
     const selection = window.getSelection();
+    if (selection === null) {
+      return null;
+    }
     if (selection.anchorNode) {
       const wrapperNode = selection.anchorNode.parentElement;
       if (wrapperNode === null) {
@@ -123,7 +126,7 @@ export default class FluxQueryField extends QueryField {
           }
         } else if (db) {
           const measurements = this.measurements && this.measurements[db];
-          if (measurements) {
+          if (measurements && measurements.length > 0) {
             prefix = prefix.replace(/\w*\.\./g, '');
             typeaheadContext = 'context-measurements';
             suggestionGroups.push({ label: 'Measurements', items: measurements });
@@ -185,12 +188,15 @@ export default class FluxQueryField extends QueryField {
         typeaheadText: text,
         suggestions: results > 0 ? filteredSuggestions : [],
       });
+      return;
+    } else {
+      return;
     }
   }, 500);
 
   applyTypeahead(change, suggestion) {
     const { typeaheadPrefix, typeaheadContext, typeaheadText } = this.state;
-    let suggestionText = suggestion.display || suggestion.text;
+    let suggestionText = suggestion.display || suggestion.text || suggestion;
     let move = 0;
 
     // Modify suggestion based on context
