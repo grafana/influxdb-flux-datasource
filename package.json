@@ -25,9 +25,8 @@
   },
   "devDependencies": {
     "@grafana/toolkit": "next",
-    "@grafana/ui": "next",
+    "@grafana/ui": "latest",
     "@types/grafana": "github:CorpGlory/types-grafana.git",
-    "@types/slate-plain-serializer": "^0.6.1",
-    "grafana-sdk-mocks": "github:grafana/grafana-sdk-mocks"
+    "@types/slate-plain-serializer": "^0.6.1"
   }
 }
