@@ -1,5 +1,5 @@
 import appEvents from 'grafana/app/core/app_events';
-import {QueryCtrl} from 'grafana/app/plugins/sdk';
+import { QueryCtrl } from 'grafana/app/plugins/sdk';
 
 import './editor/editor_component';
 
@@ -30,10 +30,7 @@ export class InfluxFluxQueryCtrl extends QueryCtrl {
     }
 
     this.defaultBucket = this.datasource.bucket;
-    this.resultFormats = [
-      {text: 'Time series', value: 'time_series'},
-      {text: 'Table', value: 'table'},
-    ];
+    this.resultFormats = [{ text: 'Time series', value: 'time_series' }, { text: 'Table', value: 'table' }];
 
     appEvents.on('ds-request-response', this.onResponseReceived, $scope);
     this.panelCtrl.events.on('refresh', this.onRefresh, $scope);
@@ -42,8 +39,7 @@ export class InfluxFluxQueryCtrl extends QueryCtrl {
 
   onDataReceived = dataList => {
     this.resultRecordCount = dataList.reduce((count, model) => {
-      const records =
-        model.type === 'table' ? model.rows.length : model.datapoints.length;
+      const records = model.type === 'table' ? model.rows.length : model.datapoints.length;
       return count + records;
     }, 0);
     this.resultTableCount = dataList.length;

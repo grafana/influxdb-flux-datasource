@@ -1,20 +1,21 @@
 // Node.closest() polyfill
-/* tslint:disable */
 if ('Element' in window && !Element.prototype.closest) {
-  Element.prototype.closest = function(s) {
+  Element.prototype.closest = function(this: any, s: string) {
     const matches = (this.document || this.ownerDocument).querySelectorAll(s);
     let el = this;
     let i;
+    // eslint-disable-next-line
     do {
       i = matches.length;
+      // eslint-disable-next-line
       while (--i >= 0 && matches.item(i) !== el) {}
-    } while (i < 0 && (el = el.parentElement));
+      el = el.parentElement;
+    } while (i < 0 && el);
     return el;
   };
 }
-/* tslint:enable */
 
-export function getPreviousCousin(node, selector) {
+export function getPreviousCousin(node: any, selector: string) {
   let sibling = node.parentElement.previousSibling;
   let el;
   while (sibling) {
@@ -27,21 +28,14 @@ export function getPreviousCousin(node, selector) {
   return undefined;
 }
 
-export function getNextCharacter(global = window): string | null {
+export function getNextCharacter(global = window) {
   const selection = global.getSelection();
-
-  if (selection === null) {
-    return null;
-  }
-  if (!selection.anchorNode) {
+  if (!selection || !selection.anchorNode) {
     return null;
   }
 
   const range = selection.getRangeAt(0);
   const text = selection.anchorNode.textContent;
-  if (text === null) {
-    return null;
-  }
   const offset = range.startOffset;
-  return text.substr(offset, 1);
+  return text!.substr(offset, 1);
 }

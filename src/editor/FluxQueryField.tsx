@@ -1,12 +1,11 @@
 import Plain from 'slate-plain-serializer';
 
 import QueryField, { getInitialValue, makeFragment } from './QueryField';
-import debounce from './utils/debounce';
+import debounce from 'lodash/debounce';
 import { getNextCharacter, getPreviousCousin } from './utils/dom';
 
 import { FUNCTIONS } from './flux';
 import '../styles.css';
-
 
 interface Suggestion {
   text: string;
@@ -36,10 +35,9 @@ function expandQuery(bucket, measurement, field) {
       `  |> limit(n: 1000)`
     );
   }
-  return `from(bucket: "${bucket}")\n` +
-  `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n` +
-  `  |> range($range)\n` +
-  `  |> limit(n: 1000)`;
+  return (
+    `from(bucket: "${bucket}")\n` + `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n` + `  |> range($range)\n` + `  |> limit(n: 1000)`
+  );
 }
 
 export default class FluxQueryField extends QueryField {

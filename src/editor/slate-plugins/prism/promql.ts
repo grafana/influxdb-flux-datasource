@@ -1,18 +1,6 @@
 export const OPERATORS = ['by', 'group_left', 'group_right', 'ignoring', 'on', 'offset', 'without'];
 
-const AGGREGATION_OPERATORS = [
-  'sum',
-  'min',
-  'max',
-  'avg',
-  'stddev',
-  'stdvar',
-  'count',
-  'count_values',
-  'bottomk',
-  'topk',
-  'quantile',
-];
+const AGGREGATION_OPERATORS = ['sum', 'min', 'max', 'avg', 'stddev', 'stdvar', 'count', 'count_values', 'bottomk', 'topk', 'quantile'];
 
 export const FUNCTIONS = [
   ...AGGREGATION_OPERATORS,

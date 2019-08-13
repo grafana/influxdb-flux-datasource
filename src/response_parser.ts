@@ -14,8 +14,7 @@ interface Table {
   rows: any[];
 }
 
-const filterColumnKeys = key =>
-  key && key[0] !== '_' && key !== 'result' && key !== 'table';
+const filterColumnKeys = key => key && key[0] !== '_' && key !== 'result' && key !== 'table';
 
 const IGNORE_FIELDS_FOR_NAME = ['result', '', 'table'];
 
@@ -54,14 +53,14 @@ const determineFieldTypes = (input: string, meta: any) => {
 };
 
 const parseCSV = (input: string) => {
-  const {data, meta} = parse(input, {
+  const { data, meta } = parse(input, {
     header: true,
     comments: '#',
   });
 
   const types = determineFieldTypes(input, meta);
 
-  return {data, types};
+  return { data, types };
 };
 
 export const parseValue = (input: string) => {
@@ -100,7 +99,7 @@ export function parseResults(response: string): any[] {
 }
 
 export function getAnnotationsFromResult(result: string, options: any) {
-  const {data} = parseCSV(result);
+  const { data } = parseCSV(result);
   if (data.length === 0) {
     return [];
   }
@@ -113,9 +112,7 @@ export function getAnnotationsFromResult(result: string, options: any) {
   data.forEach(record => {
     // Remove empty values, then split in different tags for comma separated values
     const tags = getTagsFromRecord(record);
-    const tagValues = _.flatten(
-      tagSelection.filter(tag => tags[tag]).map(tag => tags[tag].split(','))
-    );
+    const tagValues = _.flatten(tagSelection.filter(tag => tags[tag]).map(tag => tags[tag].split(',')));
 
     annotations.push({
       annotation: options,
@@ -129,29 +126,25 @@ export function getAnnotationsFromResult(result: string, options: any) {
 }
 
 export function getTableModelFromResult(result: string) {
-  const {data, types} = parseCSV(result);
+  const { data, types } = parseCSV(result);
 
-  const table: Table = {type: 'table', columns: [], rows: []};
+  const table: Table = { type: 'table', columns: [], rows: [] };
   if (data.length > 0) {
     // First columns are fixed
-    const firstColumns = [
-      {text: 'Time', id: '_time'},
-      {text: 'Measurement', id: '_measurement'},
-      {text: 'Field', id: '_field'},
-    ];
+    const firstColumns = [{ text: 'Time', id: '_time' }, { text: 'Measurement', id: '_measurement' }, { text: 'Field', id: '_field' }];
 
     // Dynamically add columns for tags
     const firstRecord = data[0];
     const tags = Object.keys(firstRecord)
       .filter(filterColumnKeys)
-      .map(key => ({id: key, text: key}));
+      .map(key => ({ id: key, text: key }));
 
-    const valueColumn = {id: '_value', text: 'Value'};
+    const valueColumn = { id: '_value', text: 'Value' };
     const columns = [...firstColumns, ...tags, valueColumn];
     columns.forEach(c => table.columns.push(c));
 
     // Add rows
-    table.rows = data.map((record) => {
+    table.rows = data.map(record => {
       return columns.map((c, index) => {
         let value = record[c.id];
         if (index >= firstColumns.length && types[c.id]) {
@@ -166,7 +159,7 @@ export function getTableModelFromResult(result: string) {
 }
 
 export function getTimeSeriesFromResult(result: string) {
-  const {data} = parseCSV(result);
+  const { data } = parseCSV(result);
   if (data.length === 0) {
     return [];
   }
@@ -176,18 +169,15 @@ export function getTimeSeriesFromResult(result: string) {
   const seriesList = Object.keys(tables)
     .map(id => tables[id])
     .map(series => {
-      const datapoints = series.map(record => [
-        parseValue(record['_value']),
-        parseTime(record['_time']),
-      ]);
+      const datapoints = series.map(record => [parseValue(record['_value']), parseTime(record['_time'])]);
       const alias = getNameFromRecord(series[0]);
-      return {datapoints, target: alias};
+      return { datapoints, target: alias };
     });
 
   return seriesList;
 }
 
 export function getValuesFromResult(result: string) {
-  const {data} = parseCSV(result);
+  const { data } = parseCSV(result);
   return data.map(record => record['_value']);
 }

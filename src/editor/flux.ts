@@ -27,8 +27,7 @@ export const FUNCTIONS = [
   {
     text: 'filter',
     display: 'filter(fn: (r) => r["_value"] > 0)',
-    hint:
-      'Applies a predicate function to each input record, output tables contain only records that matched the predicate.',
+    hint: 'Applies a predicate function to each input record, output tables contain only records that matched the predicate.',
   },
   {
     text: 'first',
@@ -88,14 +87,12 @@ export const FUNCTIONS = [
   {
     text: 'percentile',
     display: 'percentile(percentile: 0.95)',
-    hint:
-      ' For each aggregated column, it outputs the value that represents the specified percentile of the non-null record as a float.',
+    hint: ' For each aggregated column, it outputs the value that represents the specified percentile of the non-null record as a float.',
   },
   {
     text: 'range',
     display: 'range($range)',
-    hint:
-      'Filters the results by time boundaries "start" and "stop". Use "$range" to apply the dashboard range.',
+    hint: 'Filters the results by time boundaries "start" and "stop". Use "$range" to apply the dashboard range.',
   },
   {
     text: 'sample',
@@ -125,8 +122,7 @@ export const FUNCTIONS = [
   {
     text: 'spread',
     display: 'spread()',
-    hint:
-      'For each aggregated column, it outputs the difference between the min and max values.',
+    hint: 'For each aggregated column, it outputs the difference between the min and max values.',
   },
   // { text: 'stateTracking', display: '', hint: '' },
   {
