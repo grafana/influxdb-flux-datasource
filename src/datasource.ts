@@ -5,7 +5,7 @@ import * as dateMath from 'grafana/app/core/utils/datemath';
 import { getAnnotationsFromResult, getTableModelFromResult, getTimeSeriesFromResult, getValuesFromResult, parseResults } from './response_parser';
 import expandMacros from './metric_find_query';
 
-const MAX_SERIES = 20;
+const MAX_SERIES = 120;
 export default class InfluxDatasource {
   type: string;
   url: string;
