@@ -4,29 +4,13 @@
   "description": "Grafana data source for InfluxDB (Flux query support)",
   "private": true,
   "scripts": {
-    "build": "webpack --config webpack.config.prod.js",
-    "dev": "webpack --mode development",
-    "watch": "webpack --mode development --watch",
-    "test": "jest --config jest.config.js",
-    "precommit": "lint-staged yarn",
-    "pretty": "prettier --write src/**/*.ts"
+    "build": "grafana-toolkit plugin:build",
+    "test": "grafana-toolkit plugin:test",
+    "dev": "grafana-toolkit plugin:dev",
+    "watch": "grafana-toolkit plugin:dev --watch"
   },
   "author": "Grafana Labs",
   "license": "Apache",
-  "lint-staged": {
-    "*.{js,ts,json,css,md}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "prettier": {
-    "singleQuote": true,
-    "trailingComma": "es5",
-    "useTabs": false,
-    "printWidth": 90,
-    "bracketSpacing": false,
-    "semi": true
-  },
   "dependencies": {
     "diff": "^4.0.1",
     "immutable": "3.8.2",
@@ -34,36 +18,15 @@
     "moment": "2.24.0",
     "papaparse": "4.6.3",
     "prismjs": "1.16.0",
-    "react": "16.8.6",
-    "react-dom": "16.8.6",
     "shelljs": "^0.8.3",
     "slate": "0.47.4",
     "slate-plain-serializer": "0.7.6",
     "slate-react": "0.22.4"
   },
   "devDependencies": {
+    "@grafana/toolkit": "next",
+    "@grafana/ui": "latest",
     "@types/grafana": "github:CorpGlory/types-grafana.git",
-    "@types/jest": "24.0.13",
-    "@types/lodash": "4.14.134",
-    "@types/papaparse": "4.5.9",
-    "@types/react": "16.8.19",
-    "clean-webpack-plugin": "3.0.0",
-    "copy-webpack-plugin": "5.0.3",
-    "css-loader": "2.1.1",
-    "grafana-sdk-mocks": "github:grafana/grafana-sdk-mocks",
-    "husky": "2.4.0",
-    "jest": "24.8.0",
-    "lint-staged": "8.2.0",
-    "ng-annotate-webpack-plugin": "0.3.0",
-    "prettier": "1.18.2",
-    "release-it": "12.3.0",
-    "replace-in-file-webpack-plugin": "1.0.6",
-    "style-loader": "0.23.1",
-    "syncyarnlock": "1.0.12",
-    "ts-jest": "24.0.2",
-    "ts-loader": "6.0.2",
-    "typescript": "3.5.1",
-    "webpack": "4.12.2",
-    "webpack-cli": "^3.3.3"
+    "@types/slate-plain-serializer": "^0.6.1"
   }
 }

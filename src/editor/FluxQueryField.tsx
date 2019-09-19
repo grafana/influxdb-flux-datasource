@@ -1,12 +1,11 @@
 import Plain from 'slate-plain-serializer';
 
 import QueryField, { getInitialValue, makeFragment } from './QueryField';
-import debounce from './utils/debounce';
+import debounce from 'lodash/debounce';
 import { getNextCharacter, getPreviousCousin } from './utils/dom';
 
 import { FUNCTIONS } from './flux';
 import '../styles.css';
-
 
 interface Suggestion {
   text: string;
@@ -29,11 +28,16 @@ const DEFAULT_DATABASE = 'telegraf';
 function expandQuery(bucket, measurement, field) {
   if (field) {
     return (
-      `from(bucket: "${bucket}")\n  |> range($range)\n` +
-      `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> filter(fn: (r) => r["_field"] == "${field}")\n  |> aggregateWindow(every: $__interval, fn: last)`
+      `from(bucket: "${bucket}")\n` +
+      `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n` +
+      `  |> filter(fn: (r) => r["_field"] == "${field}")\n` +
+      `  |> range($range)\n` +
+      `  |> limit(n: 1000)`
     );
   }
-  return `from(bucket: "${bucket}")\n  |> range($range)\n  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n  |> aggregateWindow(every: $__interval, fn: last)`;
+  return (
+    `from(bucket: "${bucket}")\n` + `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n` + `  |> range($range)\n` + `  |> limit(n: 1000)`
+  );
 }
 
 export default class FluxQueryField extends QueryField {
@@ -126,7 +130,7 @@ export default class FluxQueryField extends QueryField {
           }
         } else if (db) {
           const measurements = this.measurements && this.measurements[db];
-          if (measurements && measurements.length > 0) {
+          if (measurements) {
             prefix = prefix.replace(/\w*\.\./g, '');
             typeaheadContext = 'context-measurements';
             suggestionGroups.push({ label: 'Measurements', items: measurements });
@@ -197,7 +201,7 @@ export default class FluxQueryField extends QueryField {
   applyTypeahead(change, suggestion) {
     const { typeaheadPrefix, typeaheadContext, typeaheadText } = this.state;
     let suggestionText = suggestion.display || suggestion.text || suggestion;
-    let move = 0;
+    const move = 0;
 
     // Modify suggestion based on context
     switch (typeaheadContext) {

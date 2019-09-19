@@ -45,15 +45,7 @@ class TypeaheadGroup extends React.PureComponent<any, any> {
           {items.map(item => {
             const text = typeof item === 'object' ? item.text : item;
             const label = typeof item === 'object' ? item.display || item.text : item;
-            return (
-              <TypeaheadItem
-                key={text}
-                onClickItem={onClickItem}
-                isSelected={selected.indexOf(text) > -1}
-                hint={item.hint}
-                label={label}
-              />
-            );
+            return <TypeaheadItem key={text} onClickItem={onClickItem} isSelected={selected.indexOf(text) > -1} hint={item.hint} label={label} />;
           })}
         </ul>
       </li>
