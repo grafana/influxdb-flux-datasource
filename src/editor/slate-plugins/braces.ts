@@ -40,7 +40,6 @@ export default function BracesPlugin(): Plugin {
         }
 
         case 'Backspace': {
-          console.log('backspace');
           const text = value.anchorText.text;
           const offset = value.selection.anchor.offset;
           const previousChar = text[offset - 1];

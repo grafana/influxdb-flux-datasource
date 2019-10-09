@@ -193,14 +193,6 @@ export default class FluxQueryField extends QueryField {
         return group;
       });
 
-      console.log('handleTypeahead');
-      console.log('anchornode', selection.anchorNode);
-      console.log('wrapperClasses', wrapperClasses);
-      console.log('text', text);
-      console.log('offset', offset);
-      console.log('prefix', prefix);
-      console.log('typeaheadContext', typeaheadContext);
-
       this.setState({
         typeaheadPrefix: prefix,
         typeaheadContext,

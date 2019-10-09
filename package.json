@@ -20,15 +20,15 @@
     "prismjs": "1.16.0",
     "ts-loader": "^6.2.0",
     "typescript": "^3.6.3",
-    "shelljs": "^0.8.3",
-    "slate": "0.47.8",
-    "slate-plain-serializer": "0.7.10",
-    "@grafana/slate-react": "^0.22.9-grafana"
+    "shelljs": "^0.8.3"
   },
   "devDependencies": {
     "@grafana/toolkit": "next",
     "@grafana/ui": "latest",
     "@types/grafana": "github:CorpGlory/types-grafana.git",
-    "@types/slate-plain-serializer": "^0.6.1"
+    "@types/slate-plain-serializer": "^0.6.1",
+    "slate": "0.47.8",
+    "slate-plain-serializer": "0.7.10",
+    "@grafana/slate-react": "^0.22.9-grafana"
   }
 }
