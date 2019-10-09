@@ -45,7 +45,7 @@ class Editor extends Component<any, any> {
           initialQuery={edited ? null : query}
           onPressEnter={this.handlePressEnter}
           onQueryChange={this.handleChangeQuery}
-          prismLanguage="python"
+          prismLanguage="flux"
           prismDefinition={flux}
           placeholder="Enter a FLUX query"
           request={request}

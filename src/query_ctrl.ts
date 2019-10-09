@@ -56,12 +56,10 @@ export class InfluxFluxQueryCtrl extends QueryCtrl {
   };
 
   onChange = nextQuery => {
-    console.log('nextQuery', nextQuery);
     this.target.query = nextQuery;
   };
 
   onExecute = () => {
-    console.log('Influx refresh metric data', this.target);
     this.panelCtrl.refresh();
   };
 

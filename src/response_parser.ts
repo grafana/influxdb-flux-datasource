@@ -158,6 +158,16 @@ export function getTableModelFromResult(result: string) {
   return table;
 }
 
+function getTimeRec(record) {
+  if (typeof record['_time'] !== 'undefined') {
+    return record['_time'];
+  }
+
+  if (typeof record['_start'] !== 'undefined') {
+    return record['_start'];
+  }
+}
+
 export function getTimeSeriesFromResult(result: string) {
   const { data } = parseCSV(result);
   if (data.length === 0) {
@@ -169,7 +179,7 @@ export function getTimeSeriesFromResult(result: string) {
   const seriesList = Object.keys(tables)
     .map(id => tables[id])
     .map(series => {
-      const datapoints = series.map(record => [parseValue(record['_value']), parseTime(record['_time'])]);
+      const datapoints = series.map(record => [parseValue(record['_value']), parseTime(getTimeRec(record))]);
       const alias = getNameFromRecord(series[0]);
       return { datapoints, target: alias };
     });
