@@ -30,14 +30,8 @@ export default function BracesPlugin(): Plugin {
               .insertTextByKey(startKey, startOffset, event.key)
               .insertTextByKey(endKey, endOffset + 1, BRACES[event.key])
               .moveEndBackward(1);
-          } else if (
-            focusOffset === text.length ||
-            text[focusOffset] === ' ' ||
-            Object.values(BRACES).includes(text[focusOffset])
-          ) {
-            editor
-              .insertText(`${event.key}${BRACES[event.key]}`)
-              .moveBackward(1);
+          } else if (focusOffset === text.length || text[focusOffset] === ' ' || Object.values(BRACES).includes(text[focusOffset])) {
+            editor.insertText(`${event.key}${BRACES[event.key]}`).moveBackward(1);
           } else {
             editor.insertText(event.key);
           }
@@ -46,7 +40,7 @@ export default function BracesPlugin(): Plugin {
         }
 
         case 'Backspace': {
-          console.log("backspace");
+          console.log('backspace');
           const text = value.anchorText.text;
           const offset = value.selection.anchor.offset;
           const previousChar = text[offset - 1];

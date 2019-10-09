@@ -159,11 +159,11 @@ export function getTableModelFromResult(result: string) {
 }
 
 function getTimeRec(record) {
-  if (typeof record['_time'] !== "undefined") {
+  if (typeof record['_time'] !== 'undefined') {
     return record['_time'];
   }
 
-  if (typeof record['_start'] !== "undefined") {
+  if (typeof record['_start'] !== 'undefined') {
     return record['_start'];
   }
 }

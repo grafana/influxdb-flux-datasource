@@ -143,7 +143,7 @@ class QueryField extends React.Component<any, any> {
   handleChangeQuery = () => {
     // Send text change to parent
     const { onQueryChange } = this.props;
-    console.log("handleChangeQuery", onQueryChange, this.state);
+    console.log('handleChangeQuery', onQueryChange, this.state);
     if (onQueryChange) {
       onQueryChange(Plain.serialize(this.state.value));
     }
@@ -224,10 +224,7 @@ class QueryField extends React.Component<any, any> {
     return change || this.state.value.change();
   };
 
-  applyTypeahead = (
-    editor: CoreEditor,
-    suggestion: { text: any; type: string; deleteBackwards: any },
-  ): { value: object } => {
+  applyTypeahead = (editor: CoreEditor, suggestion: { text: any; type: string; deleteBackwards: any }): { value: object } => {
     return { value: new Value() };
   };
 
@@ -259,7 +256,7 @@ class QueryField extends React.Component<any, any> {
 
   handleClickMenu = (item, editor: CoreEditor) => {
     // Manually triggering change
-    console.log("handleClickMenu")
+    console.log('handleClickMenu');
     const change = this.applyTypeahead(editor, item);
     this.onChange(change);
   };
