@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Block, Document, Text, Value } from 'slate';
-import { Editor } from 'slate-react';
+import { Block, Document, Text, Value, Editor as CoreEditor } from 'slate';
+import { Editor } from '@grafana/slate-react';
 import Plain from 'slate-plain-serializer';
 
 import BracesPlugin from './slate-plugins/braces';
@@ -143,19 +143,21 @@ class QueryField extends React.Component<any, any> {
   handleChangeQuery = () => {
     // Send text change to parent
     const { onQueryChange } = this.props;
+    console.log("handleChangeQuery", onQueryChange, this.state);
     if (onQueryChange) {
       onQueryChange(Plain.serialize(this.state.value));
     }
   };
 
-  onKeyDown = (event, change) => {
+  onKeyDown = (event: Event, editor: CoreEditor, next: Function) => {
     const { typeaheadIndex, suggestions } = this.state;
+    const keyboardEvent = event as KeyboardEvent;
 
-    switch (event.key) {
+    switch (keyboardEvent.key) {
       case 'Escape': {
         if (this.menuEl) {
-          event.preventDefault();
-          event.stopPropagation();
+          keyboardEvent.preventDefault();
+          keyboardEvent.stopPropagation();
           this.resetTypeahead();
           return true;
         }
@@ -163,8 +165,8 @@ class QueryField extends React.Component<any, any> {
       }
 
       case ' ': {
-        if (event.ctrlKey) {
-          event.preventDefault();
+        if (keyboardEvent.ctrlKey) {
+          keyboardEvent.preventDefault();
           this.handleTypeahead();
           return true;
         }
@@ -177,7 +179,7 @@ class QueryField extends React.Component<any, any> {
           // Dont blur input
           event.preventDefault();
           if (!suggestions || suggestions.length === 0) {
-            return undefined;
+            return next();
           }
 
           // Get the currently selected suggestion
@@ -186,7 +188,7 @@ class QueryField extends React.Component<any, any> {
           const selectedIndex = selected % flattenedSuggestions.length || 0;
           const suggestion = flattenedSuggestions[selectedIndex];
 
-          this.applyTypeahead(change, suggestion);
+          this.applyTypeahead(editor, suggestion);
           return true;
         }
         break;
@@ -215,16 +217,19 @@ class QueryField extends React.Component<any, any> {
         break;
       }
     }
-    return undefined;
+    return next();
   };
 
   handleTypeahead = (change?, item?) => {
     return change || this.state.value.change();
   };
 
-  applyTypeahead(change?, suggestion?): { value: object } {
-    return { value: {} };
-  }
+  applyTypeahead = (
+    editor: CoreEditor,
+    suggestion: { text: any; type: string; deleteBackwards: any },
+  ): { value: object } => {
+    return { value: new Value() };
+  };
 
   resetTypeahead = () => {
     this.setState({
@@ -252,9 +257,10 @@ class QueryField extends React.Component<any, any> {
     }
   };
 
-  handleClickMenu = item => {
+  handleClickMenu = (item, editor: CoreEditor) => {
     // Manually triggering change
-    const change = this.applyTypeahead(this.state.value.change(), item);
+    console.log("handleClickMenu")
+    const change = this.applyTypeahead(editor, item);
     this.onChange(change);
   };
 

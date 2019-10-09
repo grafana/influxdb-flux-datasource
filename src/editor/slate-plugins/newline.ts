@@ -1,5 +1,8 @@
+import { Plugin } from '@grafana/slate-react';
+import { Editor as CoreEditor } from 'slate';
+
 function getIndent(text) {
-  let offset = text.length - text.trimLeft().length;
+  let offset = text.length - text.trimStart().length;
   if (offset) {
     let indent = text[0];
     while (--offset) {
@@ -10,12 +13,13 @@ function getIndent(text) {
   return '';
 }
 
-export default function NewlinePlugin() {
+export default function NewlinePlugin(): Plugin {
   return {
-    onKeyDown(event, change) {
-      const { value } = change;
-      if (!value.isCollapsed) {
-        return undefined;
+    onKeyDown(event: KeyboardEvent, editor: CoreEditor, next: Function) {
+      const value = editor.value;
+
+      if (value.selection.isExpanded) {
+        return next();
       }
 
       if (event.key === 'Enter' && event.shiftKey) {
@@ -25,11 +29,13 @@ export default function NewlinePlugin() {
         const currentLineText = startBlock.text;
         const indent = getIndent(currentLineText);
 
-        return change
+        return editor
           .splitBlock()
           .insertText(indent)
           .focus();
       }
+
+      return next();
     },
   };
 }

@@ -37,7 +37,7 @@ class TypeaheadItem extends React.PureComponent<any, any> {
 
 class TypeaheadGroup extends React.PureComponent<any, any> {
   render() {
-    const { items, label, selected, onClickItem } = this.props;
+    const { items, label, selected, onClickItem, editor } = this.props;
     return (
       <li className="typeahead-group">
         <div className="typeahead-group__title">{label}</div>
@@ -45,7 +45,16 @@ class TypeaheadGroup extends React.PureComponent<any, any> {
           {items.map(item => {
             const text = typeof item === 'object' ? item.text : item;
             const label = typeof item === 'object' ? item.display || item.text : item;
-            return <TypeaheadItem key={text} onClickItem={onClickItem} isSelected={selected.indexOf(text) > -1} hint={item.hint} label={label} />;
+            return (
+              <TypeaheadItem
+                key={text}
+                onClickItem={onClickItem}
+                isSelected={selected.indexOf(text) > -1}
+                hint={item.hint}
+                label={label}
+                editor={editor}
+              />
+            );
           })}
         </ul>
       </li>
@@ -55,11 +64,11 @@ class TypeaheadGroup extends React.PureComponent<any, any> {
 
 class Typeahead extends React.PureComponent<any, any> {
   render() {
-    const { groupedItems, menuRef, selectedItems, onClickItem } = this.props;
+    const { groupedItems, menuRef, selectedItems, onClickItem, editor } = this.props;
     return (
       <ul className="typeahead" ref={menuRef}>
         {groupedItems.map(g => (
-          <TypeaheadGroup key={g.label} onClickItem={onClickItem} selected={selectedItems} {...g} />
+          <TypeaheadGroup key={g.label} onClickItem={onClickItem} selected={selectedItems} editor={editor} {...g} />
         ))}
       </ul>
     );

@@ -1,4 +1,5 @@
 import Plain from 'slate-plain-serializer';
+import { Editor as CoreEditor } from 'slate';
 
 import QueryField, { getInitialValue, makeFragment } from './QueryField';
 import debounce from 'lodash/debounce';
@@ -10,6 +11,7 @@ import '../styles.css';
 interface Suggestion {
   text: string;
   deleteBackwards?: number;
+  type?: string;
 }
 
 interface SuggestionGroup {
@@ -61,7 +63,14 @@ export default class FluxQueryField extends QueryField {
       return null;
     }
     if (selection.anchorNode) {
-      const wrapperNode = selection.anchorNode.parentElement;
+      let wrapperNode = selection.anchorNode.parentElement;
+      if (wrapperNode === null) {
+        return;
+      }
+      //If newer version of Slate then need to go up to the next parent
+      if (wrapperNode.hasAttribute('data-slate-string')) {
+        wrapperNode = wrapperNode.parentElement;
+      }
       if (wrapperNode === null) {
         return;
       }
@@ -184,7 +193,13 @@ export default class FluxQueryField extends QueryField {
         return group;
       });
 
-      console.log('handleTypeahead', selection.anchorNode, wrapperClasses, text, offset, prefix, typeaheadContext);
+      console.log('handleTypeahead')
+      console.log('anchornode', selection.anchorNode);
+      console.log('wrapperClasses', wrapperClasses);
+      console.log('text', text); 
+      console.log('offset', offset);
+      console.log('prefix', prefix);
+      console.log('typeaheadContext', typeaheadContext);
 
       this.setState({
         typeaheadPrefix: prefix,
@@ -198,9 +213,12 @@ export default class FluxQueryField extends QueryField {
     }
   }, 500);
 
-  applyTypeahead(change, suggestion) {
+  applyTypeahead = (
+    editor: CoreEditor, 
+    suggestion: { text: any; type: string; deleteBackwards: any },
+  ): CoreEditor => {
     const { typeaheadPrefix, typeaheadContext, typeaheadText } = this.state;
-    let suggestionText = suggestion.display || suggestion.text || suggestion;
+    let suggestionText = suggestion.text || suggestion;
     const move = 0;
 
     // Modify suggestion based on context
@@ -237,20 +255,16 @@ export default class FluxQueryField extends QueryField {
     // If new-lines, apply suggestion as block
     if (suggestionText.match(/\n/)) {
       const fragment = makeFragment(suggestionText);
-      return change
+      return editor
         .deleteBackward(backward)
         .deleteForward(forward)
         .insertFragment(fragment)
+        .moveForward(move)
         .focus();
     }
 
-    return change
-      .deleteBackward(backward)
-      .deleteForward(forward)
-      .insertText(suggestionText)
-      .move(move)
-      .focus();
-  }
+    return editor;
+  };
 
   async fetchFields(db, measurement) {
     const query = `field_keys(${db},${measurement})`;

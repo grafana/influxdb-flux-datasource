@@ -56,7 +56,6 @@ export class InfluxFluxQueryCtrl extends QueryCtrl {
   };
 
   onChange = nextQuery => {
-    console.log('nextQuery', nextQuery);
     this.target.query = nextQuery;
   };
 
