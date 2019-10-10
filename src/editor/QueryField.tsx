@@ -11,7 +11,6 @@ import PluginPrism, { setPrismTokens } from './slate-plugins/prism/index';
 import RunnerPlugin from './slate-plugins/runner';
 
 import Typeahead from './Typeahead';
-//import { threadId } from 'worker_threads';
 
 export const TYPEAHEAD_DEBOUNCE = 300;
 
