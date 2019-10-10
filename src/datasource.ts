@@ -101,10 +101,18 @@ export default class InfluxDatasource {
 
   metricFindQuery(query: string, options?: any) {
     const interpreted = expandMacros(query);
+    let rangeRaw = { to: 'now', from: 'now - 1h' };
+    if (options && typeof options === 'object') {
+      if (options.range && options.range.raw) {
+        rangeRaw = options.range.raw;
+      } else if (options.variable && options.variable.timeSrv && options.variable.timeSrv.time) {
+        rangeRaw = options.variable.timeSrv.time;
+      }
+    }
 
     // Use normal querier in silent mode
     const queryOptions = {
-      rangeRaw: { to: 'now', from: 'now - 1h' },
+      rangeRaw,
       scopedVars: {},
       ...options,
       silent: true,
