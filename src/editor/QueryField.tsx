@@ -235,7 +235,7 @@ class QueryField extends React.Component<any, any> {
     });
   };
 
-  handleBlur = () => {
+  handleBlur = (event: Event, editor: CoreEditor, next: Function) => {
     const { onBlur } = this.props;
     // If we dont wait here, menu clicks wont work because the menu
     // will be gone.
@@ -243,13 +243,15 @@ class QueryField extends React.Component<any, any> {
     if (onBlur) {
       onBlur();
     }
+    return next();
   };
 
-  handleFocus = () => {
+  handleFocus = (event: Event, editor: CoreEditor, next: Function) => {
     const { onFocus } = this.props;
     if (onFocus) {
       onFocus();
     }
+    return next();
   };
 
   handleClickMenu = (item, editor: CoreEditor) => {
