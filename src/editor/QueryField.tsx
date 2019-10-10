@@ -11,6 +11,7 @@ import PluginPrism, { setPrismTokens } from './slate-plugins/prism/index';
 import RunnerPlugin from './slate-plugins/runner';
 
 import Typeahead from './Typeahead';
+//import { threadId } from 'worker_threads';
 
 export const TYPEAHEAD_DEBOUNCE = 300;
 
@@ -235,7 +236,7 @@ class QueryField extends React.Component<any, any> {
     });
   };
 
-  handleBlur = () => {
+  handleBlur = (event: Event, editor: CoreEditor, next: Function) => {
     const { onBlur } = this.props;
     // If we dont wait here, menu clicks wont work because the menu
     // will be gone.
@@ -243,13 +244,15 @@ class QueryField extends React.Component<any, any> {
     if (onBlur) {
       onBlur();
     }
+    return next();
   };
 
-  handleFocus = () => {
+  handleFocus = (event: Event, editor: CoreEditor, next: Function) => {
     const { onFocus } = this.props;
     if (onFocus) {
       onFocus();
     }
+    return next();
   };
 
   handleClickMenu = (item, editor: CoreEditor) => {
