@@ -73,6 +73,10 @@ jobs:
     - run:
         name: Package Distribution
         command: |
+          ls -l ci
+          ls -l ci/jobs
+          ls -l ci/jobs/build_plugin
+          ls -l ci/jobs/build_plugin/dist
           npx grafana-toolkit plugin:ci-package
           echo Build TAR
           DATASOURCE_NAME=grafana-influxdb-flux-datasource
@@ -207,10 +211,11 @@ workflows:
   plugin_workflow:
     jobs:
       - build_plugin
-      - build_docs
-      - package:
+      - build_docs:
           requires:
             - build_plugin
+      - package:
+          requires:
             - build_docs
       - test_integration:
           requires:
