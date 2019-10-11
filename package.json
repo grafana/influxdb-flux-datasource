@@ -1,6 +1,6 @@
 {
   "name": "grafana-influxdb-flux-datasource",
-  "version": "5.3.2",
+  "version": "5.4.0",
   "description": "Grafana data source for InfluxDB (Flux query support)",
   "private": true,
   "scripts": {
@@ -14,12 +14,12 @@
   "dependencies": {
     "diff": "^4.0.1",
     "immutable": "3.8.2",
-    "lodash": "4.17.11",
+    "lodash": "4.17.15",
     "moment": "2.24.0",
-    "papaparse": "4.6.3",
-    "prismjs": "1.16.0",
+    "papaparse": "5.1.0",
+    "prismjs": "1.17.1",
     "ts-loader": "^6.2.0",
-    "typescript": "^3.6.3",
+    "typescript": "^3.6.4",
     "shelljs": "^0.8.3"
   },
   "devDependencies": {

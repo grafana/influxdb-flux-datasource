@@ -1,8 +1,11 @@
 # Change Log
+
 ## [5.4.0] - 2019-10-09
 
 - Slate fixes for Grafana 6.4.x
 - Fix for queries which group by time, and return _start and _stop rather than _time
+
+NOTE: This version is only compatible with Grafana v6.4+
 
 ## [5.3.2] - 2019-07-07
 
