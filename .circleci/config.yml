@@ -36,7 +36,7 @@ jobs:
         paths:
         - ci
 
-build_docs:
+  build_docs:
     <<: *defaults
     steps:
     - checkout
