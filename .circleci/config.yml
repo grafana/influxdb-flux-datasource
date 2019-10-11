@@ -19,7 +19,7 @@ aliases:
 defaults: &defaults
   working_directory: ~/grafana-influxdb-flux-datasource
   docker:
-    - image: circleci/node:10.15.3-stretch
+    - image: circleci/node:10.16.3-stretch
 
 jobs:
   build:
@@ -92,7 +92,7 @@ jobs:
   publish-github-release:
     working_directory: ~/grafana-influxdb-flux-datasource
     docker:
-      - image: cibuilds/github:0.12
+      - image: cibuilds/github:0.13
     steps:
       - checkout
       - add_ssh_keys:
