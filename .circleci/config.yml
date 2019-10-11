@@ -64,59 +64,41 @@ jobs:
   package:
     <<: *defaults
     steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - restore_cache:
-          keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
-      - run:
-          name: Package Distribution
-          command: |
-            DATASOURCE_NAME=grafana-influxdb-flux-datasource
-            sudo apt-get install jq
-            VERSION=`cat dist/plugin.json|jq '.info.version'| sed s/\"//g`
-            # create zip file
-            cd ~
-            echo "Creating ZIP"
-            zip \
-              -x ${DATASOURCE_NAME}/.git/**\* \
-              -x ${DATASOURCE_NAME}/node_modules/**\* \
-              -r /tmp/${DATASOURCE_NAME}-${VERSION}.zip \
-              ${DATASOURCE_NAME}
-            # create tar file
-            echo "Creating TAR"
-            tar \
-              --exclude .git \
-              --exclude ${DATASOURCE_NAME}/node_modules \
-              -cvf /tmp/${DATASOURCE_NAME}-${VERSION}.tar \
-              ${DATASOURCE_NAME}
-            gzip /tmp/${DATASOURCE_NAME}-${VERSION}.tar
-            # create artifacts and sha
-            mkdir -p ~/${DATASOURCE_NAME}/artifacts
-            mv /tmp/${DATASOURCE_NAME}-${VERSION}.zip ~/${DATASOURCE_NAME}/artifacts/
-            shasum \
-              ~/${DATASOURCE_NAME}/artifacts/${DATASOURCE_NAME}-${VERSION}.zip > \
-              ~/${DATASOURCE_NAME}/artifacts/${DATASOURCE_NAME}-${VERSION}.zip.sha1
-            mv /tmp/${DATASOURCE_NAME}-${VERSION}.tar.gz ~/${DATASOURCE_NAME}/artifacts/
-            shasum \
-              ~/${DATASOURCE_NAME}/artifacts/${DATASOURCE_NAME}-${VERSION}.tar.gz > \
-              ~/${DATASOURCE_NAME}/artifacts/${DATASOURCE_NAME}-${VERSION}.tar.gz.sha1
-          no_output_timeout: 5m
-      - save_cache:
-          name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
-      - persist_to_workspace:
-          root: .
-          paths:
-            - artifacts
-            - dist
-      - store_artifacts:
-          path: artifacts
-      - store_artifacts:
-          path: dist
+    - checkout
+    - attach_workspace:
+        at: .
+    - restore_cache:
+        keys:
+        - yarn-packages-{{ checksum "yarn.lock" }}
+    - run:
+        name: Package Distribution
+        command: |
+          npx grafana-toolkit plugin:ci-package
+          echo Build TAR
+          DATASOURCE_NAME=grafana-influxdb-flux-datasource
+          mkdir -p ci/jobs/build_tar/${DATASOURCE_NAME}
+          cp -rp ci/jobs/build_plugin/dist/* ci/jobs/build_tar/${DATASOURCE_NAME}
+          ls -al ci/jobs/build_tar
+          ls -al ci/jobs/build_tar/${DATASOURCE_NAME}
+          cd ci/jobs/build_tar
+          ls -al
+          sudo apt-get install jq
+          VERSION=`cat ${DATASOURCE_NAME}/plugin.json|jq '.info.version'| sed s/\"//g`          # create tar file
+          echo "Creating TAR"
+          tar \
+            -cvf /tmp/${DATASOURCE_NAME}-${VERSION}.tar \
+            ${DATASOURCE_NAME}
+          gzip /tmp/${DATASOURCE_NAME}-${VERSION}.tar
+          mv /tmp/${DATASOURCE_NAME}-${VERSION}.tar.gz ~/${DATASOURCE_NAME}/ci/packages/
+          shasum \
+            ~/${DATASOURCE_NAME}/ci/packages/${DATASOURCE_NAME}-${VERSION}.tar.gz > \
+            ~/${DATASOURCE_NAME}/ci/packages/${DATASOURCE_NAME}-${VERSION}.tar.gz.sha1
+    - persist_to_workspace:
+        root: .
+        paths:
+        - ci
+    - store_artifacts:
+        path: ci/packages
 
   report:
     <<: *defaults
@@ -189,9 +171,15 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             DATASOURCE_NAME=grafana-influxdb-flux-datasource
+            # copy ci dist
+            cp -r ci/jobs/build_plugin/dist .
+            # copy ci artifacts
+            mkdir -p artifacts
+            cp -r ci/packages/* artifacts
+            #
             apk add --update --no-cache jq
             RELEASE_NOTES=`awk 'BEGIN {FS="##"; RS=""} FNR==3 {print; exit}' CHANGELOG.md`
-            VERSION=`cat src/plugin.json|jq '.info.version'| sed s/\"//g`
+            VERSION=`cat dist/plugin.json|jq '.info.version'| sed s/\"//g`
             ls -al
             ls -al ./artifacts
             git config user.email "eng@grafana.com"
