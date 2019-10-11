@@ -29,5 +29,8 @@
       "url": "{{.JsonData.url}}",
       "headers": [{"name": "Authorization", "content": "Token {{.SecureJsonData.token}}"}]
     }
-  ]
+  ],
+  "dependencies": {
+    "grafanaVersion": "6.4.x"
+  }
 }
