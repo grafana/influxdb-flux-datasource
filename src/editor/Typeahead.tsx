@@ -23,9 +23,9 @@ class TypeaheadItem extends React.PureComponent<any, any> {
   };
 
   render() {
-    const { hint, isSelected, label, onClickItem } = this.props;
+    const { hint, isSelected, label, onClickItem, editor } = this.props;
     const className = isSelected ? 'typeahead-item typeahead-item__selected' : 'typeahead-item';
-    const onClick = () => onClickItem(label);
+    const onClick = () => onClickItem(label, editor);
     return (
       <li ref={this.getRef} className={className} onClick={onClick}>
         {label}
