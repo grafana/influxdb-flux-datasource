@@ -14,7 +14,7 @@ import Typeahead from './Typeahead';
 
 export const TYPEAHEAD_DEBOUNCE = 300;
 
-interface ISuggestion {
+interface SuggestionInterface {
   text: string;
   deleteBackwards?: number;
   type?: string;
@@ -22,12 +22,12 @@ interface ISuggestion {
 
 export interface SuggestionGroup {
   label: string;
-  items: ISuggestion[];
+  items: SuggestionInterface[];
   prefixMatch?: boolean;
   skipFilter?: boolean;
 }
 
-export class Suggestion implements ISuggestion {
+export class Suggestion implements SuggestionInterface {
   text: string;
   deleteBackwards: number;
   type: string;
@@ -134,13 +134,16 @@ class QueryField extends React.Component<any, any> {
 
   onChange = (editor: CoreEditor) => {
     const changed = editor.value.document !== this.state.value.document;
-    this.setState({
-      value: editor.value
-    }, () => {
-      if (changed) {
-        this.handleChangeQuery();
+    this.setState(
+      {
+        value: editor.value,
+      },
+      () => {
+        if (changed) {
+          this.handleChangeQuery();
+        }
       }
-    });
+    );
 
     window.requestAnimationFrame(this.handleTypeahead);
   };
@@ -154,10 +157,10 @@ class QueryField extends React.Component<any, any> {
     // Trigger re-render
     window.requestAnimationFrame(() => {
       // Bogus edit to trigger highlighting
-      const change = this.state.value 
+      const change = this.state.value
         .change()
         .insertText(' ')
-        .deleteBackward(1)
+        .deleteBackward(1);
       this.onChange(change);
     });
   };
@@ -351,7 +354,13 @@ class QueryField extends React.Component<any, any> {
     // Create typeahead in DOM root so we can later position it absolutely
     return (
       <Portal prefix={portalPrefix}>
-        <Typeahead menuRef={this.menuRef} selectedItems={selectedKeys} onClickItem={this.handleClickMenu} groupedItems={suggestions} editor={this.editorEl} />
+        <Typeahead
+          menuRef={this.menuRef}
+          selectedItems={selectedKeys}
+          onClickItem={this.handleClickMenu}
+          groupedItems={suggestions}
+          editor={this.editorEl}
+        />
       </Portal>
     );
   };

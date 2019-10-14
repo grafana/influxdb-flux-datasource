@@ -1,7 +1,7 @@
 export type FluxFunction = {
-  text: string,
-  display: string,
-  hint: string
+  text: string;
+  display: string;
+  hint: string;
 };
 
 export const FUNCTIONS: FluxFunction[] = [

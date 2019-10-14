@@ -248,15 +248,15 @@ export default class FluxQueryField extends QueryField {
         .deleteForward(forward)
         .insertFragment(fragment)
         .moveForward(move)
-        .focus()
+        .focus();
     }
 
     return editor
-        .deleteBackward(backward)
-        .deleteForward(forward)
-        .insertText(suggestionText)
-        .moveForward(move)
-        .focus()
+      .deleteBackward(backward)
+      .deleteForward(forward)
+      .insertText(suggestionText)
+      .moveForward(move)
+      .focus();
   };
 
   async fetchFields(db, measurement) {
