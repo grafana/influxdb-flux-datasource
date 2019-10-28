@@ -1,25 +1,12 @@
 import Plain from 'slate-plain-serializer';
 import { Editor as CoreEditor } from 'slate';
 
-import QueryField, { getInitialValue, makeFragment } from './QueryField';
+import QueryField, { Suggestion, SuggestionGroup, getInitialValue, makeFragment } from './QueryField';
 import debounce from 'lodash/debounce';
 import { getNextCharacter, getPreviousCousin } from './utils/dom';
 
-import { FUNCTIONS } from './flux';
+import { FUNCTIONS, FluxFunction } from './flux';
 import '../styles.css';
-
-interface Suggestion {
-  text: string;
-  deleteBackwards?: number;
-  type?: string;
-}
-
-interface SuggestionGroup {
-  label: string;
-  items: Suggestion[];
-  prefixMatch?: boolean;
-  skipFilter?: boolean;
-}
 
 const cleanText = s => s.replace(/[{}[\]="(),!~+\-*/^%]/g, '').trim();
 const wrapText = text => ({ text });
@@ -40,6 +27,13 @@ function expandQuery(bucket, measurement, field) {
   return (
     `from(bucket: "${bucket}")\n` + `  |> filter(fn: (r) => r["_measurement"] == "${measurement}")\n` + `  |> range($range)\n` + `  |> limit(n: 1000)`
   );
+}
+
+class FluxSuggestion extends Suggestion {
+  constructor(fluxFunction: FluxFunction) {
+    super(fluxFunction.display, typeof fluxFunction.display, 0);
+    return this;
+  }
 }
 
 export default class FluxQueryField extends QueryField {
@@ -205,16 +199,21 @@ export default class FluxQueryField extends QueryField {
     }
   }, 500);
 
-  applyTypeahead = (editor: CoreEditor, suggestion: { text: any; type: string; deleteBackwards: any }): CoreEditor => {
+  applyTypeahead = (editor: CoreEditor, suggestion: any): CoreEditor => {
     const { typeaheadPrefix, typeaheadContext, typeaheadText } = this.state;
-    let suggestionText = suggestion.text || suggestion;
+
+    if (typeof suggestion['display'] !== 'undefined') {
+      // We have a flux function
+      suggestion = new FluxSuggestion(suggestion);
+    }
+
+    let suggestionText = suggestion.text;
     const move = 0;
 
     // Modify suggestion based on context
     switch (typeaheadContext) {
       case 'context-operator': {
-        const nextChar = getNextCharacter();
-        if (!nextChar && nextChar !== ' ') {
+        if (!suggestion.text.endsWith(' ')) {
           suggestionText += ' ';
         }
         break;
@@ -252,7 +251,12 @@ export default class FluxQueryField extends QueryField {
         .focus();
     }
 
-    return editor;
+    return editor
+      .deleteBackward(backward)
+      .deleteForward(forward)
+      .insertText(suggestionText)
+      .moveForward(move)
+      .focus();
   };
 
   async fetchFields(db, measurement) {

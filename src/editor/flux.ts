@@ -1,4 +1,10 @@
-export const FUNCTIONS = [
+export type FluxFunction = {
+  text: string;
+  display: string;
+  hint: string;
+};
+
+export const FUNCTIONS: FluxFunction[] = [
   {
     text: 'count',
     display: 'count()',
@@ -137,7 +143,7 @@ export const FUNCTIONS = [
   },
   {
     text: 'window',
-    display: 'window(every: 10m)',
+    display: 'window(every: $__interval)',
     hint: 'Partitions the results by a given time range.',
   },
   {

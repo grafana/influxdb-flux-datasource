@@ -14,6 +14,33 @@ import Typeahead from './Typeahead';
 
 export const TYPEAHEAD_DEBOUNCE = 300;
 
+interface SuggestionInterface {
+  text: string;
+  deleteBackwards?: number;
+  type?: string;
+}
+
+export interface SuggestionGroup {
+  label: string;
+  items: SuggestionInterface[];
+  prefixMatch?: boolean;
+  skipFilter?: boolean;
+}
+
+export class Suggestion implements SuggestionInterface {
+  text: string;
+  deleteBackwards: number;
+  type: string;
+
+  constructor(required: any, type?: string, deleteBackwards?: number) {
+    this.text = required;
+    this.deleteBackwards = deleteBackwards || 0;
+    this.type = type || typeof this.text;
+
+    return this;
+  }
+}
+
 function flattenSuggestions(s) {
   return s ? s.reduce((acc, g) => acc.concat(g.items), []) : [];
 }
@@ -105,13 +132,18 @@ class QueryField extends React.Component<any, any> {
     }
   }
 
-  onChange = ({ value }) => {
-    const changed = value.document !== this.state.value.document;
-    this.setState({ value }, () => {
-      if (changed) {
-        this.handleChangeQuery();
+  onChange = (editor: CoreEditor) => {
+    const changed = editor.value.document !== this.state.value.document;
+    this.setState(
+      {
+        value: editor.value,
+      },
+      () => {
+        if (changed) {
+          this.handleChangeQuery();
+        }
       }
-    });
+    );
 
     window.requestAnimationFrame(this.handleTypeahead);
   };
@@ -186,9 +218,7 @@ class QueryField extends React.Component<any, any> {
           const selected = Math.abs(typeaheadIndex);
           const selectedIndex = selected % flattenedSuggestions.length || 0;
           const suggestion = flattenedSuggestions[selectedIndex];
-
-          this.applyTypeahead(editor, suggestion);
-          return true;
+          this.onChange(this.applyTypeahead(editor, suggestion));
         }
         break;
       }
@@ -222,8 +252,8 @@ class QueryField extends React.Component<any, any> {
     return change || this.state.value.change();
   };
 
-  applyTypeahead = (editor: CoreEditor, suggestion: { text: any; type: string; deleteBackwards: any }): { value: object } => {
-    return { value: new Value() };
+  applyTypeahead = (editor: CoreEditor, suggestion: Suggestion): CoreEditor => {
+    return this.editorEl();
   };
 
   resetTypeahead = () => {
@@ -256,7 +286,7 @@ class QueryField extends React.Component<any, any> {
 
   handleClickMenu = (item, editor: CoreEditor) => {
     // Manually triggering change
-    const change = this.applyTypeahead(editor, item);
+    const change = this.applyTypeahead(editor, new Suggestion(item));
     this.onChange(change);
   };
 
@@ -324,7 +354,13 @@ class QueryField extends React.Component<any, any> {
     // Create typeahead in DOM root so we can later position it absolutely
     return (
       <Portal prefix={portalPrefix}>
-        <Typeahead menuRef={this.menuRef} selectedItems={selectedKeys} onClickItem={this.handleClickMenu} groupedItems={suggestions} />
+        <Typeahead
+          menuRef={this.menuRef}
+          selectedItems={selectedKeys}
+          onClickItem={this.handleClickMenu}
+          groupedItems={suggestions}
+          editor={this.editorEl}
+        />
       </Portal>
     );
   };
