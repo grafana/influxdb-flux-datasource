@@ -1,0 +1,36 @@
+<datasource-http-settings current="ctrl.current" no-direct-access="true" suggest-url="http://localhost:9999">
+</datasource-http-settings>
+
+<h3 class="page-heading">InfluxDB 2.0.0 Details</h3>
+
+<div class="gf-form-group">
+	<div class="gf-form max-width-25">
+			<span class="gf-form-label width-10">Organization</span>
+			<input type="text" class="gf-form-input" ng-model='ctrl.current.jsonData.organization' required></input>
+			<info-popover mode="right-absolute">
+				<p>The organization name in InfluxDB 2.0.0 Alpha</p>
+			</info-popover>
+	</div>
+	<div class="gf-form max-width-25">
+		<span class="gf-form-label width-10">Default Bucket</span>
+		<input type="text" class="gf-form-input" ng-model='ctrl.current.jsonData.bucket' required></input>
+		<info-popover mode="right-absolute">
+			<p>The bucket name (the retention period is not needed in InfluxDB 2.0.0 Alpha)</p>
+		</info-popover>
+	</div>
+
+	<div class="gf-form-inline" ng-if="!ctrl.current.secureJsonFields.token">
+		<div class="gf-form max-width-25">
+			<span class="gf-form-label width-10">Token</span>
+			<input type="password" class="gf-form-input" ng-model='ctrl.current.secureJsonData.token' placeholder=""></input>
+			<info-popover mode="right-absolute">
+				<a target="_blank" href="https://v2.docs.influxdata.com/v2.0/security/tokens/create-token/">** Click here for instructions on creating a token**</a>
+			</info-popover>
+		</div>
+	</div>
+	<div class="gf-form" ng-if="ctrl.current.secureJsonFields.token">
+		<span class="gf-form-label width-10">Token</span>
+		<input type="text" class="gf-form-input max-width-12" disabled="disabled" value="configured">
+		<a class="btn btn-secondary gf-form-btn" href="#" ng-click="ctrl.current.secureJsonFields.token = false">reset</a>
+	</div>
+</div>

@@ -1,0 +1,26 @@
+{
+  "plugin": {
+    "name": "grafana-influxdb-flux-datasource-5.4.1.zip",
+    "size": 31973,
+    "contents": {
+      "_none_": {
+        "bytes": 11342,
+        "count": 1
+      },
+      "md": {
+        "bytes": 3114,
+        "count": 1
+      },
+      "js": {
+        "bytes": 69037,
+        "count": 1
+      },
+      "json": {
+        "bytes": 1115,
+        "count": 1
+      }
+    },
+    "sha1": "7a719efaa1bda817483b49191d317a59e4ad298d",
+    "md5": "6070e6e234e497db0d3d98140beb3cc4"
+  }
+}
