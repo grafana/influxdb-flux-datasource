@@ -1,5 +1,9 @@
 # Change Log
 
+## [5.4.1] - 2019-10-28
+
+- Query editor bugfixes
+
 ## [5.4.0] - 2019-10-09
 
 - Slate fixes for Grafana 6.4.x
