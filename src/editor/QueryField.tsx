@@ -4,41 +4,52 @@ import { Block, Document, Text, Value, Editor as CoreEditor } from 'slate';
 import { Editor } from '@grafana/slate-react';
 import Plain from 'slate-plain-serializer';
 
+import { CompletionItemGroup, TypeaheadOutput } from './editor';
+
 import BracesPlugin from './slate-plugins/braces';
 import ClearPlugin from './slate-plugins/clear';
 import NewlinePlugin from './slate-plugins/newline';
 import PluginPrism, { setPrismTokens } from './slate-plugins/prism/index';
 import RunnerPlugin from './slate-plugins/runner';
+import SuggestionsPlugin, { SuggestionsState } from './slate-plugins/suggestions';
 
 import Typeahead from './Typeahead';
 
 export const TYPEAHEAD_DEBOUNCE = 300;
 
-interface SuggestionInterface {
-  text: string;
-  deleteBackwards?: number;
-  type?: string;
+export interface QueryFieldProps {
+  additionalPlugins?: Plugin[];
+  cleanText?: (text: string) => string;
+  disabled?: boolean;
+  // We have both value and local state. This is usually an antipattern but we need to keep local state
+  // for perf reasons and also have outside value in for example in Explore redux that is mutable from logs
+  // creating a two way binding.
+  query: string | null;
+  onRunQuery?: () => void;
+  onChange?: (value: string) => void;
+  onTypeahead?: (typeahead: TypeaheadInput) => Promise<TypeaheadOutput>;
+  onWillApplySuggestion?: (suggestion: string, state: SuggestionsState) => string;
+  placeholder?: string;
+  portalOrigin?: string;
+  syntax?: string;
+  syntaxLoaded?: boolean;
 }
 
-export interface SuggestionGroup {
-  label: string;
-  items: SuggestionInterface[];
-  prefixMatch?: boolean;
-  skipFilter?: boolean;
+export interface QueryFieldState {
+  suggestions: CompletionItemGroup[];
+  typeaheadContext: string | null;
+  typeaheadPrefix: string;
+  typeaheadText: string;
+  value: Value;
 }
 
-export class Suggestion implements SuggestionInterface {
+export interface TypeaheadInput {
+  prefix: string;
+  selection?: Selection;
   text: string;
-  deleteBackwards: number;
-  type: string;
-
-  constructor(required: any, type?: string, deleteBackwards?: number) {
-    this.text = required;
-    this.deleteBackwards = deleteBackwards || 0;
-    this.type = type || typeof this.text;
-
-    return this;
-  }
+  value: Value;
+  wrapperClasses: string[];
+  labelKey?: string;
 }
 
 function flattenSuggestions(s) {
@@ -89,7 +100,7 @@ class QueryField extends React.Component<any, any> {
   constructor(props, context) {
     super(props, context);
 
-    const { prismDefinition = {}, prismLanguage = 'promql' } = props;
+    const { prismDefinition = {}, prismLanguage = 'promql', onTypeahead, cleanText, portalOrigin, onWillApplySuggestion } = props;
 
     this.plugins = [
       BracesPlugin(),
@@ -97,6 +108,7 @@ class QueryField extends React.Component<any, any> {
       RunnerPlugin({ handler: props.onPressEnter }),
       NewlinePlugin(),
       PluginPrism({ definition: prismDefinition, language: prismLanguage }),
+      SuggestionsPlugin({ onTypeahead, cleanText, portalOrigin, onWillApplySuggestion }),
     ];
 
     this.state = {
@@ -252,7 +264,7 @@ class QueryField extends React.Component<any, any> {
     return change || this.state.value.change();
   };
 
-  applyTypeahead = (editor: CoreEditor, suggestion: Suggestion): CoreEditor => {
+  applyTypeahead = (editor: CoreEditor, suggestion: any[]): CoreEditor => {
     return this.editorEl();
   };
 
@@ -286,7 +298,7 @@ class QueryField extends React.Component<any, any> {
 
   handleClickMenu = (item, editor: CoreEditor) => {
     // Manually triggering change
-    const change = this.applyTypeahead(editor, new Suggestion(item));
+    const change = this.applyTypeahead(editor, new Array<any>(item));
     this.onChange(change);
   };
 

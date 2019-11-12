@@ -30,7 +30,10 @@ export class InfluxFluxQueryCtrl extends QueryCtrl {
     }
 
     this.defaultBucket = this.datasource.bucket;
-    this.resultFormats = [{ text: 'Time series', value: 'time_series' }, { text: 'Table', value: 'table' }];
+    this.resultFormats = [
+      { text: 'Time series', value: 'time_series' },
+      { text: 'Table', value: 'table' },
+    ];
 
     appEvents.on('ds-request-response', this.onResponseReceived, $scope);
     this.panelCtrl.events.on('refresh', this.onRefresh, $scope);

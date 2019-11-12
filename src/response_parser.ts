@@ -131,7 +131,11 @@ export function getTableModelFromResult(result: string) {
   const table: Table = { type: 'table', columns: [], rows: [] };
   if (data.length > 0) {
     // First columns are fixed
-    const firstColumns = [{ text: 'Time', id: '_time' }, { text: 'Measurement', id: '_measurement' }, { text: 'Field', id: '_field' }];
+    const firstColumns = [
+      { text: 'Time', id: '_time' },
+      { text: 'Measurement', id: '_measurement' },
+      { text: 'Field', id: '_field' },
+    ];
 
     // Dynamically add columns for tags
     const firstRecord = data[0];
