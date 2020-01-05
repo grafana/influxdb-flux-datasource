@@ -1,4 +1,4 @@
-import expandMacros from '../src/metric_find_query';
+import expandMacros from './metric_find_query';
 
 describe('metric find query', () => {
   describe('expandMacros()', () => {
@@ -11,25 +11,20 @@ describe('metric find query', () => {
     it('returns a measurement query for measurements()', () => {
       const query = ' measurements(mydb) ';
       const result = expandMacros(query);
-      expect(result).toBe(
-        'import "influxdata/influxdb/v1" v1.measurements(bucket: "mydb")'
-      );
+      expect(result).toBe('import "influxdata/influxdb/v1" v1.measurements(bucket: "mydb")');
     });
 
     it('returns a tags query for tags()', () => {
       const query = ' tags(mydb , mymetric) ';
       const result = expandMacros(query).replace(/\s/g, '');
-      expect(result).toBe(
-        'from(bucket:"mydb")|>range($range)|>filter(fn:(r)=>r._measurement=="mymetric")|>keys()'
-      );
+      expect(result).toBe('from(bucket:"mydb")|>range($range)|>filter(fn:(r)=>r._measurement=="mymetric")|>keys()');
     });
 
     it('returns a tag values query for tag_values()', () => {
       const query = ' tag_values(mydb , mymetric, mytag) ';
       const result = expandMacros(query).replace(/\s/g, '');
       expect(result).toBe(
-        'from(bucket:"mydb")|>range($range)|>filter(fn:(r)=>r._measurement=="mymetric")' +
-          '|>group(columns:["mytag"])|>distinct(column:"mytag")'
+        'from(bucket:"mydb")|>range($range)|>filter(fn:(r)=>r._measurement=="mymetric")' + '|>group(columns:["mytag"])|>distinct(column:"mytag")'
       );
     });
 
@@ -37,8 +32,7 @@ describe('metric find query', () => {
       const query = ' field_keys(mydb , mymetric) ';
       const result = expandMacros(query).replace(/\s/g, '');
       expect(result).toBe(
-        'from(bucket:"mydb")|>range($range)|>filter(fn:(r)=>r._measurement=="mymetric")' +
-          '|>group(columns:["_field"])|>distinct(column:"_field")'
+        'from(bucket:"mydb")|>range($range)|>filter(fn:(r)=>r._measurement=="mymetric")' + '|>group(columns:["_field"])|>distinct(column:"_field")'
       );
     });
   });
