@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 export default class TemplateSrvStub {
   variables = [];
-  templateSettings = { interpolate : /\[\[([\s\S]+?)\]\]/g };
+  templateSettings = { interpolate: /\[\[([\s\S]+?)\]\]/g };
   data = {};
 
   replace(text) {

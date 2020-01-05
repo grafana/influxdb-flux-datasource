@@ -15,16 +15,14 @@
     "diff": "^4.0.1",
     "immutable": "3.8.2",
     "lodash": "4.17.15",
-    "moment": "2.24.0",
     "papaparse": "5.1.0",
     "prismjs": "1.17.1",
-    "ts-loader": "^6.2.1",
-    "typescript": "^3.6.4",
     "shelljs": "^0.8.3"
   },
   "devDependencies": {
     "@grafana/toolkit": "next",
-    "@grafana/ui": "latest",
+    "@grafana/ui": "next",
+    "@grafana/data": "next",
     "@types/grafana": "github:CorpGlory/types-grafana.git",
     "@types/slate-plain-serializer": "^0.6.1",
     "slate": "0.47.8",

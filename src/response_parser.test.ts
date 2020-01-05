@@ -6,8 +6,8 @@ import {
   getValuesFromResult,
   parseResults,
   parseValue,
-} from '../src/response_parser';
-import response from './sample_response_csv';
+} from './response_parser';
+import response from './mocks/sample_response_csv';
 
 describe('influxdb flux response parser', () => {
   describe('parseResults()', () => {

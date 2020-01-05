@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
-import * as dateMath from 'grafana/app/core/utils/datemath';
-
+import { dateMath } from '@grafana/data';
 import { getAnnotationsFromResult, getTableModelFromResult, getTimeSeriesFromResult, getValuesFromResult, parseResults } from './response_parser';
 import expandMacros from './metric_find_query';
 
