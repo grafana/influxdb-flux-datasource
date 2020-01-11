@@ -4,6 +4,7 @@
 <h3 class="page-heading">InfluxDB 2.0.0 Details</h3>
 
 <div class="gf-form-group">
+
 	<div class="gf-form max-width-25">
 			<span class="gf-form-label width-10">Organization</span>
 			<input type="text" class="gf-form-input" ng-model='ctrl.current.jsonData.organization' required></input>
@@ -33,4 +34,18 @@
 		<input type="text" class="gf-form-input max-width-12" disabled="disabled" value="configured">
 		<a class="btn btn-secondary gf-form-btn" href="#" ng-click="ctrl.current.secureJsonFields.token = false">reset</a>
 	</div>
+</div>
+
+<h3 class="page-heading">Plugin configuration</h3>
+
+<div class="gf-form-group">
+
+	<div class="gf-form max-width-25">
+		<span class="gf-form-label width-15">Max number of series (0..N)</span>
+		<input type="number" class="gf-form-input" ng-model='ctrl.current.jsonData.maxSeries' min="0" step="1" required></input>
+		<info-popover mode="right-absolute">
+			<p>The max number of series this plugin will display per query. 0 means no limit.</p>
+		</info-popover>
+	</div>
+
 </div>

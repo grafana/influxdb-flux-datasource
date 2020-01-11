@@ -18,6 +18,7 @@ export default class InfluxDatasource {
   interval: any;
   supportAnnotations: boolean;
   supportMetrics: boolean;
+  maxSeries: number;
 
   /** @ngInject */
   constructor(instanceSettings, private backendSrv, private templateSrv) {
@@ -34,6 +35,7 @@ export default class InfluxDatasource {
     this.bucket = (instanceSettings.jsonData || {}).bucket;
     this.supportAnnotations = true;
     this.supportMetrics = true;
+    this.maxSeries = (instanceSettings.jsonData || {}).maxSeries || MAX_SERIES;
   }
 
   prepareQueryTarget(target, options) {
@@ -68,8 +70,12 @@ export default class InfluxDatasource {
     });
 
     return Promise.all(queries).then((series: any) => {
-      const seriesList = _.flattenDeep(series).slice(0, MAX_SERIES);
-      return { data: seriesList };
+      const seriesList = _.flattenDeep(series);
+      if (this.maxSeries > 0) {
+        return { data: seriesList.slice(0, this.maxSeries) };
+      } else {
+        return { data: seriesList };
+      }
     });
   }
 
