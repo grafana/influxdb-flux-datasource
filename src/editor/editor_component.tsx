@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 
 import coreModule from 'grafana/app/core/core_module';
 
-import FluxQueryField from './FluxQueryField';
-import flux from './flux';
+import FluxMonacoEditor from './FluxMonacoEditor';
 
 /**
  * Angular wrapper around the FLux query field
@@ -35,20 +34,14 @@ class Editor extends Component<any, any> {
   };
 
   render() {
-    const { database, request } = this.props;
+    //const { database, request } = this.props;
     const { edited, query } = this.state;
 
     return (
       <div className="gf-form-input" style={{ height: 'initial' }}>
-        <FluxQueryField
-          defaultDatabase={database}
-          initialQuery={edited ? null : query}
-          onPressEnter={this.handlePressEnter}
-          onQueryChange={this.handleChangeQuery}
-          prismLanguage="flux"
-          prismDefinition={flux}
-          placeholder="Enter a FLUX query"
-          request={request}
+        <FluxMonacoEditor
+          script={edited ? null : query}
+          onChangeScript={this.handleChangeQuery}
         />
       </div>
     );
@@ -57,7 +50,7 @@ class Editor extends Component<any, any> {
 
 coreModule.directive('fluxEditor', [
   'reactDirective',
-  reactDirective => {
+  (reactDirective: any) => {
     return reactDirective(Editor, ['change', 'database', 'execute', 'query', 'request']);
   },
 ]);
