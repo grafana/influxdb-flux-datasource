@@ -98,7 +98,7 @@ export const modeFlux = {
     dontIndentStates: ['comment'],
     lineComment: '//',
   },
-}
+};
 
 export const modeTickscript = {
   // The start state contains the rules that are intially used
@@ -173,7 +173,7 @@ export const modeTickscript = {
     dontIndentStates: ['comment'],
     lineComment: '//',
   },
-}
+};
 
 export const modeInfluxQL = {
   // The start state contains the rules that are intially used
@@ -250,7 +250,7 @@ export const modeInfluxQL = {
     dontIndentStates: ['comment'],
     lineComment: '//',
   },
-}
+};
 
 export const modeMarkdown = {
   start: [
@@ -298,4 +298,4 @@ export const modeMarkdown = {
     dontIndentStates: ['comment'],
     lineComment: '//',
   },
-}
+};

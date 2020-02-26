@@ -1,18 +1,13 @@
 // Constants
-import {FLUXLANGID} from './constants'
+import { FLUXLANGID } from './constants';
 
 export const tokenizeFlux = monaco => {
-  monaco.languages.register({id: FLUXLANGID})
+  monaco.languages.register({ id: FLUXLANGID });
 
   monaco.languages.setMonarchTokensProvider(FLUXLANGID, {
     keywords: ['from', 'range', 'filter', 'to'],
     tokenizer: {
-      root: [
-        [
-          /[a-z_$][\w$]*/,
-          {cases: {'@keywords': 'keyword', '@default': 'identifier'}},
-        ],
-      ],
+      root: [[/[a-z_$][\w$]*/, { cases: { '@keywords': 'keyword', '@default': 'identifier' } }]],
     },
-  })
-}
+  });
+};

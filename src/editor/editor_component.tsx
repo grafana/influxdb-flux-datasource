@@ -39,10 +39,7 @@ class Editor extends Component<any, any> {
 
     return (
       <div className="gf-form-input" style={{ height: 'initial' }}>
-        <FluxMonacoEditor
-          script={edited ? null : query}
-          onChangeScript={this.handleChangeQuery}
-        />
+        <FluxMonacoEditor script={edited ? null : query} onChangeScript={this.handleChangeQuery} />
       </div>
     );
   }

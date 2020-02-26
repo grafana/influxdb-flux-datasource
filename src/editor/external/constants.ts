@@ -1,1 +1,1 @@
-export const FLUXLANGID = 'flux' as const
+export const FLUXLANGID = 'flux' as const;

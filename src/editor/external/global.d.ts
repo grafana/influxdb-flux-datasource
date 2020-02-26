@@ -1,20 +1,20 @@
-import {MonacoType} from '../types'
+import { MonacoType } from '../types';
 
 //
 // got some globals here that only exist during compilation
 //
 
-declare let monaco: MonacoType
+declare let monaco: MonacoType;
 
 declare global {
   interface Window {
-    monaco: MonacoType
+    monaco: MonacoType;
   }
 }
 
-declare module "*.png" {
-   const value: any;
-   export = value;
+declare module '*.png' {
+  const value: any;
+  export = value;
 }
 
-window.monaco = window.monaco || {}
+window.monaco = window.monaco || {};

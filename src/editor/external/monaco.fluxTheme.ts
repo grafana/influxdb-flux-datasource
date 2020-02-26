@@ -1,6 +1,6 @@
-import {MonacoType} from '../types/monaco'
+import { MonacoType } from '../types/monaco';
 
-export const THEME_NAME = 'baseTheme'
+export const THEME_NAME = 'baseTheme';
 export default function(monaco: MonacoType) {
   monaco.editor.defineTheme(THEME_NAME, {
     base: 'vs-dark',
@@ -62,5 +62,5 @@ export default function(monaco: MonacoType) {
       'editorCursor.foreground': '#ffffff',
       'editorActiveLineNumber.foreground': '#bec2cc',
     },
-  })
+  });
 }

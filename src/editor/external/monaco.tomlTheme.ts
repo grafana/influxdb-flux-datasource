@@ -1,4 +1,4 @@
-export const THEME_NAME = 'tomlTheme'
+export const THEME_NAME = 'tomlTheme';
 export default function(monaco) {
   monaco.editor.defineTheme(THEME_NAME, {
     base: 'vs-dark',
@@ -48,5 +48,5 @@ export default function(monaco) {
       'editorCursor.foreground': '#ffffff',
       'editorActiveLineNumber.foreground': '#bec2cc',
     },
-  })
+  });
 }
