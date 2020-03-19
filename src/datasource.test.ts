@@ -1,7 +1,5 @@
-import moment from 'moment';
-
 import TemplateSrv from './mocks/template_srv_stub';
-
+import { dateTime } from '@grafana/data';
 import Datasource from './datasource';
 
 describe('InfluxDB (Flux)', () => {
@@ -23,8 +21,8 @@ describe('InfluxDB (Flux)', () => {
     });
 
     it.skip('replaces $range variable with custom dates', () => {
-      const to = moment();
-      const from = moment().subtract(1, 'hours');
+      const to = dateTime();
+      const from = dateTime().subtract(1, 'hours');
       target = ds.prepareQueryTarget(
         { query: 'from(bucket: "test") |> range($range)' },
         {
