@@ -23,6 +23,7 @@
     "@grafana/toolkit": "next",
     "@grafana/ui": "next",
     "@grafana/data": "next",
+    "@grafana/e2e": "next",
     "@types/grafana": "github:CorpGlory/types-grafana.git",
     "@types/slate-plain-serializer": "^0.6.1",
     "slate": "0.47.8",
