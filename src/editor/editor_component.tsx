@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
-import coreModule from 'grafana/app/core/core_module';
+import FluxEditorMonaco from 'influx-ui';
 
-import FluxMonacoEditor from './FluxMonacoEditor';
+import coreModule from 'grafana/app/core/core_module';
 
 /**
  * Angular wrapper around the FLux query field
@@ -34,12 +34,11 @@ class Editor extends Component<any, any> {
   };
 
   render() {
-    //const { database, request } = this.props;
     const { edited, query } = this.state;
 
     return (
       <div className="gf-form-input" style={{ height: 'initial' }}>
-        <FluxMonacoEditor script={edited ? null : query} onChangeScript={this.handleChangeQuery} />
+        <FluxEditorMonaco script={edited ? null : query} onChangeScript={this.handleChangeQuery} />
       </div>
     );
   }
@@ -47,7 +46,7 @@ class Editor extends Component<any, any> {
 
 coreModule.directive('fluxEditor', [
   'reactDirective',
-  (reactDirective: any) => {
+  reactDirective => {
     return reactDirective(Editor, ['change', 'database', 'execute', 'query', 'request']);
   },
 ]);
