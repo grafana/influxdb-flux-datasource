@@ -89,7 +89,7 @@ func (ds *InfluxDataSource) CheckHealth(ctx context.Context, req *backend.CheckH
 		res.Message = "Invalid config"
 		return res, nil
 	}
-	fmt.Println("CHECK HEALTH: %s", config)
+	fmt.Printf("CHECK HEALTH: %+v\n", config)
 
 	res.Status = backend.HealthStatusOk
 	res.Message = "Success"
@@ -108,7 +108,7 @@ func (ds *InfluxDataSource) QueryData(ctx context.Context, req *backend.QueryDat
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("QUERY WITH: %s", client)
+	fmt.Printf("QUERY WITH: %+v\n", client)
 
 	for _, q := range req.Queries {
 		queryModel, err := readQuery(q)
