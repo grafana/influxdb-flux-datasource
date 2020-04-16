@@ -7,7 +7,8 @@
     "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
     "dev": "grafana-toolkit plugin:dev",
-    "watch": "grafana-toolkit plugin:dev --watch"
+    "watch": "grafana-toolkit plugin:dev --watch",
+    "postinstall": "grafana-toolkit plugin:update-circleci"
   },
   "author": "Grafana Labs",
   "license": "Apache",
@@ -20,7 +21,7 @@
     "shelljs": "^0.8.3"
   },
   "devDependencies": {
-    "@grafana/toolkit": "next",
+    "@grafana/toolkit": "canary",
     "@grafana/ui": "next",
     "@grafana/data": "next",
     "@grafana/e2e": "next",
