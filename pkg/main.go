@@ -1,25 +1,18 @@
 package main
 
 import (
-	"net/http"
 	"os"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
-	"github.com/grafana/grafana-plugin-sdk-go/backend/resource/httpadapter"
+	"github.com/grafana/grafana-plugin-sdk-go/experimental"
 )
 
 func main() {
-	_ = backend.SetupPluginEnvironment("influx-datasource")
+	// Setup the plugin environment
+	backend.SetupPluginEnvironment("influx-datasource")
 
-	mux := http.NewServeMux()
-	ds := NewDataSource(mux)
-	httpResourceHandler := httpadapter.New(mux)
-
-	err := backend.Serve(backend.ServeOpts{
-		CallResourceHandler: httpResourceHandler,
-		QueryDataHandler:    ds,
-		CheckHealthHandler:  ds,
-	})
+	host := experimental.NewInstanceManager(&InfluxHost{})
+	err := host.RunGRPCServer()
 	if err != nil {
 		backend.Logger.Error(err.Error())
 		os.Exit(1)

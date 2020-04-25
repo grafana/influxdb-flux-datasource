@@ -4,8 +4,9 @@
   "id": "grafana-influxdb-flux-datasource",
 
   "backend": true,
-  "executable": "gfx_influx",
+  "executable": "gpx_influx",
   "metrics": true,
+  "alerting": true,
   
   "queryOptions": {
     "minInterval": true
@@ -33,7 +34,7 @@
     "updated": "%TODAY%"
   },
   "dependencies": {
-    "grafanaVersion": "6.7.x",
+    "grafanaVersion": "7.0.x",
     "plugins": []
   }
 }
