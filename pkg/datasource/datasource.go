@@ -7,7 +7,7 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/experimental"
 	"github.com/grafana/influx-datasource/pkg/models"
-	"github.com/influxdata/influxdb-client-go/influxdb2"
+	influxdb2 "github.com/influxdata/influxdb-client-go"
 )
 
 // This is an interface to help testing
@@ -16,24 +16,24 @@ type queryRunner interface {
 }
 
 // This is an interface to help testing
-type InfluRunner struct {
-	Client *influxdb2.InfluxDBClient
+type InfluxRunner struct {
+	Client influxdb2.InfluxDBClient
 }
 
-func (r *InfluRunner) runQuery(ctx context.Context, org string, q string) error {
+func (r *InfluxRunner) runQuery(ctx context.Context, org string, q string) (*influxdb2.QueryTableResult, error) {
 	return r.Client.QueryApi(org).Query(ctx, q)
 }
 
 // InfluxDataSource handler for google sheets
 type InfluxDataSource struct {
-	Runner *influxdb2.InfluxDBClient
+	Runner queryRunner
 }
 
 // CreateDataSource create the client...
 func CreateDataSource(settings models.DatasourceSettings) (*InfluxDataSource, error) {
 	return &InfluxDataSource{
-		Runner: &InfluRunner{
-			Client: influxdb2.NewClient(settings.URL, settings.Token),
+		Runner: &InfluxRunner{
+			Client: influxdb2.NewClientWithOptions(settings.URL, settings.Token, settings.Options),
 		},
 	}, nil
 }

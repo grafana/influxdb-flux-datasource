@@ -7,7 +7,7 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/influx-datasource/pkg/models"
-	"github.com/influxdata/influxdb-client-go/influxdb2"
+	influxdb2 "github.com/influxdata/influxdb-client-go"
 )
 
 // QueryResultToDataFrames creates a DataFrame from query results

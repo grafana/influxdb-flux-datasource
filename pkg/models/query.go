@@ -9,7 +9,7 @@ type QueryModel struct {
 
 	// Not from JSON
 	TimeRange     backend.TimeRange `json:"-"`
-	MaxDataPoints int64
+	MaxDataPoints int64             `json:"-"`
 }
 
 func GetQueryModel(query backend.DataQuery) (*QueryModel, error) {
