@@ -6,7 +6,7 @@ import (
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/experimental"
-	"github.com/grafana/influx-datasource/pkg/models"
+	"github.com/grafana/influxdb-flux-datasource/pkg/models"
 	influxdb2 "github.com/influxdata/influxdb-client-go"
 )
 
@@ -30,7 +30,7 @@ type InfluxDataSource struct {
 }
 
 // CreateDataSource create the client...
-func CreateDataSource(settings models.DatasourceSettings) (*InfluxDataSource, error) {
+func CreateDataSource(settings *models.DatasourceSettings) (*InfluxDataSource, error) {
 	return &InfluxDataSource{
 		Runner: &InfluxRunner{
 			Client: influxdb2.NewClientWithOptions(settings.URL, settings.Token, settings.Options),

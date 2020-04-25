@@ -1,4 +1,4 @@
-module github.com/grafana/influx-datasource
+module github.com/grafana/influxdb-flux-datasource
 
 go 1.14
 

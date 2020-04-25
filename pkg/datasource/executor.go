@@ -6,7 +6,7 @@ import (
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
-	"github.com/grafana/influx-datasource/pkg/models"
+	"github.com/grafana/influxdb-flux-datasource/pkg/models"
 	influxdb2 "github.com/influxdata/influxdb-client-go"
 )
 

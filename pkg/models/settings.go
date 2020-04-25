@@ -20,7 +20,7 @@ type DatasourceSettings struct {
 // // HTTP request timeout in sec. Default 20
 // httpRequestTimeout uint
 
-func GetSettings(settings backend.DataSourceInstanceSettings) (*DatasourceSettings, error) {
+func LoadSettings(settings backend.DataSourceInstanceSettings) (*DatasourceSettings, error) {
 	model := &DatasourceSettings{}
 	model.URL = settings.URL
 	model.Token = settings.DecryptedSecureJSONData["token"]
