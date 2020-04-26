@@ -58,16 +58,14 @@ func (ds *InfluxDataSource) CheckHealth() *backend.CheckHealthResult {
 func (ds *InfluxDataSource) QueryData(req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
 	res := backend.NewQueryDataResponse()
 	for _, q := range req.Queries {
-		var dr *backend.DataResponse
 		query, err := models.GetQueryModel(q)
 		if err != nil {
-			dr = &backend.DataResponse{
+			res.Responses[q.RefID] = backend.DataResponse{
 				Error: err,
 			}
 		} else {
-			dr = ExecuteQuery(context.Background(), *query, ds.Runner)
+			res.Responses[q.RefID] = ExecuteQuery(context.Background(), *query, ds.Runner)
 		}
-		res.Responses[q.RefID] = *dr
 	}
 	return res, nil
 }

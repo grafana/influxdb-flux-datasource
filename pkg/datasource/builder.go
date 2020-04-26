@@ -82,10 +82,9 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 	return nil
 }
 
-func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
+func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) {
 	for i, key := range fb.names {
 		val := record.ValueByKey(key)
 		fb.frame.Fields[i].Append(val)
 	}
-	return nil
 }

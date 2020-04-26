@@ -10,8 +10,8 @@ import (
 	influxdb2 "github.com/influxdata/influxdb-client-go"
 )
 
-func ExecuteQuery(ctx context.Context, query models.QueryModel, runner queryRunner) (dr *backend.DataResponse) {
-	dr = &backend.DataResponse{}
+func ExecuteQuery(ctx context.Context, query models.QueryModel, runner queryRunner) (dr backend.DataResponse) {
+	dr = backend.DataResponse{}
 
 	flux, err := Interpolate(query)
 	if err != nil {
@@ -28,8 +28,8 @@ func ExecuteQuery(ctx context.Context, query models.QueryModel, runner queryRunn
 	return readDataFrames(table, query.MaxDataPoints)
 }
 
-func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int64) (dr *backend.DataResponse) {
-	dr = &backend.DataResponse{}
+func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int64) (dr backend.DataResponse) {
+	dr = backend.DataResponse{}
 
 	builder := &FrameBuilder{}
 	var points int64 = 0
