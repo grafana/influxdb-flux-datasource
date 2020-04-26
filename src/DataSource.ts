@@ -14,9 +14,13 @@ export class DataSource extends DataSourceWithBackend<InfluxQuery, InfluxOptions
   }
 
   applyTemplateVariables(query: InfluxQuery): InfluxQuery {
+    if (!query || !query.query) {
+      return query;
+    }
+
     return {
       ...query,
-      query: this.templateSrv.replace(query),
+      query: this.templateSrv.replace(query.query),
     };
   }
 }
