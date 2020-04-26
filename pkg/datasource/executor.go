@@ -38,21 +38,41 @@ func ExecuteQuery(ctx context.Context, query *models.QueryModel, runner queryRun
 func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int64) (dr *backend.DataResponse) {
 	dr = &backend.DataResponse{}
 
-	var frame *data.Frame
+	builder := &FrameBuilder{}
+	var points int64 = 0
 
 	for result.Next() {
 		// Observe when there is new grouping key producing new table
 		if result.TableChanged() {
-			fmt.Printf("table: %s\n", result.TableMetadata().String())
+			if builder.frame != nil {
+				dr.Frames = append(dr.Frames, builder.frame)
+			}
+			err := builder.Init(result.TableMetadata())
+			if err != nil {
+				dr.Error = err
+				return
+			}
 		}
 
-		if frame == nil {
+		if builder.frame == nil {
 			dr.Error = fmt.Errorf("Invalid state")
 			return dr
 		}
+		builder.Append(result.Record())
+		points += 1
+		if maxPoints > 0 && points > maxPoints {
+			backend.Logger.Warn("max points reached")
+			builder.frame.AppendNotices(data.Notice{
+				Severity: data.NoticeSeverityWarning,
+				Text:     "Reached max points",
+			})
+			break
+		}
+	}
 
-		// read result
-		fmt.Printf("row: %s\n", result.Record().String())
+	// Add the inprogress record
+	if builder.frame != nil {
+		dr.Frames = append(dr.Frames, builder.frame)
 	}
 
 	// Attach any errors (may be null)

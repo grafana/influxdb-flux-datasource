@@ -15,6 +15,11 @@ type queryRunner interface {
 	runQuery(ctx context.Context, org string, q string) (*influxdb2.QueryTableResult, error)
 }
 
+// InfluxDataSource handler for google sheets
+type InfluxDataSource struct {
+	Runner queryRunner
+}
+
 // This is an interface to help testing
 type InfluxRunner struct {
 	Client influxdb2.InfluxDBClient
@@ -22,11 +27,6 @@ type InfluxRunner struct {
 
 func (r *InfluxRunner) runQuery(ctx context.Context, org string, q string) (*influxdb2.QueryTableResult, error) {
 	return r.Client.QueryApi(org).Query(ctx, q)
-}
-
-// InfluxDataSource handler for google sheets
-type InfluxDataSource struct {
-	Runner queryRunner
 }
 
 // CreateDataSource create the client...
