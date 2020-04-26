@@ -1,6 +1,7 @@
 {
   "extends": "@grafana/toolkit/src/config/tsconfig.plugin.json",
   "include": ["src", "types"],
+  "jsx": "react",
   "compilerOptions": {
     "rootDir": "./src",
     "baseUrl": "./src",

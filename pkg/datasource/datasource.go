@@ -12,7 +12,7 @@ import (
 
 // This is an interface to help testing
 type queryRunner interface {
-	runQuery(ctx context.Context, org string, q string) (*influxdb2.QueryTableResult, error)
+	runQuery(ctx context.Context, q string) (*influxdb2.QueryTableResult, error)
 }
 
 // InfluxDataSource handler for google sheets
@@ -22,18 +22,20 @@ type InfluxDataSource struct {
 
 // This is an interface to help testing
 type InfluxRunner struct {
-	Client influxdb2.InfluxDBClient
+	client influxdb2.InfluxDBClient
+	org    string
 }
 
-func (r *InfluxRunner) runQuery(ctx context.Context, org string, q string) (*influxdb2.QueryTableResult, error) {
-	return r.Client.QueryApi(org).Query(ctx, q)
+func (r *InfluxRunner) runQuery(ctx context.Context, q string) (*influxdb2.QueryTableResult, error) {
+	return r.client.QueryApi(r.org).Query(ctx, q)
 }
 
 // CreateDataSource create the client...
 func CreateDataSource(settings *models.DatasourceSettings) (*InfluxDataSource, error) {
 	return &InfluxDataSource{
 		Runner: &InfluxRunner{
-			Client: influxdb2.NewClientWithOptions(settings.URL, settings.Token, settings.Options),
+			client: influxdb2.NewClientWithOptions(settings.URL, settings.Token, settings.Options),
+			org:    settings.Organization,
 		},
 	}, nil
 }
@@ -63,7 +65,7 @@ func (ds *InfluxDataSource) QueryData(req *backend.QueryDataRequest) (*backend.Q
 				Error: err,
 			}
 		} else {
-			dr = ExecuteQuery(context.Background(), query, ds.Runner)
+			dr = ExecuteQuery(context.Background(), *query, ds.Runner)
 		}
 		res.Responses[q.RefID] = *dr
 	}

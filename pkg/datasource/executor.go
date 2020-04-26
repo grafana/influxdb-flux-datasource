@@ -10,23 +10,16 @@ import (
 	influxdb2 "github.com/influxdata/influxdb-client-go"
 )
 
-// QueryResultToDataFrames creates a DataFrame from query results
-func GetRawFluxQuery(query *models.QueryModel) (string, error) {
-	// TODO apply macros!!!
-
-	return query.RawQuery, nil
-}
-
-func ExecuteQuery(ctx context.Context, query *models.QueryModel, runner queryRunner) (dr *backend.DataResponse) {
+func ExecuteQuery(ctx context.Context, query models.QueryModel, runner queryRunner) (dr *backend.DataResponse) {
 	dr = &backend.DataResponse{}
 
-	flux, err := GetRawFluxQuery(query)
+	flux, err := Interpolate(query)
 	if err != nil {
 		dr.Error = err
 		return
 	}
 
-	table, err := runner.runQuery(ctx, query.Org, flux)
+	table, err := runner.runQuery(ctx, flux)
 	if err != nil {
 		dr.Error = err
 		return

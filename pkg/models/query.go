@@ -1,11 +1,15 @@
 package models
 
-import "github.com/grafana/grafana-plugin-sdk-go/backend"
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/grafana/grafana-plugin-sdk-go/backend"
+)
 
 // QueryModel represents a spreadsheet query.
 type QueryModel struct {
-	Org      string `json:"org"`
-	RawQuery string `json:"rawQuery"`
+	RawQuery string `json:"query"`
 
 	// Not from JSON
 	TimeRange     backend.TimeRange `json:"-"`
@@ -14,6 +18,11 @@ type QueryModel struct {
 
 func GetQueryModel(query backend.DataQuery) (*QueryModel, error) {
 	model := &QueryModel{}
+
+	err := json.Unmarshal(query.JSON, &model)
+	if err != nil {
+		return nil, fmt.Errorf("error reading query: %s", err.Error())
+	}
 
 	// Copy directly from the well typed query
 	model.TimeRange = query.TimeRange

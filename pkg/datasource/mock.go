@@ -19,7 +19,7 @@ type MockRunner struct {
 	testDataPath string
 }
 
-func (r *MockRunner) runQuery(ctx context.Context, org string, q string) (*influxdb2.QueryTableResult, error) {
+func (r *MockRunner) runQuery(ctx context.Context, q string) (*influxdb2.QueryTableResult, error) {
 	bytes, err := ioutil.ReadFile("./testdata/" + r.testDataPath)
 	if err != nil {
 		return nil, err
@@ -37,5 +37,5 @@ func (r *MockRunner) runQuery(ctx context.Context, org string, q string) (*influ
 	defer server.Close()
 
 	client := influxdb2.NewClient(server.URL, "a")
-	return client.QueryApi(org).Query(ctx, q)
+	return client.QueryApi("x").Query(ctx, q)
 }

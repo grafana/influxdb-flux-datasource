@@ -1,14 +1,13 @@
-import { DataQuery, DataSourceJsonData } from "@grafana/data";
+import { DataQuery, DataSourceJsonData } from '@grafana/data';
 
 export interface InfluxQuery extends DataQuery {
-  rawQuery?: string;
-  noTruncation?: boolean;
+  query?: string;
 }
 
 export interface InfluxOptions extends DataSourceJsonData {
-  // nothing for now
+  organization?: string;
 }
 
 export interface InfluxSecureJsonData {
-  // nothing for now
+  token?: string;
 }

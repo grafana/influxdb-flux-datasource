@@ -16,7 +16,7 @@ func TestExecuteSimple(t *testing.T) {
 			testDataPath: "simple.csv",
 		}
 
-		dr := ExecuteQuery(ctx, &models.QueryModel{}, runner)
+		dr := ExecuteQuery(ctx, models.QueryModel{}, runner)
 
 		if dr.Error != nil {
 			t.Fatal(dr.Error)

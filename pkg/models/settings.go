@@ -1,14 +1,18 @@
 package models
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	influxdb2 "github.com/influxdata/influxdb-client-go"
 )
 
 // InfluxSettings contains config properties (share with other AWS services?)
 type DatasourceSettings struct {
-	URL   string
-	Token string
+	URL          string
+	Token        string
+	Organization string
 
 	Options *influxdb2.Options
 }
@@ -22,6 +26,12 @@ type DatasourceSettings struct {
 
 func LoadSettings(settings backend.DataSourceInstanceSettings) (*DatasourceSettings, error) {
 	model := &DatasourceSettings{}
+
+	err := json.Unmarshal(settings.JSONData, &model)
+	if err != nil {
+		return nil, fmt.Errorf("error reading settings: %s", err.Error())
+	}
+
 	model.URL = settings.URL
 	model.Token = settings.DecryptedSecureJSONData["token"]
 
