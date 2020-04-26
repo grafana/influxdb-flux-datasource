@@ -13,6 +13,7 @@
   "author": "Grafana Labs <team@grafana.com> (https://grafana.com)",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@grafana/e2e": "canary",
     "@grafana/data": "canary",
     "@grafana/runtime": "canary",
     "@grafana/toolkit": "canary",

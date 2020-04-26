@@ -1,14 +1,21 @@
-version: 2
+version: 2.1
+parameters:
+  ssh-fingerprint:
+    type: string
+    default: "dc:60:ab:c7:2d:8c:82:50:2a:2a:97:1a:c0:66:83:14"
 
 aliases:
   # Workflow filters
   - &filter-only-master
     branches:
       only: master
+  - &filter-only-release
+    branches:
+      only: /^v[1-9]*[0-9]+\.[1-9]*[0-9]+\.x$/
 
 defaults: &defaults
   docker:
-    - image: srclosson/grafana-plugin-ci:latest
+    - image: srclosson/grafana-plugin-ci-alpine:latest
 
 jobs:
   build_plugin:
@@ -45,7 +52,7 @@ jobs:
       - run:
           name: Build Backend
           command: |
-            [ -f "Magefile.go" ] && mage -v buildAll || circleci-agent step halt
+            mage -v buildAll
       - run:
           name: Test Backend
           command: |
@@ -114,7 +121,29 @@ jobs:
         - ci/dist
         - ci/grafana-test-env
 
-  test_integration:
+  provisioning:
+    <<: *defaults
+    steps:
+    - checkout
+    - add_ssh_keys:
+        fingerprints:
+          - << pipeline.parameters.ssh-fingerprint >>
+    - run:
+        name: Checkout provisioning files
+        command: git clone git@github.com:grafana/plugin-provisioning.git
+    - run:
+        name: Prepare task output dir
+        command: |
+          mkdir ci # Avoid error if not exists
+          mkdir ci/jobs # Avoid error if not exists
+          mkdir ci/jobs/provisioning
+          mv plugin-provisioning/plugins/google-sheets/provisioning/* ci/jobs/provisioning
+    - persist_to_workspace:
+        root: .
+        paths:
+        - ci/jobs/provisioning
+
+  e2e_canary:
     <<: *defaults
     steps:
     - checkout
@@ -126,39 +155,41 @@ jobs:
     - run:
         name: Setup Grafana (local install)
         command: |
-          sudo dpkg -i /usr/local/grafana/deb/grafana_6.6.2_amd64.deb
-          sudo updatedb
-          sudo locate grafana
-          sudo cp ci/grafana-test-env/custom.ini /usr/share/grafana/conf/custom.ini
-          sudo cp ci/grafana-test-env/custom.ini /etc/grafana/grafana.ini
-          sudo service grafana-server start
-          sudo grafana-cli --version
+          ginstall canary
+          /opt/grafana/bin/grafana-server -config ci/grafana-test-env/custom.ini -homepath /opt/grafana &
+          /opt/grafana/bin/grafana-cli --version
     - run:
         name: Install dependencies
-        command: yarn install --frozen-lockfile
+        command: |
+          # TODO.... should be frozen-lockfile
+          yarn install --pure-lockfile
     - save_cache:
           paths:
             - ~/.cache
           key: yarn-packages-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
     - run:
-        name: Run e2e tests
-        command: npx grafana-e2e run
+        name: Copy provisioning files
+        command: cp -r ci/jobs/provisioning provisioning/
     - run:
+        name: Run e2e tests
+        command: echo npx grafana-e2e run
+    - run:
+        when: always
         name: Prepare task output dir
         command: |
           # TODO: probably move all of this to `@grafana/toolkit plugin:ci-test`
-          mkdir ci/jobs/test_integration
+          mkdir ci/jobs/e2e_canary
           # only copy if they exist
-          cp cypress/screenshots/*.* ci/jobs/test_integration 2>/dev/null || :
-          cp cypress/videos/*.* ci/jobs/test_integration 2>/dev/null || :
+          cp cypress/screenshots/*.* ci/jobs/e2e_canary 2>/dev/null || :
+          cp cypress/videos/*.* ci/jobs/e2e_canary 2>/dev/null || :
     - persist_to_workspace:
         root: .
         paths:
-        - ci/jobs/test_integration
+        - ci/jobs/e2e_canary
     - store_test_results:
-        path: ci/jobs/test_integration
+        path: ci/jobs/e2e_canary
     - store_artifacts:
-        path: ci/jobs/test_integration
+        path: ci/jobs/e2e_canary
 
   report:
     <<: *defaults
@@ -174,7 +205,6 @@ jobs:
         command: |
           yarn install --frozen-lockfile
           npx grafana-toolkit plugin:ci-report
-          yarn install --frozen-lockfile
     - store_artifacts:
         path: ci
 
@@ -184,7 +214,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "dc:60:ab:c7:2d:8c:82:50:2a:2a:97:1a:c0:66:83:14"
+            - << pipeline.parameters.ssh-fingerprint >>
       - attach_workspace:
           at: .
       - restore_cache:
@@ -194,14 +224,9 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             yarn install --frozen-lockfile
-            if [ "$(curl -s https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/releases/latest | jq -r '.tag_name')" = "v$(cat ci/dist/plugin.json | jq -r '.info.version')" ]; then
-              npx grafana-toolkit plugin:github-publish --recreate
-            else
-              npx grafana-toolkit plugin:github-publish
-            fi
+            npx grafana-toolkit plugin:github-publish
 
 workflows:
-  version: 2
   plugin_workflow:
     jobs:
       - build_plugin
@@ -212,18 +237,20 @@ workflows:
             - build_plugin
             - build_backend
             - build_docs
-      - test_integration:
+      - provisioning
+      - e2e_canary:
           requires:
             - package
+            - provisioning
       - report:
           requires:
-            - test_integration
+            - e2e_canary
       - approve_release:
           type: approval
           requires:
             - report
-          filters: *filter-only-master
+          filters: *filter-only-release
       - publish_github_release:
           requires:
             - approve_release
-          filters: *filter-only-master
+          filters: *filter-only-release
