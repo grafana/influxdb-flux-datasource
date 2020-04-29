@@ -34,7 +34,7 @@ func isTag(schk string) bool {
 	return (schk != "result" && schk != "table" && schk[0] != '_')
 }
 
-var isField = regexp.MustCompile(`^_(time|value|measurement|field)$`)
+var isField = regexp.MustCompile(`^_(time|value|measurement|field|start|stop)$`)
 
 func getFrameFieldType(t string) (data.FieldType, error) {
 	switch t {
@@ -61,6 +61,9 @@ func getFrameFieldType(t string) (data.FieldType, error) {
 	return data.FieldTypeFloat64, fmt.Errorf("Unsupportd type %s", t)
 }
 
+// Init initializes the frame to be returned
+// fields points at entries in the frame, and provides easier access
+// names indexes the columns encountered
 func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 	columns := metadata.Columns()
 	fb.fields = make(map[string]*data.Field)
@@ -96,6 +99,11 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 	return nil
 }
 
+// Append appends a single entry from an influxdb2 record to a data frame
+// Values are appended to _value
+// Tags are appended as labels
+// _measurement holds the dataframe name
+// _field holds the field name.
 func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) {
 	for _, key := range fb.names {
 		val := record.ValueByKey(key)
