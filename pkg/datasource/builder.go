@@ -2,6 +2,7 @@ package datasource
 
 import (
 	"fmt"
+	"regexp"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
@@ -24,9 +25,16 @@ const (
 
 // This is an interface to help testing
 type FrameBuilder struct {
-	frame *data.Frame
-	names []string
+	fields map[string]*data.Field
+	frame  *data.Frame
+	names  []string
 }
+
+func isTag(schk string) bool {
+	return (schk != "result" && schk != "table" && schk[0] != '_')
+}
+
+var isField = regexp.MustCompile(`^_(time|value|measurement|field)$`)
 
 func getFrameFieldType(t string) (data.FieldType, error) {
 	switch t {
@@ -54,10 +62,8 @@ func getFrameFieldType(t string) (data.FieldType, error) {
 }
 
 func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
-
 	columns := metadata.Columns()
-
-	fb.names = make([]string, 0)
+	fb.fields = make(map[string]*data.Field)
 	fb.frame = &data.Frame{
 		Fields: make([]*data.Field, 0),
 	}
@@ -73,8 +79,16 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 			continue
 		} else {
 			f := data.NewFieldFromFieldType(ft, 0)
-			f.Name = col.Name()
-			fb.frame.Fields = append(fb.frame.Fields, f)
+			switch col.Name() {
+			case "_time":
+				f.Name = "Time"
+				fallthrough
+			case "_value":
+				f.Labels = make(map[string]string)
+				fb.fields[col.Name()] = f
+				fb.frame.Fields = append(fb.frame.Fields, f)
+			}
+
 			fb.names = append(fb.names, col.Name())
 		}
 	}
@@ -83,8 +97,19 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 }
 
 func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) {
-	for i, key := range fb.names {
+	for _, key := range fb.names {
 		val := record.ValueByKey(key)
-		fb.frame.Fields[i].Append(val)
+		switch {
+		case isTag(key):
+			fb.fields["_value"].Labels[key] = val.(string)
+		case key == "_field":
+			fb.fields["_value"].Name = val.(string)
+		case key == "_measurement":
+			fb.frame.Name = val.(string)
+		case key == "_value":
+			fallthrough
+		case key == "_time":
+			fb.fields[key].Append(val)
+		}
 	}
 }

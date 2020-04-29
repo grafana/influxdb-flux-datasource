@@ -18,6 +18,7 @@
     "@grafana/runtime": "canary",
     "@grafana/toolkit": "canary",
     "@grafana/ui": "canary",
+    "@influxdata/flux-parser": "next",
     "@types/lodash": "latest"
   }
 }
