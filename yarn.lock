@@ -1278,6 +1278,11 @@
   dependencies:
     react ">=15.0.0 <17.0.0"
 
+"@influxdata/flux-lsp-browser@0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.2.tgz#0d1318ca1b1d2fc07e3f64b6dea4ee98c2db2c94"
+  integrity sha512-zXnUQKUAHqDowaxjANAKC3CJAOuNVxReWHU2EQThtVwjmdRQeMGznN1H8Wi7AcVM8VFrq1XyvYa3bUd7OFHV0g==
+
 "@influxdata/flux-parser@next":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@influxdata/flux-parser/-/flux-parser-0.3.0.tgz#b63123ac814ad32c65e46a4097ba3d8b959416a5"
@@ -1440,6 +1445,11 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
+
+"@monaco-editor/react@3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.3.0.tgz#dbd585a71bf9ef8147d877b4b26ff3de4017bd4a"
+  integrity sha512-qvmUhgawBk2kwNOmXxIkiMGHsLm9vvVoQNY4So/sdrLVIo0DlFBzeal4wkMe1RV0uK47ziVG0LAXm2gV8ioGdA==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -8103,6 +8113,11 @@ moment@2.24.0, moment@2.x:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
+
+monaco-editor@^0.20.0:
+  version "0.20.0"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.20.0.tgz#5d5009343a550124426cb4d965a4d27a348b4dea"
+  integrity sha512-hkvf4EtPJRMQlPC3UbMoRs0vTAFAYdzFQ+gpMb8A+9znae1c43q8Mab9iVsgTcg/4PNiLGGn3SlDIa8uvK1FIQ==
 
 move-concurrently@^1.0.1:
   version "1.0.1"

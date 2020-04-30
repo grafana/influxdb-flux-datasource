@@ -63,6 +63,21 @@ export class ConfigEditor extends PureComponent<Props> {
         </div>
         <div className="gf-form-inline">
           <div className="gf-form max-width-30">
+            <InlineFormLabel className="width-10" tooltip="The default bucket to read from">
+              Default Bucket
+            </InlineFormLabel>
+            <div style={{ flexGrow: 1 }}>
+              <Input
+                type="text"
+                placeholder="The default bucket to read from"
+                value={jsonData.defaultBucket || ''}
+                onChange={onUpdateDatasourceJsonDataOption(this.props, 'defaultBucket')}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="gf-form-inline">
+          <div className="gf-form max-width-30">
             <InlineFormLabel className="width-10" tooltip="The orginization id">
               Token
             </InlineFormLabel>

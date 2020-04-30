@@ -1,28 +1,42 @@
 package datasource
 
 import (
-	"fmt"
 	"regexp"
-	"strconv"
+	"strings"
+	"time"
 
 	"github.com/grafana/influxdb-flux-datasource/pkg/models"
 )
 
-const timeFilter = `\$__timeFilter`
+const variableFilter = `(?m)([a-zA-Z]+)\.([a-zA-Z]+)`
 
 // Interpolate processes macros
 func Interpolate(query models.QueryModel) (string, error) {
 
 	flux := query.RawQuery
 
-	// TODO: This was just copied from NewRelic!!!! needs to be updated for flux!!!!
-	timeFilterExp, err := regexp.Compile(timeFilter)
-	if timeFilterExp.MatchString(flux) {
+	variableFilterExp, err := regexp.Compile(variableFilter)
+	matches := variableFilterExp.FindAllStringSubmatch(flux, -1)
+	if matches != nil {
 		timeRange := query.TimeRange
-		from := int(timeRange.From.UnixNano() / 1e6)
-		to := int(timeRange.To.UnixNano() / 1e6)
-		replacement := fmt.Sprintf("SINCE %s UNTIL %s", strconv.Itoa(from), strconv.Itoa(to))
-		flux = timeFilterExp.ReplaceAllString(flux, replacement)
+		from := timeRange.From.Format(time.RFC3339)
+		to := timeRange.To.Format(time.RFC3339)
+		for _, match := range matches {
+			switch match[2] {
+			case "timeRangeStart":
+				flux = strings.ReplaceAll(flux, match[0], from)
+			case "timeRangeStop":
+				flux = strings.ReplaceAll(flux, match[0], to)
+			case "windowPeriod":
+				flux = strings.ReplaceAll(flux, match[0], "\""+query.Interval.String()+"\"")
+			case "bucket":
+				flux = strings.ReplaceAll(flux, match[0], "\""+query.Options.Bucket+"\"")
+			case "defaultBucket":
+				flux = strings.ReplaceAll(flux, match[0], "\""+query.Options.DefaultBucket+"\"")
+			case "organization":
+				flux = strings.ReplaceAll(flux, match[0], "\""+query.Options.Organization+"\"")
+			}
+		}
 	}
 
 	return flux, err

@@ -19,6 +19,9 @@
     "@grafana/toolkit": "canary",
     "@grafana/ui": "canary",
     "@influxdata/flux-parser": "next",
+    "@influxdata/flux-lsp-browser": "0.5.2",
+    "@monaco-editor/react": "3.3.0",
+    "monaco-editor": "^0.20.0",
     "@types/lodash": "latest"
   }
 }
