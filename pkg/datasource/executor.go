@@ -25,6 +25,7 @@ func ExecuteQuery(ctx context.Context, query models.QueryModel, runner queryRunn
 		return
 	}
 
+	fmt.Println(table)
 	return readDataFrames(table, query.MaxDataPoints)
 }
 
@@ -41,6 +42,7 @@ func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int64) (dr bac
 				dr.Frames = append(dr.Frames, builder.frame)
 			}
 			err := builder.Init(result.TableMetadata())
+			points = 0
 			if err != nil {
 				dr.Error = err
 				return
@@ -52,7 +54,7 @@ func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int64) (dr bac
 			return dr
 		}
 		builder.Append(result.Record())
-		points += 1
+		points++
 		if maxPoints > 0 && points > maxPoints {
 			backend.Logger.Warn("max points reached")
 			builder.frame.AppendNotices(data.Notice{

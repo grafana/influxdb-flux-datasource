@@ -2,12 +2,11 @@ import { DataSourceInstanceSettings, MetricFindValue, DataQueryResponse, DataQue
 import { DataSourceWithBackend } from '@grafana/runtime';
 import { Observable } from 'rxjs';
 
-
 import { InfluxQuery, InfluxOptions } from './types';
 
 export class DataSource extends DataSourceWithBackend<InfluxQuery, InfluxOptions> {
   /** @ngInject */
-  instance: DataSourceInstanceSettings<InfluxOptions>
+  instance: DataSourceInstanceSettings<InfluxOptions>;
   constructor(instanceSettings: DataSourceInstanceSettings<InfluxOptions>, private templateSrv: any) {
     super(instanceSettings);
     this.instance = instanceSettings;
@@ -18,15 +17,13 @@ export class DataSource extends DataSourceWithBackend<InfluxQuery, InfluxOptions
       request.targets[i] = {
         ...target,
         options: this.instance.jsonData,
-      }
+      };
     });
 
-    console.log("request", request);
+    console.log('request', request);
 
     return DataSourceWithBackend.prototype.query.call(this, request);
   }
-
-  
 
   async metricFindQuery?(query: any, options?: any): Promise<MetricFindValue[]> {
     return Promise.resolve([]);

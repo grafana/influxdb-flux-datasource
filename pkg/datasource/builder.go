@@ -107,17 +107,19 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) {
 	for _, key := range fb.names {
 		val := record.ValueByKey(key)
-		switch {
-		case isTag(key):
-			fb.fields["_value"].Labels[key] = val.(string)
-		case key == "_field":
-			fb.fields["_value"].Name = val.(string)
-		case key == "_measurement":
-			fb.frame.Name = val.(string)
-		case key == "_value":
-			fallthrough
-		case key == "_time":
-			fb.fields[key].Append(val)
+		if val != nil {
+			switch {
+			case isTag(key):
+				fb.fields["_value"].Labels[key] = val.(string)
+			case key == "_field":
+				fb.fields["_value"].Name = val.(string)
+			case key == "_measurement":
+				fb.frame.Name = val.(string)
+			case key == "_value":
+				fallthrough
+			case key == "_time":
+				fb.fields[key].Append(val)
+			}
 		}
 	}
 }

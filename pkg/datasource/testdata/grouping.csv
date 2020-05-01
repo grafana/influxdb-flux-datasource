@@ -1,0 +1,9 @@
+#datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,string,string,string,string,double,dateTime:RFC3339
+#group,false,false,true,true,true,true,true,true,false,false
+#default,mean,,,,,,,,,
+,result,table,_start,_stop,_field,_measurement,cpu,host,_value,_time
+,,0,2020-04-30T19:58:15.018029201Z,2020-04-30T20:58:15.018029201Z,usage_guest,cpu,cpu-total,084469dbdc49,,2020-04-30T19:58:20Z
+,,0,2020-04-30T19:58:15.018029201Z,2020-04-30T20:58:15.018029201Z,usage_guest,cpu,cpu-total,084469dbdc49,0,2020-04-30T19:58:30Z
+,,0,2020-04-30T19:58:15.018029201Z,2020-04-30T20:58:15.018029201Z,usage_guest,cpu,cpu-total,084469dbdc49,0,2020-04-30T19:58:40Z
+,,0,2020-04-30T19:58:15.018029201Z,2020-04-30T20:58:15.018029201Z,usage_guest,cpu,cpu-total,084469dbdc49,0,2020-04-30T19:58:50Z
+,,0,2020-04-30T19:58:15.018029201Z,2020-04-30T20:58:15.018029201Z,usage_guest,cpu,cpu-total,084469dbdc49,0,2020-04-30T19:59:00Z
