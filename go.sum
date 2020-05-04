@@ -67,6 +67,8 @@ github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d h1:kJCB4vdITiW1eC1
 github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d/go.mod h1:+NfK9FKeTrX5uv1uIXGdwYDTeHna2qgaIlx54MXqjAM=
 github.com/influxdata/influxdb-client-go v1.1.0 h1:ht1HvNAfBuwY9/H0i1tOiVH4vHpkZ3gFwYD5j/xvyFA=
 github.com/influxdata/influxdb-client-go v1.1.0/go.mod h1:ZVjaPW87aKp5hzyny2WVpWVF0UY+iqtPz9veOZ2T1zw=
+github.com/influxdata/influxdb-client-go v1.1.1-0.20200504153954-46f54361f3fd h1:Tw8cDqqGNVZg+UXe1fcTrDOd3xZ39VlxhYkCwnlWwJU=
+github.com/influxdata/influxdb-client-go v1.1.1-0.20200504153954-46f54361f3fd/go.mod h1:ZVjaPW87aKp5hzyny2WVpWVF0UY+iqtPz9veOZ2T1zw=
 github.com/influxdata/line-protocol v0.0.0-20200327222509-2487e7298839 h1:W9WBk7wlPfJLvMCdtV4zPulc4uCPrlywQOmbFOhgQNU=
 github.com/influxdata/line-protocol v0.0.0-20200327222509-2487e7298839/go.mod h1:xaLFMmpvUxqXtVkUJfg9QmT88cDaCJ3ZKgdZ78oO8Qo=
 github.com/jhump/protoreflect v1.6.0 h1:h5jfMVslIg6l29nsMs0D8Wj17RDVdNYti0vDN/PZZoE=

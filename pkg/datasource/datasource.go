@@ -22,7 +22,7 @@ type InfluxDataSource struct {
 
 // This is an interface to help testing
 type InfluxRunner struct {
-	client influxdb2.InfluxDBClient
+	client influxdb2.Client
 	org    string
 }
 
