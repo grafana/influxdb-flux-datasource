@@ -32,7 +32,7 @@ func TestInterpolate(t *testing.T) {
 		{
 			name:   "interpolate flux variables",
 			before: `v.timeRangeStart, something.timeRangeStop, XYZ.bucket, uuUUu.defaultBucket, aBcDefG.organization, window.windowPeriod, a91{}.bucket`,
-			after:  `1970-01-01T00:00:00Z, 1970-01-01T00:00:00Z, "grafana2", "grafana3", "grafana1", "1s", a91{}.bucket`,
+			after:  `1970-01-01T00:00:00Z, 1970-01-01T00:00:00Z, "grafana2", "grafana3", "grafana1", 1s, a91{}.bucket`,
 		},
 	}
 	for _, tt := range tests {
