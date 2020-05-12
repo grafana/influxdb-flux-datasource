@@ -173,7 +173,7 @@ function getTimeRec(record) {
 }
 
 export function getTimeSeriesFromResult(result: string) {
-  const { data } = parseCSV(result);
+  const { data, types } = parseCSV(result);
   if (data.length === 0) {
     return [];
   }
@@ -183,7 +183,7 @@ export function getTimeSeriesFromResult(result: string) {
   const seriesList = Object.keys(tables)
     .map(id => tables[id])
     .map(series => {
-      const datapoints = series.map(record => [parseValue(record['_value']), parseTime(getTimeRec(record))]);
+      const datapoints = series.map(record => [parseValueWithType(record['_value'], types['_value']), parseTime(getTimeRec(record))]);
       const alias = getNameFromRecord(series[0]);
       return { datapoints, target: alias };
     });
