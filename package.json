@@ -13,13 +13,11 @@
   "author": "Grafana Labs <team@grafana.com> (https://grafana.com)",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grafana/e2e": "canary",
-    "@grafana/data": "canary",
-    "@grafana/runtime": "canary",
-    "@grafana/toolkit": "canary",
-    "@grafana/ui": "canary",
-    "@influxdata/flux-parser": "next",
-    "@influxdata/flux-lsp-browser": "0.5.2",
+    "@grafana/e2e": "next",
+    "@grafana/data": "next",
+    "@grafana/runtime": "next",
+    "@grafana/toolkit": "next",
+    "@grafana/ui": "next",
     "@monaco-editor/react": "3.3.0",
     "monaco-editor": "^0.20.0",
     "@types/lodash": "latest"

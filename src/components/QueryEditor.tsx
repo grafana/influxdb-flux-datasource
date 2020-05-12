@@ -3,10 +3,10 @@ import { QueryEditorProps } from '@grafana/data';
 import Editor from '@monaco-editor/react';
 import { DataSource } from '../DataSource';
 import { InfluxQuery, InfluxOptions } from '../types';
-import('@influxdata/flux-lsp-browser').then(({ Server }) => {
-  const srv = new Server(false, true);
-  console.log('lsp server ready', srv);
-});
+// import('@influxdata/flux-lsp-browser').then(({ Server }) => {
+//   const srv = new Server(false, true);
+//   console.log('lsp server ready', srv);
+// });
 
 type Props = QueryEditorProps<DataSource, InfluxQuery, InfluxOptions>;
 
