@@ -6,6 +6,6 @@ module.exports.getWebpackConfig = (config, options) => {
       publicPath: '/public/plugins/grafana-influxdb-flux-datasource/'
     }
   };
-  console.log("config", newConf)
+  // console.log("config", newConf)
   return newConf;
 };
