@@ -29,6 +29,7 @@ type FrameBuilder struct {
 	frames    []*data.Frame
 	converter *data.FieldConverter
 	labels    []string
+	table     int64
 }
 
 func isTag(schk string) bool {
@@ -68,6 +69,7 @@ func getConverter(t string) (*data.FieldConverter, error) {
 func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata, maxPoints int64) error {
 	columns := metadata.Columns()
 	fb.frames = make([]*data.Frame, 0)
+	fb.table = -1
 
 	for _, col := range columns {
 		switch {
@@ -91,9 +93,8 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata, maxPoints in
 // _measurement holds the dataframe name
 // _field holds the field name.
 func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
-	index := len(fb.frames) - 1
-	if index == -1 || fb.frames[index].Fields[1].Name != record.Field() {
-
+	table := record.ValueByKey("table").(int64)
+	if fb.table != table {
 		labels := make(map[string]string)
 		for _, name := range fb.labels {
 			labels[name] = record.ValueByKey(name).(string)
@@ -109,10 +110,10 @@ func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
 		frame.Fields[1].Labels = labels
 
 		fb.frames = append(fb.frames, frame)
-		index++
+		fb.table = table
 	}
 
-	frame := fb.frames[index]
+	frame := fb.frames[len(fb.frames)-1]
 	frame.Fields[0].Append(record.ValueByKey("_time"))
 	val, err := fb.converter.Converter(record.ValueByKey("_value"))
 	if err != nil {
