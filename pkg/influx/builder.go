@@ -58,8 +58,8 @@ func getConverter(t string) (*data.FieldConverter, error) {
 		return &converters.Int64ToOptionalInt64, nil
 	case uLongDatatype:
 		return &converters.UInt64ToOptionalUInt64, nil
-	// Fall though to default
 	case base64BinaryDataType:
+		return &converters.AnyToOptionalString, nil
 	}
 
 	return nil, fmt.Errorf("No matching converter found for [%v]", t)
@@ -96,6 +96,10 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
 	index := len(fb.frames) - 1
 	if index == -1 || fb.frames[index].Fields[1].Name != record.Field() {
+		fb.totalSeries++
+		if fb.maxSeries > 0 && fb.totalSeries > fb.maxSeries {
+			return fmt.Errorf("reached max series limit (%d)", fb.maxSeries)
+		}
 
 		labels := make(map[string]string)
 		for _, name := range fb.labels {
@@ -111,10 +115,6 @@ func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
 		frame.Fields[1].Name = record.Field()
 		frame.Fields[1].Labels = labels
 
-		fb.totalSeries++
-		if fb.maxSeries > 0 && fb.totalSeries > fb.maxSeries {
-			return fmt.Errorf("reached max series limit (%d)", fb.maxSeries)
-		}
 		fb.frames = append(fb.frames, frame)
 		index++
 	}
