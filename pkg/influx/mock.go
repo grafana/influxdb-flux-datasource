@@ -2,6 +2,7 @@ package influx
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -38,4 +39,8 @@ func (r *MockRunner) runQuery(ctx context.Context, q string) (*influxdb2.QueryTa
 
 	client := influxdb2.NewClient(server.URL, "a")
 	return client.QueryApi("x").Query(ctx, q)
+}
+
+func (r *MockRunner) checkHealth(ctx context.Context) (*interface{}, error) {
+	return nil, fmt.Errorf("not implemented yet!")
 }

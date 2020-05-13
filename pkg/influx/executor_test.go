@@ -17,7 +17,7 @@ func TestExecuteSimple(t *testing.T) {
 			testDataPath: "simple.csv",
 		}
 
-		dr := ExecuteQuery(ctx, models.QueryModel{MaxDataPoints: 100}, runner)
+		dr := ExecuteQuery(ctx, models.QueryModel{MaxDataPoints: 100}, runner, 50)
 
 		if dr.Error != nil {
 			t.Fatal(dr.Error)
@@ -53,7 +53,7 @@ func TestExecuteMultiple(t *testing.T) {
 			testDataPath: "multiple.csv",
 		}
 
-		dr := ExecuteQuery(ctx, models.QueryModel{MaxDataPoints: 100}, runner)
+		dr := ExecuteQuery(ctx, models.QueryModel{MaxDataPoints: 100}, runner, 50)
 
 		if dr.Error != nil {
 			t.Fatal(dr.Error)
@@ -89,7 +89,7 @@ func TestExecuteGrouping(t *testing.T) {
 			testDataPath: "grouping.csv",
 		}
 
-		dr := ExecuteQuery(ctx, models.QueryModel{MaxDataPoints: 100}, runner)
+		dr := ExecuteQuery(ctx, models.QueryModel{MaxDataPoints: 100}, runner, 50)
 
 		if dr.Error != nil {
 			t.Fatal(dr.Error)

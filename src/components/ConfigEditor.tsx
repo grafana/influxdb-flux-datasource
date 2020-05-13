@@ -18,6 +18,17 @@ export class ConfigEditor extends PureComponent<Props> {
     });
   };
 
+  onMaxSeriesChange = (event: ChangeEvent<any>) => {
+    const { options } = this.props;
+    this.props.onOptionsChange({
+      ...options,
+      jsonData: {
+        ...options.jsonData,
+        maxSeries: +event.target.value,
+      },
+    });
+  };
+
   render() {
     const { options, onOptionsChange } = this.props;
     const secureJsonData = options.secureJsonData || {};
@@ -72,6 +83,21 @@ export class ConfigEditor extends PureComponent<Props> {
                 placeholder="The default bucket to read from"
                 value={jsonData.defaultBucket || ''}
                 onChange={onUpdateDatasourceJsonDataOption(this.props, 'defaultBucket')}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="gf-form-inline">
+          <div className="gf-form max-width-30">
+            <InlineFormLabel className="width-10" tooltip="Maximum number of series to return">
+              Max Series
+            </InlineFormLabel>
+            <div style={{ flexGrow: 1 }}>
+              <Input
+                type="number"
+                placeholder="Maximum number of series to return"
+                value={jsonData.maxSeries || ''}
+                onChange={this.onMaxSeriesChange}
               />
             </div>
           </div>

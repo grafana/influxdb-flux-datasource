@@ -26,9 +26,11 @@ const (
 
 // This is an interface to help testing
 type FrameBuilder struct {
-	frames    []*data.Frame
-	converter *data.FieldConverter
-	labels    []string
+	frames      []*data.Frame
+	converter   *data.FieldConverter
+	labels      []string
+	maxSeries   int64
+	totalSeries int64
 }
 
 func isTag(schk string) bool {
@@ -108,13 +110,17 @@ func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
 		frame.Fields[1].Name = record.Field()
 		frame.Fields[1].Labels = labels
 
+		fb.totalSeries++
+		if fb.maxSeries > 0 && fb.totalSeries > fb.maxSeries {
+			return fmt.Errorf("reached max series limit (%d)", fb.maxSeries)
+		}
 		fb.frames = append(fb.frames, frame)
 		index++
 	}
 
 	frame := fb.frames[index]
-	frame.Fields[0].Append(record.ValueByKey("_time"))
-	val, err := fb.converter.Converter(record.ValueByKey("_value"))
+	frame.Fields[0].Append(record.Time())
+	val, err := fb.converter.Converter(record.Value())
 	if err != nil {
 		return err
 	}
