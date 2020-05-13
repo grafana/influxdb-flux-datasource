@@ -29,6 +29,7 @@ type FrameBuilder struct {
 	frames      []*data.Frame
 	converter   *data.FieldConverter
 	labels      []string
+	table       int64
 	maxPoints   int64 // max points in a series
 	maxSeries   int64 // max number of series
 	totalSeries int64
@@ -71,6 +72,7 @@ func getConverter(t string) (*data.FieldConverter, error) {
 func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 	columns := metadata.Columns()
 	fb.frames = make([]*data.Frame, 0)
+	fb.table = -1
 
 	for _, col := range columns {
 		switch {
@@ -100,7 +102,10 @@ func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
 		if fb.maxSeries > 0 && fb.totalSeries > fb.maxSeries {
 			return fmt.Errorf("reached max series limit (%d)", fb.maxSeries)
 		}
+	}
 
+	table := record.ValueByKey("table").(int64)
+	if fb.table != table {
 		labels := make(map[string]string)
 		for _, name := range fb.labels {
 			labels[name] = record.ValueByKey(name).(string)
@@ -116,10 +121,10 @@ func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
 		frame.Fields[1].Labels = labels
 
 		fb.frames = append(fb.frames, frame)
-		index++
+		fb.table = table
 	}
 
-	frame := fb.frames[index]
+	frame := fb.frames[len(fb.frames)-1]
 	frame.Fields[0].Append(record.Time())
 	val, err := fb.converter.Converter(record.Value())
 	if err != nil {
