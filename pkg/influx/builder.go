@@ -3,13 +3,12 @@ package influx
 import (
 	"fmt"
 	"regexp"
-	"sort"
-	"strings"
-	"time"
 
-	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	influxdb2 "github.com/influxdata/influxdb-client-go"
+
+	"github.com/grafana/influxdb-flux-datasource/pkg/converters"
+	_ "github.com/grafana/influxdb-flux-datasource/pkg/converters"
 )
 
 // Copied from: (Apache 2 license)
@@ -28,11 +27,9 @@ const (
 
 // This is an interface to help testing
 type FrameBuilder struct {
-	frames    map[string]*data.Frame
-	errFrame  *data.Frame
-	tags      map[string]data.FieldType
-	valueType data.FieldType
-	maxPoints int
+	frames    []*data.Frame
+	converter *data.FieldConverter
+	labels    []string
 }
 
 func isTag(schk string) bool {
@@ -41,29 +38,29 @@ func isTag(schk string) bool {
 
 var isField = regexp.MustCompile(`^_(time|value|measurement|field|start|stop)$`)
 
-func getFrameFieldType(t string) (data.FieldType, error) {
+func getConverter(t string) (*data.FieldConverter, error) {
 	switch t {
 	case stringDatatype:
-		return data.FieldTypeNullableString, nil
+		return &converters.AnyToOptionalString, nil
 	case timeDatatypeRFC:
-		return data.FieldTypeNullableTime, nil
+		return &converters.Int64ToOptionalInt64, nil
 	case timeDatatypeRFCNano:
-		return data.FieldTypeNullableTime, nil
+		return &converters.Int64ToOptionalInt64, nil
 	case durationDatatype:
-		return data.FieldTypeNullableFloat64, nil // ??? TODO: use arrow duration?
+		return &converters.Int64ToOptionalInt64, nil
 	case doubleDatatype:
-		return data.FieldTypeNullableFloat64, nil
+		return &converters.Float64ToOptionalFloat64, nil
 	case boolDatatype:
-		return data.FieldTypeNullableBool, nil
+		return &converters.BoolToOptionalBool, nil
 	case longDatatype:
-		return data.FieldTypeNullableInt64, nil
+		return &converters.Int64ToOptionalInt64, nil
 	case uLongDatatype:
-		return data.FieldTypeNullableUint64, nil
-
+		return &converters.UInt64ToOptionalUInt64, nil
 	// Fall though to default
 	case base64BinaryDataType:
 	}
-	return data.FieldTypeFloat64, fmt.Errorf("Unsupportd type %s", t)
+
+	return nil, fmt.Errorf("No matching converter found for [%v]", t)
 }
 
 // Init initializes the frame to be returned
@@ -71,30 +68,18 @@ func getFrameFieldType(t string) (data.FieldType, error) {
 // names indexes the columns encountered
 func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata, maxPoints int64) error {
 	columns := metadata.Columns()
-	fb.frames = make(map[string]*data.Frame)
-	fb.tags = make(map[string]data.FieldType)
-	fb.maxPoints = int(maxPoints)
-	fb.errFrame = &data.Frame{
-		Fields: make([]*data.Field, 0),
-	}
+	fb.frames = make([]*data.Frame, 0)
 
 	for _, col := range columns {
-		ft, err := getFrameFieldType(col.DataType())
-		if err != nil {
-			backend.Logger.Info("unsupported column", "column", col)
-			fb.errFrame.AppendNotices(data.Notice{
-				Severity: data.NoticeSeverityWarning,
-				Text:     err.Error(),
-			})
-			continue
-		} else {
-			if isTag(col.Name()) {
-				fb.tags[col.Name()] = ft
+		switch {
+		case col.Name() == "_value":
+			converter, err := getConverter(col.DataType())
+			if err != nil {
+				return err
 			}
-
-			if col.Name() == "_value" {
-				fb.valueType = ft
-			}
+			fb.converter = converter
+		case isTag(col.Name()):
+			fb.labels = append(fb.labels, col.Name())
 		}
 	}
 
@@ -106,139 +91,34 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata, maxPoints in
 // Tags are appended as labels
 // _measurement holds the dataframe name
 // _field holds the field name.
-func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) {
-	labels := make(map[string]string)
-	for key := range fb.tags {
-		labels[key] = record.ValueByKey(key).(string)
-	}
-
-	field := record.ValueByKey("_field").(string)
-	measurement := record.ValueByKey("_measurement").(string)
-
-	index := measurement + "." + field
-	var labelText []string
-	for key, val := range labels {
-		labelText = append(labelText, key+"="+val)
-	}
-
-	sort.Strings(labelText)
-	if len(labelText) > 0 {
-		index += ": {" + strings.Join(labelText, ",") + "}"
-	}
-
-	if fb.frames[index] == nil {
-		fb.frames[index] = &data.Frame{
-			Name: index,
+func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
+	index := record.ValueByKey("table").(int64)
+	if len(fb.frames) == int(index) {
+		labels := make(map[string]string)
+		for _, name := range fb.labels {
+			labels[name] = record.ValueByKey(name).(string)
 		}
+		frame := data.NewFrame(
+			record.Measurement(),
+			data.NewFieldFromFieldType(data.FieldTypeTime, 0),
+			data.NewFieldFromFieldType(fb.converter.OutputFieldType, 0),
+		)
 
-		fb.frames[index].Fields = append(fb.frames[index].Fields, data.NewFieldFromFieldType(data.FieldTypeTime, 0))
-		fb.frames[index].Fields = append(fb.frames[index].Fields, data.NewFieldFromFieldType(fb.valueType, 0))
+		frame.Fields[0].Name = "Time"
+		frame.Fields[0].Labels = labels
+		frame.Fields[1].Name = record.Field()
+		frame.Fields[1].Labels = labels
 
-		fb.frames[index].Fields[0].Name = "Time"
-		fb.frames[index].Fields[1].Name = "Value"
-		if len(labelText) > 0 {
-			fb.frames[index].Fields[0].Labels = labels
-			fb.frames[index].Fields[1].Labels = labels
-		}
+		fb.frames = append(fb.frames, frame)
 	}
 
-	fb.frames[index].Fields[0].Append(record.ValueByKey("_time"))
-	f := fb.frames[index].Fields[1]
-	v := record.ValueByKey("_value")
-
-	// Allow for 50% more points. Just in case.
-	if f.Len() < (fb.maxPoints + fb.maxPoints/2) {
-		if v == nil {
-			f.Append(nil)
-		} else {
-			switch fb.valueType {
-			case data.FieldTypeInt8:
-				v1 := v.(int8)
-				f.Append(v1)
-			case data.FieldTypeNullableInt8:
-				v1 := v.(int8)
-				f.Append(&v1)
-			case data.FieldTypeInt16:
-				v1 := v.(int16)
-				f.Append(v1)
-			case data.FieldTypeNullableInt16:
-				v1 := v.(int16)
-				f.Append(&v1)
-			case data.FieldTypeInt32:
-				v1 := v.(int32)
-				f.Append(v1)
-			case data.FieldTypeNullableInt32:
-				v1 := v.(int32)
-				f.Append(&v1)
-			case data.FieldTypeInt64:
-				v1 := v.(int64)
-				f.Append(v1)
-			case data.FieldTypeNullableInt64:
-				v1 := v.(int64)
-				f.Append(&v1)
-			case data.FieldTypeUint8:
-				v1 := v.(uint8)
-				f.Append(v1)
-			case data.FieldTypeNullableUint8:
-				v1 := v.(uint8)
-				f.Append(&v1)
-			case data.FieldTypeUint16:
-				v1 := v.(uint16)
-				f.Append(v1)
-			case data.FieldTypeNullableUint16:
-				v1 := v.(uint16)
-				f.Append(&v1)
-			case data.FieldTypeUint32:
-				v1 := v.(uint32)
-				f.Append(v1)
-			case data.FieldTypeNullableUint32:
-				v1 := v.(uint32)
-				f.Append(&v1)
-			case data.FieldTypeUint64:
-				v1 := v.(uint64)
-				f.Append(v1)
-			case data.FieldTypeNullableUint64:
-				v1 := v.(uint64)
-				f.Append(&v1)
-			case data.FieldTypeFloat32:
-				v1 := v.(float32)
-				f.Append(v1)
-			case data.FieldTypeNullableFloat32:
-				v1 := v.(float32)
-				f.Append(&v1)
-			case data.FieldTypeFloat64:
-				v1 := v.(float64)
-				f.Append(v1)
-			case data.FieldTypeNullableFloat64:
-				v1 := v.(float64)
-				f.Append(&v1)
-			case data.FieldTypeString:
-				v1 := v.(string)
-				f.Append(v1)
-			case data.FieldTypeNullableString:
-				v1 := v.(string)
-				f.Append(&v1)
-			case data.FieldTypeBool:
-				v1 := v.(bool)
-				f.Append(v1)
-			case data.FieldTypeNullableBool:
-				v1 := v.(bool)
-				f.Append(&v1)
-			case data.FieldTypeTime:
-				v1 := v.(time.Time)
-				f.Append(v1)
-			case data.FieldTypeNullableTime:
-				v1 := v.(time.Time)
-				f.Append(&v1)
-			default:
-			}
-		}
-	} else {
-		backend.Logger.Warn("max points reached")
-		fb.errFrame.AppendNotices(data.Notice{
-			Severity: data.NoticeSeverityWarning,
-			Text:     "Reached max points",
-		})
+	frame := fb.frames[index]
+	frame.Fields[0].Append(record.ValueByKey("_time"))
+	val, err := fb.converter.Converter(record.ValueByKey("_value"))
+	if err != nil {
+		return err
 	}
+	frame.Fields[1].Append(val)
 
+	return nil
 }

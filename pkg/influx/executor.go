@@ -52,7 +52,11 @@ func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int64) (dr bac
 			dr.Error = fmt.Errorf("Invalid state")
 			return dr
 		}
-		builder.Append(result.Record())
+
+		err := builder.Append(result.Record())
+		if err != nil {
+			dr.Error = err
+		}
 	}
 
 	// Add the inprogress record
