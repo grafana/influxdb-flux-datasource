@@ -116,3 +116,23 @@ func TestExecuteGrouping(t *testing.T) {
 		fmt.Println("----------------------")
 	})
 }
+
+func TestBuckets(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("Buckes", func(t *testing.T) {
+		runner := &MockRunner{
+			testDataPath: "buckets.csv",
+		}
+
+		dr := ExecuteQuery(ctx, models.QueryModel{MaxDataPoints: 100}, runner, 50)
+
+		if dr.Error != nil {
+			t.Fatal(dr.Error)
+		}
+
+		st, _ := dr.Frames[0].StringTable(-1, -1)
+		fmt.Println(st)
+		fmt.Println("----------------------")
+	})
+}
