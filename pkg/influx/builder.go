@@ -8,7 +8,6 @@ import (
 	influxdb2 "github.com/influxdata/influxdb-client-go"
 
 	"github.com/grafana/influxdb-flux-datasource/pkg/converters"
-	_ "github.com/grafana/influxdb-flux-datasource/pkg/converters"
 )
 
 // Copied from: (Apache 2 license)
@@ -92,8 +91,9 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata, maxPoints in
 // _measurement holds the dataframe name
 // _field holds the field name.
 func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
-	index := record.ValueByKey("table").(int64)
-	if len(fb.frames) == int(index) {
+	index := len(fb.frames) - 1
+	if index == -1 || fb.frames[index].Fields[1].Name != record.Field() {
+
 		labels := make(map[string]string)
 		for _, name := range fb.labels {
 			labels[name] = record.ValueByKey(name).(string)
@@ -105,11 +105,11 @@ func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
 		)
 
 		frame.Fields[0].Name = "Time"
-		frame.Fields[0].Labels = labels
 		frame.Fields[1].Name = record.Field()
 		frame.Fields[1].Labels = labels
 
 		fb.frames = append(fb.frames, frame)
+		index++
 	}
 
 	frame := fb.frames[index]
