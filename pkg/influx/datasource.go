@@ -104,7 +104,7 @@ func (ds *InfluxDataSource) CheckHealth(ctx context.Context, req *backend.CheckH
 
 	return &backend.CheckHealthResult{
 		Status:  backend.HealthStatusOk,
-		Message: fmt.Sprintf("OK! %v", h), // TODO!!
+		Message: fmt.Sprintf("OK: %v", h.Message), // TODO!!
 	}, nil
 }
 
