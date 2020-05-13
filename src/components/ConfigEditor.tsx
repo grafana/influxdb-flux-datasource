@@ -48,11 +48,11 @@ export class ConfigEditor extends PureComponent<Props> {
 
         <div className="gf-form-inline">
           <div className="gf-form max-width-30">
-            <InlineFormLabel className="width-10" tooltip="The orginization id">
+            <InlineFormLabel className="width-10" tooltip="Influx URL">
               URL
             </InlineFormLabel>
             <div style={{ flexGrow: 1 }}>
-              <Input type="text" placeholder="your org id" value={options.url || ''} onChange={this.onURLChange} />
+              <Input type="text" placeholder="https://..." value={options.url || ''} onChange={this.onURLChange} />
             </div>
           </div>
         </div>
@@ -95,7 +95,7 @@ export class ConfigEditor extends PureComponent<Props> {
             <div style={{ flexGrow: 1 }}>
               <Input
                 type="number"
-                placeholder="Maximum number of series to return"
+                placeholder="50"
                 value={jsonData.maxSeries || ''}
                 onChange={this.onMaxSeriesChange}
               />

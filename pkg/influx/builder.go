@@ -29,7 +29,8 @@ type FrameBuilder struct {
 	frames      []*data.Frame
 	converter   *data.FieldConverter
 	labels      []string
-	maxSeries   int64
+	maxPoints   int64 // max points in a series
+	maxSeries   int64 // max number of series
 	totalSeries int64
 }
 
@@ -67,7 +68,7 @@ func getConverter(t string) (*data.FieldConverter, error) {
 // Init initializes the frame to be returned
 // fields points at entries in the frame, and provides easier access
 // names indexes the columns encountered
-func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata, maxPoints int64) error {
+func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 	columns := metadata.Columns()
 	fb.frames = make([]*data.Frame, 0)
 
@@ -125,6 +126,10 @@ func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
 		return err
 	}
 	frame.Fields[1].Append(val)
+
+	if frame.Fields[0].Len() > int(fb.maxPoints) {
+		return fmt.Errorf("returned too many points in a series: %d", fb.maxPoints)
+	}
 
 	return nil
 }

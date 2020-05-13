@@ -24,13 +24,16 @@ func ExecuteQuery(ctx context.Context, query models.QueryModel, runner queryRunn
 		return
 	}
 
-	return readDataFrames(tables, query.MaxDataPoints, maxSeries)
+	return readDataFrames(tables, int64(float64(query.MaxDataPoints)*1.5), maxSeries)
 }
 
 func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int64, maxSeries int64) (dr backend.DataResponse) {
 	dr = backend.DataResponse{}
 
-	builder := &FrameBuilder{}
+	builder := &FrameBuilder{
+		maxPoints: maxPoints,
+		maxSeries: maxSeries,
+	}
 
 	for result.Next() {
 		// Observe when there is new grouping key producing new table
@@ -40,7 +43,7 @@ func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int64, maxSeri
 					dr.Frames = append(dr.Frames, frame)
 				}
 			}
-			err := builder.Init(result.TableMetadata(), maxPoints)
+			err := builder.Init(result.TableMetadata())
 			if err != nil {
 				dr.Error = err
 				return
