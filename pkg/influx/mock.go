@@ -9,6 +9,7 @@ import (
 	"time"
 
 	influxdb2 "github.com/influxdata/influxdb-client-go"
+	"github.com/influxdata/influxdb-client-go/domain"
 )
 
 //--------------------------------------------------------------
@@ -41,6 +42,6 @@ func (r *MockRunner) runQuery(ctx context.Context, q string) (*influxdb2.QueryTa
 	return client.QueryApi("x").Query(ctx, q)
 }
 
-func (r *MockRunner) checkHealth(ctx context.Context) (*interface{}, error) {
+func (r *MockRunner) checkHealth(ctx context.Context) (*domain.HealthCheck, error) {
 	return nil, fmt.Errorf("not implemented yet!")
 }

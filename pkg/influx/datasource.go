@@ -10,12 +10,13 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend/resource"
 	"github.com/grafana/influxdb-flux-datasource/pkg/models"
 	influxdb2 "github.com/influxdata/influxdb-client-go"
+	"github.com/influxdata/influxdb-client-go/domain"
 )
 
 // This is an interface to help testing
 type queryRunner interface {
 	runQuery(ctx context.Context, q string) (*influxdb2.QueryTableResult, error)
-	checkHealth(ctx context.Context) (*interface{}, error)
+	checkHealth(ctx context.Context) (*domain.HealthCheck, error)
 }
 
 // This is an interface to help testing
@@ -27,9 +28,8 @@ type InfluxRunner struct {
 func (r *InfluxRunner) runQuery(ctx context.Context, q string) (*influxdb2.QueryTableResult, error) {
 	return r.client.QueryApi(r.org).Query(ctx, q)
 }
-func (r *InfluxRunner) checkHealth(ctx context.Context) (*interface{}, error) {
-	// TODO call https://github.com/influxdata/influxdb-client-go/blob/master/client.go#L32
-	return nil, fmt.Errorf("not implemented yet!")
+func (r *InfluxRunner) checkHealth(ctx context.Context) (*domain.HealthCheck, error) {
+	return r.client.Health(ctx)
 }
 
 type instanceSettings struct {
