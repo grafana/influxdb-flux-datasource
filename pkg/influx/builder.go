@@ -26,10 +26,13 @@ const (
 
 // This is an interface to help testing
 type FrameBuilder struct {
-	frames    []*data.Frame
-	converter *data.FieldConverter
-	labels    []string
-	table     int64
+	frames      []*data.Frame
+	converter   *data.FieldConverter
+	labels      []string
+	table       int64
+	maxPoints   int64 // max points in a series
+	maxSeries   int64 // max number of series
+	totalSeries int64
 }
 
 func isTag(schk string) bool {
@@ -56,8 +59,8 @@ func getConverter(t string) (*data.FieldConverter, error) {
 		return &converters.Int64ToOptionalInt64, nil
 	case uLongDatatype:
 		return &converters.UInt64ToOptionalUInt64, nil
-	// Fall though to default
 	case base64BinaryDataType:
+		return &converters.AnyToOptionalString, nil
 	}
 
 	return nil, fmt.Errorf("No matching converter found for [%v]", t)
@@ -66,7 +69,7 @@ func getConverter(t string) (*data.FieldConverter, error) {
 // Init initializes the frame to be returned
 // fields points at entries in the frame, and provides easier access
 // names indexes the columns encountered
-func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata, maxPoints int64) error {
+func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 	columns := metadata.Columns()
 	fb.frames = make([]*data.Frame, 0)
 	fb.table = -1
@@ -93,6 +96,14 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata, maxPoints in
 // _measurement holds the dataframe name
 // _field holds the field name.
 func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
+	index := len(fb.frames) - 1
+	if index == -1 || fb.frames[index].Fields[1].Name != record.Field() {
+		fb.totalSeries++
+		if fb.maxSeries > 0 && fb.totalSeries > fb.maxSeries {
+			return fmt.Errorf("reached max series limit (%d)", fb.maxSeries)
+		}
+	}
+
 	table := record.ValueByKey("table").(int64)
 	if fb.table != table {
 		labels := make(map[string]string)
@@ -114,12 +125,16 @@ func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
 	}
 
 	frame := fb.frames[len(fb.frames)-1]
-	frame.Fields[0].Append(record.ValueByKey("_time"))
-	val, err := fb.converter.Converter(record.ValueByKey("_value"))
+	frame.Fields[0].Append(record.Time())
+	val, err := fb.converter.Converter(record.Value())
 	if err != nil {
 		return err
 	}
 	frame.Fields[1].Append(val)
+
+	if frame.Fields[0].Len() > int(fb.maxPoints) {
+		return fmt.Errorf("returned too many points in a series: %d", fb.maxPoints)
+	}
 
 	return nil
 }

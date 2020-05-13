@@ -18,6 +18,17 @@ export class ConfigEditor extends PureComponent<Props> {
     });
   };
 
+  onMaxSeriesChange = (event: ChangeEvent<any>) => {
+    const { options } = this.props;
+    this.props.onOptionsChange({
+      ...options,
+      jsonData: {
+        ...options.jsonData,
+        maxSeries: +event.target.value,
+      },
+    });
+  };
+
   render() {
     const { options, onOptionsChange } = this.props;
     const secureJsonData = options.secureJsonData || {};
@@ -37,11 +48,11 @@ export class ConfigEditor extends PureComponent<Props> {
 
         <div className="gf-form-inline">
           <div className="gf-form max-width-30">
-            <InlineFormLabel className="width-10" tooltip="The orginization id">
+            <InlineFormLabel className="width-10" tooltip="Influx URL">
               URL
             </InlineFormLabel>
             <div style={{ flexGrow: 1 }}>
-              <Input type="text" placeholder="your org id" value={options.url || ''} onChange={this.onURLChange} />
+              <Input type="text" placeholder="https://..." value={options.url || ''} onChange={this.onURLChange} />
             </div>
           </div>
         </div>
@@ -72,6 +83,21 @@ export class ConfigEditor extends PureComponent<Props> {
                 placeholder="The default bucket to read from"
                 value={jsonData.defaultBucket || ''}
                 onChange={onUpdateDatasourceJsonDataOption(this.props, 'defaultBucket')}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="gf-form-inline">
+          <div className="gf-form max-width-30">
+            <InlineFormLabel className="width-10" tooltip="Maximum number of series to return">
+              Max Series
+            </InlineFormLabel>
+            <div style={{ flexGrow: 1 }}>
+              <Input
+                type="number"
+                placeholder="50"
+                value={jsonData.maxSeries || ''}
+                onChange={this.onMaxSeriesChange}
               />
             </div>
           </div>

@@ -13,6 +13,7 @@ type DatasourceSettings struct {
 	URL          string
 	Token        string
 	Organization string
+	MaxSeries    int64 `json:"maxSeries"`
 
 	Options *influxdb2.Options
 }
@@ -30,6 +31,9 @@ func LoadSettings(settings backend.DataSourceInstanceSettings) (*DatasourceSetti
 	err := json.Unmarshal(settings.JSONData, &model)
 	if err != nil {
 		return nil, fmt.Errorf("error reading settings: %s", err.Error())
+	}
+	if model.MaxSeries < 1 {
+		model.MaxSeries = 50 // default
 	}
 
 	model.URL = settings.URL

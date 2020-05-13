@@ -10,11 +10,13 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend/resource"
 	"github.com/grafana/influxdb-flux-datasource/pkg/models"
 	influxdb2 "github.com/influxdata/influxdb-client-go"
+	"github.com/influxdata/influxdb-client-go/domain"
 )
 
 // This is an interface to help testing
 type queryRunner interface {
 	runQuery(ctx context.Context, q string) (*influxdb2.QueryTableResult, error)
+	checkHealth(ctx context.Context) (*domain.HealthCheck, error)
 }
 
 // This is an interface to help testing
@@ -26,9 +28,13 @@ type InfluxRunner struct {
 func (r *InfluxRunner) runQuery(ctx context.Context, q string) (*influxdb2.QueryTableResult, error) {
 	return r.client.QueryApi(r.org).Query(ctx, q)
 }
+func (r *InfluxRunner) checkHealth(ctx context.Context) (*domain.HealthCheck, error) {
+	return r.client.Health(ctx)
+}
 
 type instanceSettings struct {
-	Runner queryRunner
+	maxSeries int64
+	Runner    queryRunner
 }
 
 func newDataSourceInstance(s backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
@@ -38,6 +44,7 @@ func newDataSourceInstance(s backend.DataSourceInstanceSettings) (instancemgmt.I
 	}
 
 	return &instanceSettings{
+		maxSeries: settings.MaxSeries,
 		Runner: &InfluxRunner{
 			client: influxdb2.NewClientWithOptions(settings.URL, settings.Token, settings.Options),
 			org:    settings.Organization,
@@ -74,7 +81,7 @@ func (ds *InfluxDataSource) getInstance(ctx backend.PluginContext) (*instanceSet
 	if err != nil {
 		return nil, err
 	}
-	return s.(*instanceSettings), nil // ugly cast... but go ¯\_(ツ)_/¯
+	return s.(*instanceSettings), nil
 }
 
 // CheckHealth will check the currently configured settings
@@ -86,11 +93,18 @@ func (ds *InfluxDataSource) CheckHealth(ctx context.Context, req *backend.CheckH
 			Message: err.Error(),
 		}, nil
 	}
-	fmt.Println("settings", s)
+
+	h, err := s.Runner.checkHealth(ctx)
+	if err != nil {
+		return &backend.CheckHealthResult{
+			Status:  backend.HealthStatusError,
+			Message: err.Error(),
+		}, nil
+	}
 
 	return &backend.CheckHealthResult{
 		Status:  backend.HealthStatusOk,
-		Message: fmt.Sprintf("OK!"),
+		Message: fmt.Sprintf("OK: %v", h.Message), // TODO!!
 	}, nil
 }
 
@@ -109,7 +123,7 @@ func (ds *InfluxDataSource) QueryData(ctx context.Context, req *backend.QueryDat
 				Error: err,
 			}
 		} else {
-			res.Responses[q.RefID] = ExecuteQuery(context.Background(), *query, s.Runner)
+			res.Responses[q.RefID] = ExecuteQuery(context.Background(), *query, s.Runner, s.maxSeries)
 		}
 	}
 	return res, nil

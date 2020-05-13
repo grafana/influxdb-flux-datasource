@@ -8,6 +8,7 @@ export interface InfluxQuery extends DataQuery {
 export interface InfluxOptions extends DataSourceJsonData {
   organization?: string;
   defaultBucket?: string;
+  maxSeries?: number;
 }
 
 export interface InfluxSecureJsonData {

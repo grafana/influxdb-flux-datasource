@@ -9,7 +9,7 @@ import (
 	influxdb2 "github.com/influxdata/influxdb-client-go"
 )
 
-func ExecuteQuery(ctx context.Context, query models.QueryModel, runner queryRunner) (dr backend.DataResponse) {
+func ExecuteQuery(ctx context.Context, query models.QueryModel, runner queryRunner, maxSeries int64) (dr backend.DataResponse) {
 	dr = backend.DataResponse{}
 
 	flux, err := Interpolate(query)
@@ -18,20 +18,22 @@ func ExecuteQuery(ctx context.Context, query models.QueryModel, runner queryRunn
 		return
 	}
 
-	table, err := runner.runQuery(ctx, flux)
+	tables, err := runner.runQuery(ctx, flux)
 	if err != nil {
 		dr.Error = err
 		return
 	}
 
-	fmt.Println(table)
-	return readDataFrames(table, query.MaxDataPoints)
+	return readDataFrames(tables, int64(float64(query.MaxDataPoints)*1.5), maxSeries)
 }
 
-func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int64) (dr backend.DataResponse) {
+func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int64, maxSeries int64) (dr backend.DataResponse) {
 	dr = backend.DataResponse{}
 
-	builder := &FrameBuilder{}
+	builder := &FrameBuilder{
+		maxPoints: maxPoints,
+		maxSeries: maxSeries,
+	}
 
 	for result.Next() {
 		// Observe when there is new grouping key producing new table
@@ -41,7 +43,7 @@ func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int64) (dr bac
 					dr.Frames = append(dr.Frames, frame)
 				}
 			}
-			err := builder.Init(result.TableMetadata(), maxPoints)
+			err := builder.Init(result.TableMetadata())
 			if err != nil {
 				dr.Error = err
 				return
@@ -56,6 +58,7 @@ func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int64) (dr bac
 		err := builder.Append(result.Record())
 		if err != nil {
 			dr.Error = err
+			break
 		}
 	}
 
