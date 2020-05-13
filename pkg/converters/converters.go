@@ -57,7 +57,7 @@ var Float64ToOptionalFloat64 = data.FieldConverter{
 
 // Int64ToOptionalInt64 optional int value
 var Int64ToOptionalInt64 = data.FieldConverter{
-	OutputFieldType: data.FieldTypeNullableFloat64,
+	OutputFieldType: data.FieldTypeNullableInt64,
 	Converter: func(v interface{}) (interface{}, error) {
 		if v == nil {
 			return nil, nil
@@ -72,7 +72,7 @@ var Int64ToOptionalInt64 = data.FieldConverter{
 
 // UInt64ToOptionalUInt64 optional int value
 var UInt64ToOptionalUInt64 = data.FieldConverter{
-	OutputFieldType: data.FieldTypeNullableFloat64,
+	OutputFieldType: data.FieldTypeNullableUint64,
 	Converter: func(v interface{}) (interface{}, error) {
 		if v == nil {
 			return nil, nil
@@ -87,7 +87,7 @@ var UInt64ToOptionalUInt64 = data.FieldConverter{
 
 // BoolToOptionalBool optional int value
 var BoolToOptionalBool = data.FieldConverter{
-	OutputFieldType: data.FieldTypeNullableFloat64,
+	OutputFieldType: data.FieldTypeNullableBool,
 	Converter: func(v interface{}) (interface{}, error) {
 		if v == nil {
 			return nil, nil
