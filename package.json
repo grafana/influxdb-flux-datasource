@@ -1,34 +1,24 @@
 {
   "name": "grafana-influxdb-flux-datasource",
-  "version": "5.4.1",
+  "version": "7.0.0-dev",
   "description": "Grafana data source for InfluxDB (Flux query support)",
   "private": true,
   "scripts": {
     "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
     "dev": "grafana-toolkit plugin:dev",
-    "watch": "grafana-toolkit plugin:dev --watch",
-    "postinstall": "grafana-toolkit plugin:update-circleci"
+    "watch": "grafana-toolkit plugin:dev --watch"
   },
-  "author": "Grafana Labs",
-  "license": "Apache",
-  "dependencies": {
-    "diff": "^4.0.1",
-    "immutable": "3.8.2",
-    "lodash": "4.17.15",
-    "papaparse": "5.1.0",
-    "prismjs": "1.17.1",
-    "shelljs": "^0.8.3"
-  },
+  "repository": "github:grafana/influxdb-flux-datasource",
+  "author": "Grafana Labs <team@grafana.com> (https://grafana.com)",
+  "license": "Apache-2.0",
   "devDependencies": {
-    "@grafana/toolkit": "canary",
-    "@grafana/ui": "next",
     "@grafana/data": "next",
-    "@grafana/e2e": "next",
-    "@types/grafana": "github:CorpGlory/types-grafana.git",
-    "@types/slate-plain-serializer": "^0.6.1",
-    "slate": "0.47.8",
-    "slate-plain-serializer": "0.7.10",
-    "@grafana/slate-react": "^0.22.9-grafana"
+    "@grafana/runtime": "next",
+    "@grafana/toolkit": "next",
+    "@grafana/ui": "next",
+    "@monaco-editor/react": "3.3.0",
+    "monaco-editor": "^0.20.0",
+    "@types/lodash": "latest"
   }
 }
