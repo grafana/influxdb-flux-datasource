@@ -31,7 +31,7 @@ type columnInfo struct {
 
 // This is an interface to help testing
 type FrameBuilder struct {
-	tableId     int
+	tableId     int64
 	active      *data.Frame
 	frames      []*data.Frame
 	value       *data.FieldConverter
@@ -121,8 +121,8 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 // _measurement holds the dataframe name
 // _field holds the field name.
 func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
-	table := record.Table()
-	if fb.tableId != table {
+	table, ok := record.ValueByKey("table").(int64)
+	if ok && table != fb.tableId {
 		fb.totalSeries++
 		if fb.totalSeries > fb.maxSeries {
 			return fmt.Errorf("reached max series limit (%d)", fb.maxSeries)
