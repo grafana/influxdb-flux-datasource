@@ -33,7 +33,7 @@ func (r *InfluxRunner) checkHealth(ctx context.Context) (*domain.HealthCheck, er
 }
 
 type instanceSettings struct {
-	maxSeries int64
+	maxSeries int
 	Runner    queryRunner
 }
 

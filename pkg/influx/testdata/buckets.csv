@@ -1,5 +1,5 @@
-#group,false,false,false,false,true,false,false
 #datatype,string,long,string,string,string,string,long
+#group,false,false,false,false,true,false,false
 #default,_result,,,,,,
 ,result,table,name,id,organizationID,retentionPolicy,retentionPeriod
 ,,0,grafana,059b46a59abab001,059b46a59abab000,,604800000000000
