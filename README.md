@@ -1,5 +1,5 @@
 # InfluxDB (Flux) Datasource [BETA]
 
-Use flux with Grafana 7.0
+This plugin will work with InfluxDB 2.x and InfluxDB 1.8+
 
-This will eventually be integrated into the core grafana influx plugin
+In a future grafana releases, this plugin will be incorporated into the main influx plugin and allow a single datasource to support flux queries or influxql (SQL style) queries.
