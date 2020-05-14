@@ -118,9 +118,17 @@ func (ds *InfluxDataSource) CheckHealth(ctx context.Context, req *backend.CheckH
 		}, nil
 	}
 
+	rowLen, err := dr.Frames[0].RowLen()
+	if err != nil {
+		return &backend.CheckHealthResult{
+			Status:  backend.HealthStatusError,
+			Message: dr.Error.Error(),
+		}, nil
+	}
+
 	return &backend.CheckHealthResult{
 		Status:  backend.HealthStatusOk,
-		Message: fmt.Sprintf("%d buckets", dr.Frames[0].Fields[0].Len()), // TODO!!
+		Message: fmt.Sprintf("%d buckets", rowLen), // TODO!!
 	}, nil
 }
 

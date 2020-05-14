@@ -100,6 +100,7 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 	}
 
 	if fb.value == nil {
+		fb.labels = make([]string, 0)
 		for _, col := range columns {
 			converter, err := getConverter(col.DataType())
 			if err != nil {
@@ -143,7 +144,6 @@ func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
 			fb.active.Fields[0].Name = "Time"
 			fb.active.Fields[1].Name = record.Field()
 			fb.active.Fields[1].Labels = labels
-			fb.frames = append(fb.frames, fb.active)
 		} else {
 			fields := make([]*data.Field, len(fb.columns))
 			for idx, col := range fb.columns {
@@ -153,6 +153,7 @@ func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
 			fb.active = data.NewFrame("", fields...)
 		}
 
+		fb.frames = append(fb.frames, fb.active)
 		fb.tableId = table
 	}
 
