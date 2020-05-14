@@ -24,15 +24,22 @@ const (
 	timeDatatypeRFCNano  = "dateTime:RFC3339Nano"
 )
 
+type columnInfo struct {
+	name      string
+	converter *data.FieldConverter
+}
+
 // This is an interface to help testing
 type FrameBuilder struct {
+	tableId     int64
+	active      *data.Frame
 	frames      []*data.Frame
-	converter   *data.FieldConverter
+	value       *data.FieldConverter
+	columns     []columnInfo
 	labels      []string
-	table       int64
-	maxPoints   int64 // max points in a series
-	maxSeries   int64 // max number of series
-	totalSeries int64
+	maxPoints   int // max points in a series
+	maxSeries   int // max number of series
+	totalSeries int
 }
 
 func isTag(schk string) bool {
@@ -72,18 +79,37 @@ func getConverter(t string) (*data.FieldConverter, error) {
 func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 	columns := metadata.Columns()
 	fb.frames = make([]*data.Frame, 0)
-	fb.table = -1
+	fb.tableId = -1
+	fb.value = nil
+	fb.columns = make([]columnInfo, 0)
 
 	for _, col := range columns {
 		switch {
 		case col.Name() == "_value":
+			if fb.value != nil {
+				return fmt.Errorf("multiple values found")
+			}
 			converter, err := getConverter(col.DataType())
 			if err != nil {
 				return err
 			}
-			fb.converter = converter
+			fb.value = converter
 		case isTag(col.Name()):
 			fb.labels = append(fb.labels, col.Name())
+		}
+	}
+
+	if fb.value == nil {
+		fb.labels = make([]string, 0)
+		for _, col := range columns {
+			converter, err := getConverter(col.DataType())
+			if err != nil {
+				return err
+			}
+			fb.columns = append(fb.columns, columnInfo{
+				name:      col.Name(),
+				converter: converter,
+			})
 		}
 	}
 
@@ -96,43 +122,60 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 // _measurement holds the dataframe name
 // _field holds the field name.
 func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
-	index := len(fb.frames) - 1
-	if index == -1 || fb.frames[index].Fields[1].Name != record.Field() {
+	table, ok := record.ValueByKey("table").(int64)
+	if ok && table != fb.tableId {
 		fb.totalSeries++
-		if fb.maxSeries > 0 && fb.totalSeries > fb.maxSeries {
+		if fb.totalSeries > fb.maxSeries {
 			return fmt.Errorf("reached max series limit (%d)", fb.maxSeries)
 		}
-	}
 
-	table := record.ValueByKey("table").(int64)
-	if fb.table != table {
-		labels := make(map[string]string)
-		for _, name := range fb.labels {
-			labels[name] = record.ValueByKey(name).(string)
+		if fb.value != nil {
+			// Series Data
+			labels := make(map[string]string)
+			for _, name := range fb.labels {
+				labels[name] = record.ValueByKey(name).(string)
+			}
+			fb.active = data.NewFrame(
+				record.Measurement(),
+				data.NewFieldFromFieldType(data.FieldTypeTime, 0),
+				data.NewFieldFromFieldType(fb.value.OutputFieldType, 0),
+			)
+
+			fb.active.Fields[0].Name = "Time"
+			fb.active.Fields[1].Name = record.Field()
+			fb.active.Fields[1].Labels = labels
+		} else {
+			fields := make([]*data.Field, len(fb.columns))
+			for idx, col := range fb.columns {
+				fields[idx] = data.NewFieldFromFieldType(col.converter.OutputFieldType, 0)
+				fields[idx].Name = col.name
+			}
+			fb.active = data.NewFrame("", fields...)
 		}
-		frame := data.NewFrame(
-			record.Measurement(),
-			data.NewFieldFromFieldType(data.FieldTypeTime, 0),
-			data.NewFieldFromFieldType(fb.converter.OutputFieldType, 0),
-		)
 
-		frame.Fields[0].Name = "Time"
-		frame.Fields[1].Name = record.Field()
-		frame.Fields[1].Labels = labels
-
-		fb.frames = append(fb.frames, frame)
-		fb.table = table
+		fb.frames = append(fb.frames, fb.active)
+		fb.tableId = table
 	}
 
-	frame := fb.frames[len(fb.frames)-1]
-	frame.Fields[0].Append(record.Time())
-	val, err := fb.converter.Converter(record.Value())
-	if err != nil {
-		return err
+	if fb.value != nil {
+		val, err := fb.value.Converter(record.Value())
+		if err != nil {
+			return err
+		}
+		fb.active.Fields[0].Append(record.Time())
+		fb.active.Fields[1].Append(val)
+	} else {
+		// Table view
+		for idx, col := range fb.columns {
+			val, err := col.converter.Converter(record.ValueByKey(col.name))
+			if err != nil {
+				return err
+			}
+			fb.active.Fields[idx].Append(val)
+		}
 	}
-	frame.Fields[1].Append(val)
 
-	if frame.Fields[0].Len() > int(fb.maxPoints) {
+	if fb.active.Fields[0].Len() > int(fb.maxPoints) {
 		return fmt.Errorf("returned too many points in a series: %d", fb.maxPoints)
 	}
 
