@@ -1,0 +1,44 @@
+{
+  "type": "datasource",
+  "name": "Flux (InfluxDB) [BETA]",
+  "id": "grafana-influxdb-flux-datasource",
+  "backend": true,
+  "executable": "gpx_influx",
+  "metrics": true,
+  "alerting": true,
+  "queryOptions": {
+    "minInterval": true
+  },
+  "info": {
+    "description": "Flux query support for InfluxDB 2.x and InfluxDB 1.8+",
+    "author": {
+      "name": "Grafana Labs",
+      "url": "https://grafana.com"
+    },
+    "keywords": [],
+    "logos": {
+      "small": "img/influxdb_logo.svg",
+      "large": "img/influxdb_logo.svg"
+    },
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://github.com/grafana/influxdb-flux-datasource"
+      }
+    ],
+    "screenshots": [],
+    "version": "7.0.0",
+    "updated": "2020-05-17",
+    "build": {
+      "time": 1589738614758,
+      "repo": "git@github.com:grafana/influxdb-flux-datasource.git",
+      "branch": "v7.0.x",
+      "hash": "40e497531643ac4f5c704233b23aec76e25b7c39",
+      "number": 387
+    }
+  },
+  "dependencies": {
+    "grafanaVersion": "7.0.0",
+    "plugins": []
+  }
+}

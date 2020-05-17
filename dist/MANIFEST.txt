@@ -1,0 +1,31 @@
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+{
+  "plugin": "grafana-influxdb-flux-datasource",
+  "version": "7.0.0",
+  "files": {
+    "LICENSE": "7bb89d164c87a5f4655d9c5e70c7496d4bce9b77957504d1c9fbd7cc528ab010",
+    "README.md": "86478bb056fec185bf594652875fe46b33f7fc0fda47eab56f4f3c082abb4965",
+    "gpx_influx_darwin_amd64": "641973b403d2721aad7626a8bc8961ee8463dcb9219d2492ebe2b5a7fac98cb2",
+    "gpx_influx_linux_amd64": "409cf0abec25350f0b9a8a68dde181f85c1b194f969b8990fe3d1c403f144fed",
+    "gpx_influx_windows_amd64.exe": "a90183171eccb837a53d207ca04024447c1f5edc9166123923faaf198a9216a3",
+    "module.js": "98076e9449e903fc4c1a857f82178db1044469d33d0375a221489009f68d6219",
+    "module.js.LICENSE.txt": "0d8f66cd4afb566cb5b7e1540c68f43b939d3eba12ace290f18abc4f4cb53ed0",
+    "module.js.map": "1e968d8222d10d46a19277812e5e63694434d7f98508fe1b70f2335678f30ec3",
+    "plugin.json": "d7b9d2735c5963e630c28fdfe8f9840a04757a5cd661b446e091edace538ff95"
+  },
+  "time": 1589738615050,
+  "keyId": "7e4d0c6a708866e7"
+}
+-----BEGIN PGP SIGNATURE-----
+Version: OpenPGP.js v4.10.1
+Comment: https://openpgpjs.org
+
+wqIEARMKAAYFAl7BfHcACgkQfk0ManCIZucURgIJAeVKX7hDbfOYyWt8hD1L
+gJ4vKvB+Fuj8EXwduEKXupkUJuWfBg5BTQ5++35iyPEoz0LAgcj+IMqmn6mg
+gHuxhuSIAgkBphr/C9+6SqaWxTv7R6ngb3IIMKL+G68eSKLdn+82T2Wkm+hB
+0zbmwolXm8crcxqovREuA7G4RxniWuas5ufJIv8=
+=7J2y
+-----END PGP SIGNATURE-----
