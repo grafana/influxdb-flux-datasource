@@ -1,9 +1,12 @@
 # Change Log
+##
 
-## [7.0.0] - 2020-???
+## [7.0.0] - 2020-0517
 
 - Migrated to grafana backend plugin
-
+- Signed for grafana 7.x
+- Optimized for copy/paste from influxdb 2.0 data explorer.
+  Create more complex queries in data explorer, and copy them into the flux query editor.
 
 ## [5.4.1] - 2019-10-28
 
