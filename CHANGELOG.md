@@ -1,7 +1,7 @@
 # Change Log
 ##
 
-## [7.0.0] - 2020-0517
+## [7.0.0] - 2020-05-17
 
 - Migrated to grafana backend plugin
 - Signed for grafana 7.x
