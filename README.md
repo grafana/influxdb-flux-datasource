@@ -27,5 +27,11 @@ Look for the `name` specified as your default bucket, and you can use the coores
 
 So, if I entered in the config editor, my url to influxdb as `https://influxdb.company.com:9999`, your data-explorer url would be `https://influxdb.company.com:9999/orgs/059b46a59abab000/data-explorer`.
 
+![](https://raw.githubusercontent.com/grafana/influxdb-flux-datasource/v7.0.x/src/img/influx_query_editor.png)
+
 In the influx data explorer, you have a graphical query editor you may use. Hit the "Script Editor" button to go to flux langage mode, copy your request, and paste it into the influx query editor.
+
+![](https://raw.githubusercontent.com/grafana/influxdb-flux-datasource/v7.0.x/src/img/influx_script_editor.png)
+
+![](https://raw.githubusercontent.com/grafana/influxdb-flux-datasource/v7.0.x/src/img/grafana_query_editor.png)
 
