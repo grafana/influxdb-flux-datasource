@@ -31,15 +31,16 @@ type columnInfo struct {
 
 // This is an interface to help testing
 type FrameBuilder struct {
-	tableId     int64
-	active      *data.Frame
-	frames      []*data.Frame
-	value       *data.FieldConverter
-	columns     []columnInfo
-	labels      []string
-	maxPoints   int // max points in a series
-	maxSeries   int // max number of series
-	totalSeries int
+	tableId      int64
+	active       *data.Frame
+	frames       []*data.Frame
+	value        *data.FieldConverter
+	columns      []columnInfo
+	labels       []string
+	maxPoints    int // max points in a series
+	maxSeries    int // max number of series
+	totalSeries  int
+	isTimeSeries bool
 }
 
 func isTag(schk string) bool {
@@ -82,6 +83,7 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 	fb.tableId = -1
 	fb.value = nil
 	fb.columns = make([]columnInfo, 0)
+	fb.isTimeSeries = false
 
 	for _, col := range columns {
 		switch {
@@ -94,12 +96,14 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 				return err
 			}
 			fb.value = converter
+		case col.Name() == "_measurement":
+			fb.isTimeSeries = true
 		case isTag(col.Name()):
 			fb.labels = append(fb.labels, col.Name())
 		}
 	}
 
-	if fb.value == nil {
+	if fb.isTimeSeries == false {
 		fb.labels = make([]string, 0)
 		for _, col := range columns {
 			converter, err := getConverter(col.DataType())
@@ -129,7 +133,7 @@ func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
 			return fmt.Errorf("reached max series limit (%d)", fb.maxSeries)
 		}
 
-		if fb.value != nil {
+		if fb.isTimeSeries {
 			// Series Data
 			labels := make(map[string]string)
 			for _, name := range fb.labels {
@@ -157,7 +161,7 @@ func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
 		fb.tableId = table
 	}
 
-	if fb.value != nil {
+	if fb.isTimeSeries {
 		val, err := fb.value.Converter(record.Value())
 		if err != nil {
 			return err
