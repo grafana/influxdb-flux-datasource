@@ -103,7 +103,7 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 		}
 	}
 
-	if fb.isTimeSeries == false {
+	if !fb.isTimeSeries {
 		fb.labels = make([]string, 0)
 		for _, col := range columns {
 			converter, err := getConverter(col.DataType())
