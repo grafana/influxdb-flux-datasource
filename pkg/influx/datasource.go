@@ -33,7 +33,7 @@ func (r *InfluxRunner) checkHealth(ctx context.Context) (*domain.HealthCheck, er
 }
 
 type instanceSettings struct {
-	maxSeries int64
+	maxSeries int
 	Runner    queryRunner
 }
 
@@ -94,7 +94,7 @@ func (ds *InfluxDataSource) CheckHealth(ctx context.Context, req *backend.CheckH
 		}, nil
 	}
 
-	h, err := s.Runner.checkHealth(ctx)
+	_, err = s.Runner.checkHealth(ctx)
 	if err != nil {
 		return &backend.CheckHealthResult{
 			Status:  backend.HealthStatusError,
@@ -102,9 +102,33 @@ func (ds *InfluxDataSource) CheckHealth(ctx context.Context, req *backend.CheckH
 		}, nil
 	}
 
+	res, err := s.Runner.runQuery(ctx, "buckets()")
+	if err != nil {
+		return &backend.CheckHealthResult{
+			Status:  backend.HealthStatusError,
+			Message: err.Error(),
+		}, nil
+	}
+
+	dr := readDataFrames(res, 1000, 100)
+	if dr.Error != nil {
+		return &backend.CheckHealthResult{
+			Status:  backend.HealthStatusError,
+			Message: dr.Error.Error(),
+		}, nil
+	}
+
+	rowLen, err := dr.Frames[0].RowLen()
+	if err != nil {
+		return &backend.CheckHealthResult{
+			Status:  backend.HealthStatusError,
+			Message: dr.Error.Error(),
+		}, nil
+	}
+
 	return &backend.CheckHealthResult{
 		Status:  backend.HealthStatusOk,
-		Message: fmt.Sprintf("OK: %v", h.Message), // TODO!!
+		Message: fmt.Sprintf("%d buckets", rowLen), // TODO!!
 	}, nil
 }
 

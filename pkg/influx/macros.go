@@ -1,10 +1,12 @@
 package influx
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 	"time"
 
+	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/influxdb-flux-datasource/pkg/models"
 )
 
@@ -39,5 +41,6 @@ func Interpolate(query models.QueryModel) (string, error) {
 		}
 	}
 
+	backend.Logger.Info(fmt.Sprintf("%s => %v", flux, query.Options))
 	return flux, err
 }
