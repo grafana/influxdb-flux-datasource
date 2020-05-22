@@ -59,7 +59,7 @@ export class ConfigEditor extends PureComponent<Props> {
 
         <div className="gf-form-inline">
           <div className="gf-form max-width-30">
-            <InlineFormLabel className="width-10" tooltip="The orginization id">
+            <InlineFormLabel className="width-10" tooltip="The organization id">
               Organization
             </InlineFormLabel>
             <div style={{ flexGrow: 1 }}>
@@ -104,7 +104,7 @@ export class ConfigEditor extends PureComponent<Props> {
         </div>
         <div className="gf-form-inline">
           <div className="gf-form max-width-30">
-            <InlineFormLabel className="width-10" tooltip="The orginization id">
+            <InlineFormLabel className="width-10" tooltip="Influxdb token">
               Token
             </InlineFormLabel>
             <div style={{ flexGrow: 1 }}>
