@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/grafana/grafana-plugin-sdk-go/data"
-	influxdb2 "github.com/influxdata/influxdb-client-go"
+	"github.com/influxdata/influxdb-client-go/api/query"
 
 	"github.com/grafana/influxdb-flux-datasource/pkg/converters"
 )
@@ -74,7 +74,7 @@ func getConverter(t string) (*data.FieldConverter, error) {
 // Init initializes the frame to be returned
 // fields points at entries in the frame, and provides easier access
 // names indexes the columns encountered
-func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
+func (fb *FrameBuilder) Init(metadata *query.FluxTableMetadata) error {
 	columns := metadata.Columns()
 	fb.frames = make([]*data.Frame, 0)
 	fb.tableId = -1
@@ -121,7 +121,7 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 // Tags are appended as labels
 // _measurement holds the dataframe name
 // _field holds the field name.
-func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
+func (fb *FrameBuilder) Append(record *query.FluxRecord) error {
 	table, ok := record.ValueByKey("table").(int64)
 	if ok && table != fb.tableId {
 		fb.totalSeries++

@@ -6,9 +6,10 @@ import (
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/influxdb-flux-datasource/pkg/models"
-	influxdb2 "github.com/influxdata/influxdb-client-go"
+	"github.com/influxdata/influxdb-client-go/api"
 )
 
+// ExecuteQuery execute a query
 func ExecuteQuery(ctx context.Context, query models.QueryModel, runner queryRunner, maxSeries int) (dr backend.DataResponse) {
 	dr = backend.DataResponse{}
 
@@ -27,7 +28,7 @@ func ExecuteQuery(ctx context.Context, query models.QueryModel, runner queryRunn
 	return readDataFrames(tables, int(float64(query.MaxDataPoints)*1.5), maxSeries)
 }
 
-func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int, maxSeries int) (dr backend.DataResponse) {
+func readDataFrames(result *api.QueryTableResult, maxPoints int, maxSeries int) (dr backend.DataResponse) {
 	dr = backend.DataResponse{}
 
 	builder := &FrameBuilder{
