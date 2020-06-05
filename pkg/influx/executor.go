@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/influxdb-flux-datasource/pkg/models"
 	"github.com/influxdata/influxdb-client-go/api"
 )
@@ -20,12 +21,22 @@ func ExecuteQuery(ctx context.Context, query models.QueryModel, runner queryRunn
 	}
 
 	tables, err := runner.runQuery(ctx, flux)
-	if err != nil {
+	if err == nil {
+		dr = readDataFrames(tables, int(float64(query.MaxDataPoints)*1.5), maxSeries)
+	} else {
 		dr.Error = err
-		return
 	}
 
-	return readDataFrames(tables, int(float64(query.MaxDataPoints)*1.5), maxSeries)
+	// Add an empty frame
+	if len(dr.Frames) < 1 {
+		dr.Frames = append(dr.Frames, data.NewFrame(""))
+	}
+	frame := dr.Frames[0]
+	if frame.Meta == nil {
+		frame.Meta = &data.FrameMeta{}
+	}
+	frame.Meta.ExecutedQueryString = flux
+	return dr
 }
 
 func readDataFrames(result *api.QueryTableResult, maxPoints int, maxSeries int) (dr backend.DataResponse) {
@@ -72,5 +83,5 @@ func readDataFrames(result *api.QueryTableResult, maxPoints int, maxSeries int) 
 
 	// Attach any errors (may be null)
 	dr.Error = result.Err()
-	return dr
+	return
 }
