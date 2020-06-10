@@ -11,9 +11,10 @@ import (
 // InfluxSettings contains config properties (share with other AWS services?)
 type DatasourceSettings struct {
 	// Loaded from root object
-	URL          string
-	Token        string
-	Organization string
+	URL           string
+	Token         string
+	Organization  string
+	DefaultBucket string `json:"defaultBucket"`
 
 	// Loaded from jsonData
 	MaxSeries int `json:"maxSeries"`
