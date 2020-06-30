@@ -2,10 +2,9 @@ package influx
 
 import (
 	"fmt"
-	"regexp"
 
 	"github.com/grafana/grafana-plugin-sdk-go/data"
-	influxdb2 "github.com/influxdata/influxdb-client-go"
+	"github.com/influxdata/influxdb-client-go/api/query"
 
 	"github.com/grafana/influxdb-flux-datasource/pkg/converters"
 )
@@ -29,7 +28,7 @@ type columnInfo struct {
 	converter *data.FieldConverter
 }
 
-// This is an interface to help testing
+// FrameBuilder is an interface to help testing
 type FrameBuilder struct {
 	tableId      int64
 	active       *data.Frame
@@ -46,8 +45,6 @@ type FrameBuilder struct {
 func isTag(schk string) bool {
 	return (schk != "result" && schk != "table" && schk[0] != '_')
 }
-
-var isField = regexp.MustCompile(`^_(time|value|measurement|field|start|stop)$`)
 
 func getConverter(t string) (*data.FieldConverter, error) {
 	switch t {
@@ -77,7 +74,7 @@ func getConverter(t string) (*data.FieldConverter, error) {
 // Init initializes the frame to be returned
 // fields points at entries in the frame, and provides easier access
 // names indexes the columns encountered
-func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
+func (fb *FrameBuilder) Init(metadata *query.FluxTableMetadata) error {
 	columns := metadata.Columns()
 	fb.frames = make([]*data.Frame, 0)
 	fb.tableId = -1
@@ -96,7 +93,6 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 				return err
 			}
 			fb.value = converter
-		case col.Name() == "_measurement":
 			fb.isTimeSeries = true
 		case isTag(col.Name()):
 			fb.labels = append(fb.labels, col.Name())
@@ -125,7 +121,7 @@ func (fb *FrameBuilder) Init(metadata *influxdb2.FluxTableMetadata) error {
 // Tags are appended as labels
 // _measurement holds the dataframe name
 // _field holds the field name.
-func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
+func (fb *FrameBuilder) Append(record *query.FluxRecord) error {
 	table, ok := record.ValueByKey("table").(int64)
 	if ok && table != fb.tableId {
 		fb.totalSeries++
@@ -134,20 +130,29 @@ func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
 		}
 
 		if fb.isTimeSeries {
+			frameName := ""
+			name := record.ValueByKey("_measurement")
+			if name != nil {
+				frameName = name.(string)
+			}
+			name = record.ValueByKey("_field")
+
 			// Series Data
 			labels := make(map[string]string)
 			for _, name := range fb.labels {
 				labels[name] = record.ValueByKey(name).(string)
 			}
 			fb.active = data.NewFrame(
-				record.Measurement(),
+				frameName,
 				data.NewFieldFromFieldType(data.FieldTypeTime, 0),
 				data.NewFieldFromFieldType(fb.value.OutputFieldType, 0),
 			)
 
 			fb.active.Fields[0].Name = "Time"
-			fb.active.Fields[1].Name = record.Field()
 			fb.active.Fields[1].Labels = labels
+			if name != nil {
+				fb.active.Fields[1].Name = name.(string)
+			}
 		} else {
 			fields := make([]*data.Field, len(fb.columns))
 			for idx, col := range fb.columns {

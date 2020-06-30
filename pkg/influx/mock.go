@@ -9,6 +9,7 @@ import (
 	"time"
 
 	influxdb2 "github.com/influxdata/influxdb-client-go"
+	"github.com/influxdata/influxdb-client-go/api"
 	"github.com/influxdata/influxdb-client-go/domain"
 )
 
@@ -21,7 +22,7 @@ type MockRunner struct {
 	testDataPath string
 }
 
-func (r *MockRunner) runQuery(ctx context.Context, q string) (*influxdb2.QueryTableResult, error) {
+func (r *MockRunner) runQuery(ctx context.Context, q string) (*api.QueryTableResult, error) {
 	bytes, err := ioutil.ReadFile("./testdata/" + r.testDataPath)
 	if err != nil {
 		return nil, err
@@ -43,5 +44,5 @@ func (r *MockRunner) runQuery(ctx context.Context, q string) (*influxdb2.QueryTa
 }
 
 func (r *MockRunner) checkHealth(ctx context.Context) (*domain.HealthCheck, error) {
-	return nil, fmt.Errorf("not implemented yet!")
+	return nil, fmt.Errorf("not implemented yet")
 }

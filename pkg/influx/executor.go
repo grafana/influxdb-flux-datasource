@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/influxdb-flux-datasource/pkg/models"
-	influxdb2 "github.com/influxdata/influxdb-client-go"
+	"github.com/influxdata/influxdb-client-go/api"
 )
 
+// ExecuteQuery execute a query
 func ExecuteQuery(ctx context.Context, query models.QueryModel, runner queryRunner, maxSeries int) (dr backend.DataResponse) {
 	dr = backend.DataResponse{}
 
@@ -19,15 +21,25 @@ func ExecuteQuery(ctx context.Context, query models.QueryModel, runner queryRunn
 	}
 
 	tables, err := runner.runQuery(ctx, flux)
-	if err != nil {
+	if err == nil {
+		dr = readDataFrames(tables, int(float64(query.MaxDataPoints)*1.5), maxSeries)
+	} else {
 		dr.Error = err
-		return
 	}
 
-	return readDataFrames(tables, int(float64(query.MaxDataPoints)*1.5), maxSeries)
+	// Add an empty frame
+	if len(dr.Frames) < 1 {
+		dr.Frames = append(dr.Frames, data.NewFrame(""))
+	}
+	frame := dr.Frames[0]
+	if frame.Meta == nil {
+		frame.Meta = &data.FrameMeta{}
+	}
+	frame.Meta.ExecutedQueryString = flux
+	return dr
 }
 
-func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int, maxSeries int) (dr backend.DataResponse) {
+func readDataFrames(result *api.QueryTableResult, maxPoints int, maxSeries int) (dr backend.DataResponse) {
 	dr = backend.DataResponse{}
 
 	builder := &FrameBuilder{
@@ -71,5 +83,5 @@ func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int, maxSeries
 
 	// Attach any errors (may be null)
 	dr.Error = result.Err()
-	return dr
+	return
 }
