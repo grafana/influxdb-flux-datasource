@@ -54,9 +54,9 @@ func getConverter(t string) (*data.FieldConverter, error) {
 	case stringDatatype:
 		return &converters.AnyToOptionalString, nil
 	case timeDatatypeRFC:
-		return &converters.Int64ToOptionalInt64, nil
+		return &converters.TimeToTime, nil
 	case timeDatatypeRFCNano:
-		return &converters.Int64ToOptionalInt64, nil
+		return &converters.TimeToTime, nil
 	case durationDatatype:
 		return &converters.Int64ToOptionalInt64, nil
 	case doubleDatatype:
