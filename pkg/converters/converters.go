@@ -70,6 +70,21 @@ var Int64ToOptionalInt64 = data.FieldConverter{
 	},
 }
 
+var TimeToTime = data.FieldConverter{
+	OutputFieldType: data.FieldTypeTime,
+	Converter: func(v interface{}) (interface{}, error) {
+		if v == nil {
+			return nil, nil
+		}
+		val, ok := v.(time.Time)
+		if !ok { // or return some default value instead of erroring
+			return nil, fmt.Errorf("[time] expected time.Time input but got type %T", v)
+		}
+		return val, nil
+	},
+}
+
+
 // UInt64ToOptionalUInt64 optional int value
 var UInt64ToOptionalUInt64 = data.FieldConverter{
 	OutputFieldType: data.FieldTypeNullableUint64,
