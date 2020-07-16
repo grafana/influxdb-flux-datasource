@@ -1,8 +1,17 @@
 # Change Log
 
-## [7.0.0] - 2020-???
+
+## [7.0.1] - 2020-05-17
+
+- Support results without a measurment name
+- use release influxdb client
+
+
+## [7.0.0] - 2020-05-17
 
 - Migrated to grafana backend plugin
+- Signed for grafana 7.x
+- Optimized for copy/paste from influxdb 2.0 data explorer.
 
 
 ## [5.4.1] - 2019-10-28

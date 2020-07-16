@@ -10,22 +10,23 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend/resource"
 	"github.com/grafana/influxdb-flux-datasource/pkg/models"
 	influxdb2 "github.com/influxdata/influxdb-client-go"
+	"github.com/influxdata/influxdb-client-go/api"
 	"github.com/influxdata/influxdb-client-go/domain"
 )
 
 // This is an interface to help testing
 type queryRunner interface {
-	runQuery(ctx context.Context, q string) (*influxdb2.QueryTableResult, error)
+	runQuery(ctx context.Context, q string) (*api.QueryTableResult, error)
 	checkHealth(ctx context.Context) (*domain.HealthCheck, error)
 }
 
-// This is an interface to help testing
+// InfluxRunner This is an interface to help testing
 type InfluxRunner struct {
 	client influxdb2.Client
 	org    string
 }
 
-func (r *InfluxRunner) runQuery(ctx context.Context, q string) (*influxdb2.QueryTableResult, error) {
+func (r *InfluxRunner) runQuery(ctx context.Context, q string) (*api.QueryTableResult, error) {
 	return r.client.QueryApi(r.org).Query(ctx, q)
 }
 func (r *InfluxRunner) checkHealth(ctx context.Context) (*domain.HealthCheck, error) {
@@ -57,7 +58,7 @@ func (s *instanceSettings) Dispose() {
 	// to cleanup.
 }
 
-// NewRelicDS ...
+// InfluxDataSource ...
 type InfluxDataSource struct {
 	im instancemgmt.InstanceManager
 }
