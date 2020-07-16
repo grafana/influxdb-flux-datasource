@@ -173,7 +173,7 @@ func (fb *FrameBuilder) Append(record *influxdb2.FluxRecord) error {
 		for idx, col := range fb.columns {
 			val, err := col.converter.Converter(record.ValueByKey(col.name))
 			if err != nil {
-				return err
+				return fmt.Errorf("Can't convert col %s: %s", col.name, err)
 			}
 			fb.active.Fields[idx].Append(val)
 		}

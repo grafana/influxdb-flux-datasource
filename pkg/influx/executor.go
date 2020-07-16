@@ -70,6 +70,12 @@ func readDataFrames(result *influxdb2.QueryTableResult, maxPoints int, maxSeries
 	}
 
 	// Attach any errors (may be null)
-	dr.Error = result.Err()
+	if result.Err() != nil {
+		dr.Error = result.Err()
+	}
+	if dr.Error != nil {
+		// reset frames to prevent any further errors (e.g. by incomplete rows)
+		dr.Frames = nil
+	}
 	return dr
 }
